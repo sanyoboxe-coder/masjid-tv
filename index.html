@@ -45,54 +45,57 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 12px;
+      gap: 14px;
     }
 
+    /* Top Bar - تكبير الساعة واسم المسجد */
     .top-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid rgba(255, 215, 0, 0.25);
-      padding-bottom: 8px;
+      border-bottom: 3px solid rgba(255, 215, 0, 0.35);
+      padding-bottom: 10px;
     }
     .masjid-imam-group {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 25px;
     }
     .masjid-title {
-      font-size: 2.5rem;
-      font-weight: bold;
+      font-size: 3.2rem;
+      font-weight: 900;
       color: #f6e05e;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      text-shadow: 0 3px 12px rgba(0,0,0,0.6);
     }
     .imam-badge {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: bold;
       color: #ffffff;
-      background: rgba(16, 185, 129, 0.25);
-      padding: 6px 18px;
-      border-radius: 10px;
-      border: 1px solid #10b981;
+      background: rgba(16, 185, 129, 0.3);
+      padding: 8px 22px;
+      border-radius: 12px;
+      border: 2px solid #10b981;
     }
     .live-clock {
-      font-size: 3.5rem;
-      font-weight: bold;
+      font-size: 5rem;
+      font-weight: 900;
       color: #38bdf8;
       font-family: monospace;
-      text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+      text-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+      letter-spacing: 2px;
     }
 
+    /* Hero Banner - تكبير العد التنازلي وحالة الأذان */
     .hero-banner {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255, 215, 0, 0.3);
-      border-radius: 16px;
-      padding: 12px 25px;
+      background: rgba(15, 23, 42, 0.88);
+      border: 2px solid rgba(255, 215, 0, 0.4);
+      border-radius: 18px;
+      padding: 15px 30px;
       display: grid;
-      grid-template-columns: 1.2fr 2fr 1fr;
+      grid-template-columns: 1.3fr 2fr 1.1fr;
       align-items: center;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       text-align: center;
     }
     .hero-item {
@@ -102,101 +105,121 @@
       justify-content: center;
     }
     .hero-label {
-      font-size: 1.2rem;
-      color: #94a3b8;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #cbd5e1;
       margin-bottom: 4px;
     }
     .hero-next-prayer {
-      font-size: 2.8rem;
-      font-weight: bold;
+      font-size: 3.6rem;
+      font-weight: 900;
       color: #facc15;
+      text-shadow: 0 2px 15px rgba(250, 204, 21, 0.4);
     }
     .hero-countdown {
-      font-size: 3.6rem;
-      font-weight: bold;
+      font-size: 4.8rem;
+      font-weight: 900;
       font-family: monospace;
       color: #ffffff;
       direction: ltr;
-      letter-spacing: 2px;
-      text-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
+      letter-spacing: 3px;
+      text-shadow: 0 0 25px rgba(250, 204, 21, 0.6);
     }
     .hero-location {
-      font-size: 1.8rem;
-      font-weight: bold;
+      font-size: 2.2rem;
+      font-weight: 900;
       color: #e2e8f0;
     }
 
+    /* Date Strip - تكبير التاريخ الهجري والميلادي */
     .date-bar {
-      background: rgba(30, 41, 59, 0.65);
-      padding: 8px 25px;
-      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.85);
+      padding: 12px 30px;
+      border-radius: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.15);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     .date-hijri {
-      font-size: 1.4rem;
-      font-weight: bold;
+      font-size: 1.9rem;
+      font-weight: 900;
       color: #f8fafc;
+      letter-spacing: 0.5px;
     }
     .date-gregorian {
-      font-size: 1.2rem;
-      color: #cbd5e1;
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #e2e8f0;
       direction: ltr;
     }
 
+    /* Grid - تكبير أرقام ومربعات الصلوات الـ 6 */
     .grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 12px;
     }
     .card {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 14px;
-      padding: 14px 8px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 16px 6px;
       text-align: center;
       backdrop-filter: blur(10px);
       transition: all 0.3s ease;
     }
     .card.active-prayer {
-      border: 2px solid #facc15;
-      background: rgba(250, 204, 21, 0.18);
-      transform: scale(1.02);
-      box-shadow: 0 0 25px rgba(250, 204, 21, 0.3);
+      border: 3px solid #facc15;
+      background: rgba(250, 204, 21, 0.22);
+      transform: scale(1.03);
+      box-shadow: 0 0 30px rgba(250, 204, 21, 0.4);
     }
-    .card .name-ar { font-size: 1.7rem; font-weight: bold; color: #ffffff; }
-    .card .name-fr { font-size: 0.95rem; color: #94a3b8; margin-bottom: 6px; }
-    .card .adhan { font-size: 2.5rem; font-weight: bold; color: #ffffff; margin-bottom: 6px; }
+    .card .name-ar { font-size: 2.2rem; font-weight: 900; color: #ffffff; }
+    .card .name-fr { font-size: 1.1rem; color: #94a3b8; margin-bottom: 6px; font-weight: bold; }
+    .card .adhan { 
+      font-size: 3.2rem; 
+      font-weight: 900; 
+      color: #ffffff; 
+      margin-bottom: 8px;
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
     .card .iqama-box {
-      border-top: 1px dashed rgba(255, 255, 255, 0.2);
-      padding-top: 6px;
-      font-size: 1.05rem;
-      color: #94a3b8;
+      border-top: 2px dashed rgba(255, 255, 255, 0.3);
+      padding-top: 8px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #cbd5e1;
     }
     .card .iqama-time {
-      font-size: 1.8rem;
-      font-weight: bold;
+      font-size: 2.4rem;
+      font-weight: 900;
       color: #4ade80;
       display: block;
-      margin-top: 2px;
+      margin-top: 4px;
+      font-family: monospace;
+      text-shadow: 0 0 12px rgba(74, 222, 128, 0.4);
     }
 
+    /* Bottom Info Card - تكبير شريط الإعلانات */
     .announcement-box {
-      background: rgba(2, 6, 23, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      padding: 10px 20px;
+      background: rgba(2, 6, 23, 0.85);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 12px 25px;
       text-align: center;
-      font-size: 1.35rem;
+      font-size: 1.6rem;
+      font-weight: bold;
       color: #f8fafc;
     }
 
+    /* Support Footer */
     .footer-dev {
       text-align: center;
-      font-size: 0.95rem;
-      color: rgba(255, 255, 255, 0.5);
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.6);
       letter-spacing: 0.5px;
     }
   </style>
@@ -204,9 +227,9 @@
 <body>
 
   <div id="prayerOverlay">
-    <h1 style="font-size: 4.5rem; color: #facc15; margin-bottom: 25px;">حان وقت الصلاة</h1>
-    <p style="font-size: 2.6rem; color: #e2e8f0; margin-bottom: 15px;">استووا وتراصوا واعتدلوا</p>
-    <p style="font-size: 1.8rem; color: #94a3b8;">يرجى التأكد من إغلاق الهواتف النقالة</p>
+    <h1 style="font-size: 5.5rem; color: #facc15; margin-bottom: 30px;">حان وقت الصلاة</h1>
+    <p style="font-size: 3.2rem; color: #e2e8f0; margin-bottom: 20px;">استووا وتراصوا واعتدلوا</p>
+    <p style="font-size: 2.2rem; color: #94a3b8;">يرجى التأكد من إغلاق الهواتف النقالة</p>
   </div>
 
   <div class="tv-container">
@@ -252,9 +275,9 @@
   </div>
 
   <script>
-    if (localStorage.getItem('cached_layout_since') !== 'v_since_fajr_1') {
+    if (localStorage.getItem('cached_layout_big') !== 'v_big_font_elderly_1') {
       localStorage.clear();
-      localStorage.setItem('cached_layout_since', 'v_since_fajr_1');
+      localStorage.setItem('cached_layout_big', 'v_big_font_elderly_1');
     }
 
     const SHEET_ID = "1u457jpdyZTBZoSbKV9BTX2SBTrodelKw7GIR-a3J-5A";
@@ -331,7 +354,7 @@
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
-      const cacheKey = `p_kenitra_since_${year}_${month}`;
+      const cacheKey = `p_kenitra_big_${year}_${month}`;
 
       try {
         const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0`);
@@ -349,7 +372,7 @@
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
       const day = now.getDate();
-      const cacheKey = `p_kenitra_since_${year}_${month}`;
+      const cacheKey = `p_kenitra_big_${year}_${month}`;
 
       const raw = localStorage.getItem(cacheKey);
       if (raw) {
@@ -441,7 +464,6 @@
       let isBetweenAdhanAndIqama = false;
       let isPraying = false;
 
-      // فحص إذا كنا حالياً بين الأذان ونهاية وقت الصلاة
       for (let p of validPrayers) {
         let [ah, am] = (timings[p.key] || "0:0").split(':').map(Number);
         let adhanS = ah * 3600 + am * 60;
@@ -474,7 +496,6 @@
         }
       }
 
-      // إذا لم نكن في وقت أذان أو إقامة، نحسب الصلاة القادمة
       if (!isBetweenAdhanAndIqama && !isPraying) {
         let nextP = null;
         let nextDiff = 0;
@@ -507,7 +528,6 @@
         document.getElementById('heroCountdown').innerText = `-${rH}:${rM}:${rS}`;
       }
 
-      // تمييز الكارت النشط
       document.querySelectorAll('.card').forEach(c => c.classList.remove('active-prayer'));
       if (currentActivePrayer) {
         let activeCard = document.getElementById(`card-${currentActivePrayer.key}`);
