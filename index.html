@@ -17,8 +17,31 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 25px 35px;
+      padding: 20px 30px;
       overflow-x: hidden;
+      transition: background 1s ease;
+    }
+
+    body.praying-mode {
+      background: #000000 !important;
+    }
+    body.praying-mode .header,
+    body.praying-mode .sub-bar,
+    body.praying-mode .grid,
+    body.praying-mode .ticker,
+    body.praying-mode .footer-dev {
+      display: none !important;
+    }
+    #prayerOverlay {
+      display: none;
+      height: 100vh;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    body.praying-mode #prayerOverlay {
+      display: flex !important;
     }
 
     .header {
@@ -26,7 +49,7 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 2px solid rgba(255, 215, 0, 0.25);
-      padding-bottom: 12px;
+      padding-bottom: 10px;
     }
     .masjid-title {
       font-size: 2.8rem;
@@ -46,16 +69,16 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 15px 0;
+      margin: 12px 0;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 12px;
     }
     .imam-badge {
       font-size: 1.8rem;
       font-weight: bold;
       color: #ffffff;
       background: rgba(16, 185, 129, 0.25);
-      padding: 10px 24px;
+      padding: 8px 22px;
       border-radius: 12px;
       border: 1px solid #10b981;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -69,31 +92,30 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* شريط العد التنازلي للإقامة */
     .countdown-bar {
       background: rgba(234, 179, 8, 0.15);
       border: 2px solid #eab308;
       color: #fef08a;
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       font-weight: bold;
       text-align: center;
-      padding: 12px 20px;
+      padding: 10px 20px;
       border-radius: 14px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       box-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
-      gap: 15px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 15px;
     }
     .card {
       background: rgba(15, 23, 42, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 18px;
-      padding: 20px 10px;
+      border-radius: 16px;
+      padding: 18px 8px;
       text-align: center;
       backdrop-filter: blur(12px);
       box-shadow: 0 8px 20px rgba(0,0,0,0.35);
@@ -102,20 +124,20 @@
     .card.active-prayer {
       border: 2px solid #facc15;
       background: rgba(250, 204, 21, 0.18);
-      transform: scale(1.04);
+      transform: scale(1.03);
       box-shadow: 0 0 25px rgba(250, 204, 21, 0.3);
     }
-    .card .name { font-size: 1.9rem; margin-bottom: 8px; color: #e2e8f0; font-weight: bold; }
-    .card .adhan { font-size: 2.7rem; font-weight: bold; color: #ffffff; margin-bottom: 12px; }
+    .card .name { font-size: 1.8rem; margin-bottom: 8px; color: #e2e8f0; font-weight: bold; }
+    .card .adhan { font-size: 2.6rem; font-weight: bold; color: #ffffff; margin-bottom: 10px; }
     
     .card .iqama-box {
       border-top: 2px dashed rgba(255, 255, 255, 0.25);
-      padding-top: 10px;
-      font-size: 1.2rem;
+      padding-top: 8px;
+      font-size: 1.15rem;
       color: #94a3b8;
     }
     .card .iqama-time {
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       font-weight: bold;
       color: #4ade80;
       display: block;
@@ -125,17 +147,31 @@
 
     .ticker {
       background: rgba(2, 6, 23, 0.8);
-      padding: 14px 25px;
+      padding: 12px 25px;
       border-radius: 12px;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       text-align: center;
       color: #f8fafc;
       border: 1px solid rgba(255, 255, 255, 0.12);
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
+
+    .footer-dev {
+      text-align: center;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
+
+  <div id="prayerOverlay">
+    <h1 style="font-size: 4.2rem; color: #facc15; margin-bottom: 25px;">حان وقت الصلاة</h1>
+    <p style="font-size: 2.5rem; color: #e2e8f0; margin-bottom: 15px;">استووا وتراصوا واعتدلوا</p>
+    <p style="font-size: 1.8rem; color: #94a3b8;">يرجى التأكد من إغلاق الهواتف النقالة</p>
+  </div>
 
   <div class="header">
     <div class="masjid-title" id="dispMasjid">مسجد أبو هريرة</div>
@@ -147,7 +183,6 @@
     <div class="date-badge" id="dateText">القنيطرة | جاري التحميل...</div>
   </div>
 
-  <!-- صندوق تنبيه الإقامة والعد التنازلي -->
   <div class="countdown-bar" id="iqamaAlert">
     جاري حساب وقت الإقامة القادمة...
   </div>
@@ -155,6 +190,10 @@
   <div class="grid" id="prayerGrid"></div>
 
   <div class="ticker" id="dispAnnouncement">يرجى تسوية الصفوف وإطفاء الهواتف النقالة</div>
+
+  <div class="footer-dev">
+    إعداد وبرمجة: عبد العالي العزري | للتواصل والدعم الفني: 0670626834
+  </div>
 
   <script>
     const SHEET_ID = "1u457jpdyZTBZoSbKV9BTX2SBTrodelKw7GIR-a3J-5A";
@@ -164,8 +203,8 @@
     let imamName = "بوسلهام";
     let announcement = "يرجى تسوية الصفوف وإطفاء الهواتف النقالة";
     let timings = {};
+    let soundPlayedFor = "";
 
-    // مدة الإقامة بالدقائق لكل صلاة
     const IQAMA_DELAYS = { Fajr: 20, Dhuhr: 15, Asr: 15, Maghrib: 10, Isha: 15 };
 
     const PRAYERS = [
@@ -176,6 +215,36 @@
       { key: "Maghrib", name: "المغرب" },
       { key: "Isha", name: "العشاء" }
     ];
+
+    function announcePrayer(prayerName) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(783.99, audioCtx.currentTime + 0.3);
+        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.6);
+
+        setTimeout(() => {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(`حان وقت صلاة ${prayerName}، استووا واعتدلوا`);
+            msg.lang = 'ar-SA';
+            msg.rate = 0.85;
+            msg.pitch = 1.0;
+            window.speechSynthesis.speak(msg);
+          }
+        }, 700);
+      } catch (e) {
+        console.error("Audio error", e);
+      }
+    }
 
     function addMinutes(timeStr, mins) {
       if (!timeStr) return "--:--";
@@ -207,8 +276,6 @@
         });
 
         document.getElementById('dispMasjid').innerText = masjidName;
-        
-        // إزالة الشيخ أو أي تكرار وعرضها بالضبط: إمام المسجد: بوسلهام
         let cleanImam = imamName.replace(/الشيخ/g, '').replace(/^إمام\s*المسجد\s*:?/i, '').replace(/^الإمام\s*:?/i, '').trim();
         document.getElementById('dispImam').innerText = "إمام المسجد: " + cleanImam;
         document.getElementById('dispAnnouncement').innerText = announcement;
@@ -252,8 +319,8 @@
       const now = new Date();
       document.getElementById('liveClock').innerText = now.toTimeString().split(' ')[0];
 
-      // فحص أوقات الإقامة والعد التنازلي
       let statusText = "الصلاة القادمة: جاري الحساب...";
+      let isPrayingNow = false;
       
       if (Object.keys(timings).length > 0) {
         let currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -267,7 +334,6 @@
           let delay = IQAMA_DELAYS[p.key] || 15;
           let iqamaTotalMins = adhanTotalMins + delay;
 
-          // إذا كنا بين الأذان والإقامة
           if (currentMinutes >= adhanTotalMins && currentMinutes < iqamaTotalMins) {
             inIqamaWindow = true;
             let diffSecs = (iqamaTotalMins * 60) - (currentMinutes * 60 + currentSeconds);
@@ -275,13 +341,20 @@
             let remSec = diffSecs % 60;
             statusText = `⏳ باقي على إقامة صلاة ${p.name}: ${remMin} دقيقة و ${remSec} ثانية`;
             
-            // تمييز البطاقة
             document.querySelectorAll('.card').forEach(c => c.classList.remove('active-prayer'));
             let activeCard = document.getElementById(`card-${p.key}`);
             if (activeCard) activeCard.classList.add('active-prayer');
             break;
-          } else if (currentMinutes === iqamaTotalMins && currentSeconds < 45) {
+          } 
+          else if (currentMinutes >= iqamaTotalMins && currentMinutes < (iqamaTotalMins + 15)) {
             inIqamaWindow = true;
+            isPrayingNow = true;
+
+            if (soundPlayedFor !== p.key && currentMinutes === iqamaTotalMins && currentSeconds < 10) {
+              announcePrayer(p.name);
+              soundPlayedFor = p.key;
+            }
+
             statusText = `📢 حان الآن وقت إقامة صلاة ${p.name} - استووا واعتدلوا`;
             break;
           }
@@ -290,7 +363,14 @@
         if (!inIqamaWindow) {
           statusText = "تقبل الله منا ومنكم صالح الأعمال";
           document.querySelectorAll('.card').forEach(c => c.classList.remove('active-prayer'));
+          soundPlayedFor = "";
         }
+      }
+
+      if (isPrayingNow) {
+        document.body.classList.add('praying-mode');
+      } else {
+        document.body.classList.remove('praying-mode');
       }
 
       document.getElementById('iqamaAlert').innerText = statusText;
@@ -305,6 +385,13 @@
 
       document.getElementById('dateText').innerText = `القنيطرة | ${hijriDate} هـ - ${gregorianDate} م`;
     }
+
+    window.addEventListener('click', () => {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }, { once: true });
 
     setInterval(updateLogic, 1000);
     setInterval(loadSheetData, 15000);
