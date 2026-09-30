@@ -184,7 +184,7 @@
   </div>
 
   <div class="countdown-bar" id="iqamaAlert">
-    جاري حساب وقت الإقامة القادمة...
+    تقبل الله منا ومنكم صالح الأعمال
   </div>
 
   <div class="grid" id="prayerGrid"></div>
@@ -293,38 +293,34 @@
         });
         updateHeaderUI();
       } catch (e) {
-        // فـ حالة غياب الإنترنت، يتم الاعتماد على آخر بيانات محفوظة
         updateHeaderUI();
       }
     }
 
-    // جلب مواقيت الشهر كامل وتخزينها في ذاكرة التلفاز
+    // جلب مواقيت الشهر كامل باعتماد الطريقة المغربية الرسمية (method=21)
     async function fetchAndCacheMonthTimes() {
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
-      const cacheKey = `prayer_month_${year}_${month}`;
+      const cacheKey = `prayer_month_ma_${year}_${month}`;
 
       try {
-        const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=Kenitra&country=Morocco&method=3`);
+        const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=Kenitra&country=Morocco&method=21`);
         const data = await res.json();
         if (data.code === 200 && data.data) {
           localStorage.setItem(cacheKey, JSON.stringify(data.data));
         }
-      } catch (e) {
-        console.log("الإنترنت غير متصل حالياً، سيتم الاعتماد على الذاكرة المخزنة.");
-      }
+      } catch (e) {}
 
       applyTimingsForToday();
     }
 
-    // استخراج مواقيت اليوم الحالي من الذاكرة المخزنة
     function applyTimingsForToday() {
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
       const day = now.getDate();
-      const cacheKey = `prayer_month_${year}_${month}`;
+      const cacheKey = `prayer_month_ma_${year}_${month}`;
 
       const raw = localStorage.getItem(cacheKey);
       if (raw) {
@@ -347,8 +343,8 @@
         } catch (e) {}
       }
 
-      // احتياط: محاولة طلب اليوم الحالي فقط إذا تعذر جلب الشهر
-      fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=3")
+      // جلب اليوم الحالي بالطريقة المغربية الرسمية (method=21)
+      fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21")
         .then(r => r.json())
         .then(d => {
           if (d.data && d.data.timings) {
@@ -390,29 +386,28 @@
       const now = new Date();
       document.getElementById('liveClock').innerText = now.toTimeString().split(' ')[0];
 
-      // فحص تلقائي عند منتصف الليل لتحديث مواقيت اليوم الجديد حتى بدون إنترنت
       if (now.getDate() !== currentLoadedDay) {
         applyTimingsForToday();
       }
 
-      let statusText = "الصلاة القادمة: جاري الحساب...";
+      let statusText = "تقبل الله منا ومنكم صالح الأعمال";
       let isPrayingNow = false;
-      
+      let inIqamaWindow = false;
+
       if (Object.keys(timings).length > 0) {
-        let currentMinutes = now.getHours() * 60 + now.getMinutes();
-        let currentSeconds = now.getSeconds();
-        let inIqamaWindow = false;
+        let currentTotalSecs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
 
         for (let p of PRAYERS) {
           if (p.key === "Sunrise") continue;
           let [ah, am] = (timings[p.key] || "0:0").split(':').map(Number);
-          let adhanTotalMins = ah * 60 + am;
+          let adhanTotalSecs = ah * 3600 + am * 60;
           let delay = IQAMA_DELAYS[p.key] || 15;
-          let iqamaTotalMins = adhanTotalMins + delay;
+          let iqamaTotalSecs = adhanTotalSecs + (delay * 60);
+          let endPrayerSecs = iqamaTotalSecs + (15 * 60);
 
-          if (currentMinutes >= adhanTotalMins && currentMinutes < iqamaTotalMins) {
+          if (currentTotalSecs >= adhanTotalSecs && currentTotalSecs < iqamaTotalSecs) {
             inIqamaWindow = true;
-            let diffSecs = (iqamaTotalMins * 60) - (currentMinutes * 60 + currentSeconds);
+            let diffSecs = iqamaTotalSecs - currentTotalSecs;
             let remMin = Math.floor(diffSecs / 60);
             let remSec = diffSecs % 60;
             statusText = `⏳ باقي على إقامة صلاة ${p.name}: ${remMin} دقيقة و ${remSec} ثانية`;
@@ -422,11 +417,11 @@
             if (activeCard) activeCard.classList.add('active-prayer');
             break;
           } 
-          else if (currentMinutes >= iqamaTotalMins && currentMinutes < (iqamaTotalMins + 15)) {
+          else if (currentTotalSecs >= iqamaTotalSecs && currentTotalSecs < endPrayerSecs) {
             inIqamaWindow = true;
             isPrayingNow = true;
 
-            if (soundPlayedFor !== p.key && currentMinutes === iqamaTotalMins && currentSeconds < 10) {
+            if (soundPlayedFor !== p.key && (currentTotalSecs - iqamaTotalSecs) < 10) {
               announcePrayer(p.name);
               soundPlayedFor = p.key;
             }
@@ -437,7 +432,6 @@
         }
 
         if (!inIqamaWindow) {
-          statusText = "تقبل الله منا ومنكم صالح الأعمال";
           document.querySelectorAll('.card').forEach(c => c.classList.remove('active-prayer'));
           soundPlayedFor = "";
         }
@@ -472,7 +466,7 @@
     updateHeaderUI();
     setInterval(updateLogic, 1000);
     setInterval(loadSheetData, 15000);
-    setInterval(fetchAndCacheMonthTimes, 12 * 60 * 60 * 1000); // تحديث دوري للجدول كل 12 ساعة إذا توفر النت
+    setInterval(fetchAndCacheMonthTimes, 12 * 60 * 60 * 1000);
 
     updateLogic();
     loadSheetData();
