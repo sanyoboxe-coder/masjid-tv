@@ -48,7 +48,7 @@
       gap: 14px;
     }
 
-    /* Top Bar - تكبير الساعة واسم المسجد */
+    /* Top Bar */
     .top-header {
       display: flex;
       justify-content: space-between;
@@ -85,7 +85,7 @@
       letter-spacing: 2px;
     }
 
-    /* Hero Banner - تكبير العد التنازلي وحالة الأذان */
+    /* Hero Banner */
     .hero-banner {
       background: rgba(15, 23, 42, 0.88);
       border: 2px solid rgba(255, 215, 0, 0.4);
@@ -131,10 +131,10 @@
       color: #e2e8f0;
     }
 
-    /* Date Strip - تكبير التاريخ الهجري والميلادي */
+    /* Date Strip بالعربية بالكامل وبخط عريض */
     .date-bar {
       background: rgba(30, 41, 59, 0.85);
-      padding: 12px 30px;
+      padding: 14px 30px;
       border-radius: 14px;
       display: flex;
       justify-content: space-between;
@@ -143,19 +143,18 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     .date-hijri {
-      font-size: 1.9rem;
+      font-size: 2rem;
       font-weight: 900;
-      color: #f8fafc;
+      color: #facc15;
       letter-spacing: 0.5px;
     }
     .date-gregorian {
-      font-size: 1.6rem;
-      font-weight: bold;
-      color: #e2e8f0;
-      direction: ltr;
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: #ffffff;
     }
 
-    /* Grid - تكبير أرقام ومربعات الصلوات الـ 6 */
+    /* Grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -203,7 +202,7 @@
       text-shadow: 0 0 12px rgba(74, 222, 128, 0.4);
     }
 
-    /* Bottom Info Card - تكبير شريط الإعلانات */
+    /* Bottom Info Card */
     .announcement-box {
       background: rgba(2, 6, 23, 0.85);
       border: 2px solid rgba(255, 255, 255, 0.18);
@@ -259,7 +258,7 @@
 
     <div class="date-bar">
       <div class="date-hijri" id="hijriText">جاري التحميل...</div>
-      <div class="date-gregorian" id="gregorianText">Loading...</div>
+      <div class="date-gregorian" id="gregorianText">جاري التحميل...</div>
     </div>
 
     <div class="grid" id="prayerGrid"></div>
@@ -275,9 +274,9 @@
   </div>
 
   <script>
-    if (localStorage.getItem('cached_layout_big') !== 'v_big_font_elderly_1') {
+    if (localStorage.getItem('cached_layout_arabic_date') !== 'v_arabic_dates_only_1') {
       localStorage.clear();
-      localStorage.setItem('cached_layout_big', 'v_big_font_elderly_1');
+      localStorage.setItem('cached_layout_arabic_date', 'v_arabic_dates_only_1');
     }
 
     const SHEET_ID = "1u457jpdyZTBZoSbKV9BTX2SBTrodelKw7GIR-a3J-5A";
@@ -354,7 +353,7 @@
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
-      const cacheKey = `p_kenitra_big_${year}_${month}`;
+      const cacheKey = `p_kenitra_ar_date_${year}_${month}`;
 
       try {
         const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0`);
@@ -372,7 +371,7 @@
       const year = now.getFullYear();
       const month = now.getMonth() + 1;
       const day = now.getDate();
-      const cacheKey = `p_kenitra_big_${year}_${month}`;
+      const cacheKey = `p_kenitra_ar_date_${year}_${month}`;
 
       const raw = localStorage.getItem(cacheKey);
       if (raw) {
@@ -445,15 +444,18 @@
         applyTimingsForToday();
       }
 
+      // التاريخ الهجري بالعربية
       const hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
       }).format(now);
 
-      const gregorianAr = now.toLocaleDateString('ar-MA', { day: 'numeric', month: 'long', year: 'numeric' });
-      const gregorianFr = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      // التاريخ الميلادي بالعربية المغربية الفصحى
+      const gregorianAr = now.toLocaleDateString('ar-MA', { 
+        day: 'numeric', month: 'long', year: 'numeric' 
+      });
 
-      document.getElementById('hijriText').innerText = hijriDate;
-      document.getElementById('gregorianText').innerText = `${gregorianAr} | ${gregorianFr}`;
+      document.getElementById('hijriText').innerText = `${hijriDate} هـ`;
+      document.getElementById('gregorianText').innerText = `الموافق لـ ${gregorianAr} م`;
 
       if (Object.keys(timings).length === 0) return;
 
