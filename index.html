@@ -199,11 +199,13 @@
     const SHEET_ID = "1u457jpdyZTBZoSbKV9BTX2SBTrodelKw7GIR-a3J-5A";
     const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 
-    let masjidName = "مسجد أبو هريرة";
-    let imamName = "بوسلهام";
-    let announcement = "يرجى تسوية الصفوف وإطفاء الهواتف النقالة";
+    let masjidName = localStorage.getItem('cached_masjid') || "مسجد أبو هريرة";
+    let imamName = localStorage.getItem('cached_imam') || "بوسلهام";
+    let announcement = localStorage.getItem('cached_announcement') || "يرجى تسوية الصفوف وإطفاء الهواتف النقالة";
+    
     let timings = {};
     let soundPlayedFor = "";
+    let currentLoadedDay = -1;
 
     const IQAMA_DELAYS = { Fajr: 20, Dhuhr: 15, Asr: 15, Maghrib: 10, Isha: 15 };
 
@@ -246,12 +248,24 @@
       }
     }
 
+    function cleanTime(tStr) {
+      if (!tStr) return "--:--";
+      return tStr.split(' ')[0].substring(0, 5);
+    }
+
     function addMinutes(timeStr, mins) {
-      if (!timeStr) return "--:--";
+      if (!timeStr || timeStr === "--:--") return "--:--";
       let [h, m] = timeStr.split(':').map(Number);
       let date = new Date();
       date.setHours(h, m + mins, 0);
       return String(date.getHours()).padStart(2, '0') + ":" + String(date.getMinutes()).padStart(2, '0');
+    }
+
+    function updateHeaderUI() {
+      document.getElementById('dispMasjid').innerText = masjidName;
+      let cleanImam = imamName.replace(/الشيخ/g, '').replace(/^إمام\s*المسجد\s*:?/i, '').replace(/^الإمام\s*:?/i, '').trim();
+      document.getElementById('dispImam').innerText = "إمام المسجد: " + cleanImam;
+      document.getElementById('dispAnnouncement').innerText = announcement;
     }
 
     async function loadSheetData() {
@@ -267,32 +281,89 @@
             const val = parts[1];
             if (key.includes('masjid') || key.includes('مسجد')) {
               masjidName = val;
+              localStorage.setItem('cached_masjid', val);
             } else if (key.includes('imam') || key.includes('إمام')) {
               imamName = val;
+              localStorage.setItem('cached_imam', val);
             } else if (key.includes('announcement') || key.includes('اعلان') || key.includes('ملاحظة')) {
               announcement = val;
+              localStorage.setItem('cached_announcement', val);
             }
           }
         });
-
-        document.getElementById('dispMasjid').innerText = masjidName;
-        let cleanImam = imamName.replace(/الشيخ/g, '').replace(/^إمام\s*المسجد\s*:?/i, '').replace(/^الإمام\s*:?/i, '').trim();
-        document.getElementById('dispImam').innerText = "إمام المسجد: " + cleanImam;
-        document.getElementById('dispAnnouncement').innerText = announcement;
+        updateHeaderUI();
       } catch (e) {
-        console.error("خطأ قراءة الجدول", e);
+        // فـ حالة غياب الإنترنت، يتم الاعتماد على آخر بيانات محفوظة
+        updateHeaderUI();
       }
     }
 
-    async function loadPrayerTimes() {
+    // جلب مواقيت الشهر كامل وتخزينها في ذاكرة التلفاز
+    async function fetchAndCacheMonthTimes() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const cacheKey = `prayer_month_${year}_${month}`;
+
       try {
-        const res = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=3");
+        const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=Kenitra&country=Morocco&method=3`);
         const data = await res.json();
-        timings = data.data.timings;
-        renderGrid();
+        if (data.code === 200 && data.data) {
+          localStorage.setItem(cacheKey, JSON.stringify(data.data));
+        }
       } catch (e) {
-        console.error("خطأ جلب المواقيت", e);
+        console.log("الإنترنت غير متصل حالياً، سيتم الاعتماد على الذاكرة المخزنة.");
       }
+
+      applyTimingsForToday();
+    }
+
+    // استخراج مواقيت اليوم الحالي من الذاكرة المخزنة
+    function applyTimingsForToday() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      const cacheKey = `prayer_month_${year}_${month}`;
+
+      const raw = localStorage.getItem(cacheKey);
+      if (raw) {
+        try {
+          const monthData = JSON.parse(raw);
+          const todayEntry = monthData[day - 1];
+          if (todayEntry && todayEntry.timings) {
+            timings = {
+              Fajr: cleanTime(todayEntry.timings.Fajr),
+              Sunrise: cleanTime(todayEntry.timings.Sunrise),
+              Dhuhr: cleanTime(todayEntry.timings.Dhuhr),
+              Asr: cleanTime(todayEntry.timings.Asr),
+              Maghrib: cleanTime(todayEntry.timings.Maghrib),
+              Isha: cleanTime(todayEntry.timings.Isha)
+            };
+            currentLoadedDay = day;
+            renderGrid();
+            return;
+          }
+        } catch (e) {}
+      }
+
+      // احتياط: محاولة طلب اليوم الحالي فقط إذا تعذر جلب الشهر
+      fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=3")
+        .then(r => r.json())
+        .then(d => {
+          if (d.data && d.data.timings) {
+            timings = {
+              Fajr: cleanTime(d.data.timings.Fajr),
+              Sunrise: cleanTime(d.data.timings.Sunrise),
+              Dhuhr: cleanTime(d.data.timings.Dhuhr),
+              Asr: cleanTime(d.data.timings.Asr),
+              Maghrib: cleanTime(d.data.timings.Maghrib),
+              Isha: cleanTime(d.data.timings.Isha)
+            };
+            currentLoadedDay = day;
+            renderGrid();
+          }
+        }).catch(err => console.log(err));
     }
 
     function renderGrid() {
@@ -318,6 +389,11 @@
     function updateLogic() {
       const now = new Date();
       document.getElementById('liveClock').innerText = now.toTimeString().split(' ')[0];
+
+      // فحص تلقائي عند منتصف الليل لتحديث مواقيت اليوم الجديد حتى بدون إنترنت
+      if (now.getDate() !== currentLoadedDay) {
+        applyTimingsForToday();
+      }
 
       let statusText = "الصلاة القادمة: جاري الحساب...";
       let isPrayingNow = false;
@@ -393,12 +469,14 @@
       }
     }, { once: true });
 
+    updateHeaderUI();
     setInterval(updateLogic, 1000);
     setInterval(loadSheetData, 15000);
+    setInterval(fetchAndCacheMonthTimes, 12 * 60 * 60 * 1000); // تحديث دوري للجدول كل 12 ساعة إذا توفر النت
 
     updateLogic();
     loadSheetData();
-    loadPrayerTimes();
+    fetchAndCacheMonthTimes();
   </script>
 </body>
 </html>
