@@ -20,7 +20,7 @@
       justify-content: space-between;
     }
 
-    /* الشريط العلوي على طراز مواقيت */
+    /* الشريط العلوي */
     .top-bar {
       background: rgba(10, 25, 55, 0.85);
       backdrop-filter: blur(8px);
@@ -40,20 +40,25 @@
     .top-bar .status-badge {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 1rem;
+      gap: 10px;
+      font-size: 1.05rem;
       color: #93c5fd;
     }
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       background-color: #22c55e;
       border-radius: 50%;
       display: inline-block;
       box-shadow: 0 0 8px #22c55e;
+      transition: background-color 0.3s;
+    }
+    .status-dot.offline {
+      background-color: #f97316 !important;
+      box-shadow: 0 0 8px #f97316 !important;
     }
 
-    /* المنطقة الوسطى: الجمعة - الساعة الرئيسية - الشروق */
+    /* المنطقة الوسطى */
     .center-section {
       display: flex;
       align-items: center;
@@ -80,7 +85,7 @@
       letter-spacing: 1px;
     }
 
-    /* الصندوق الأزرق الرئيسي للساعة */
+    /* صندوق الساعة والتاريخ */
     .clock-card {
       background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
       border-radius: 20px;
@@ -88,6 +93,7 @@
       text-align: center;
       box-shadow: 0 10px 25px rgba(29, 78, 216, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.25);
+      min-width: 480px;
     }
     .main-clock {
       font-size: 5rem;
@@ -98,13 +104,15 @@
       letter-spacing: 3px;
     }
     .main-date {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       font-weight: bold;
-      color: #bfdbfe;
+      color: #facc15;
       margin-top: 8px;
+      transition: opacity 0.4s ease;
+      min-height: 35px;
     }
 
-    /* شريط التنبيه والعد التنازلي */
+    /* شريط العد التنازلي */
     .countdown-bar {
       margin: 0 auto;
       background: rgba(15, 23, 42, 0.75);
@@ -129,7 +137,7 @@
       direction: ltr;
     }
 
-    /* أشرطة الصلوات الخمس السفلية (مثل مواقيت) */
+    /* أشرطة الصلوات الخمس */
     .prayers-row {
       display: flex;
       justify-content: center;
@@ -174,11 +182,11 @@
       direction: ltr;
     }
 
-    /* شاشة الأذان الكاملة (كما في صورتك الثانية) */
+    /* شاشة الأذان */
     #adhanOverlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(rgba(7, 18, 48, 0.85), rgba(4, 10, 28, 0.95)),
+      background: linear-gradient(rgba(7, 18, 48, 0.85), rgba(4, 10, 28, 0.95)), 
                   url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
       background-size: cover;
       display: none;
@@ -197,10 +205,6 @@
       align-items: center;
       gap: 30px;
     }
-    .adhan-icon {
-      width: 90px;
-      height: 90px;
-    }
     .adhan-sub {
       font-size: 2.5rem;
       font-weight: 800;
@@ -210,7 +214,7 @@
 </head>
 <body>
 
-  <!-- شاشة الأذان التلقائية عند دخول الوقت -->
+  <!-- شاشة الأذان -->
   <div id="adhanOverlay">
     <div class="adhan-big-title">
       <span>🕌</span> الأذان <span>🕌</span>
@@ -221,12 +225,13 @@
   <!-- الشريط العلوي -->
   <div class="top-bar">
     <div class="title" id="dispMasjidTitle">مسجد أبي هريرة تجزئة أندلس القنيطرة - KENITRA</div>
-    <div class="status-badge">
-      <span class="status-dot"></span> متصل
+    <div class="status-badge" id="netStatusBadge">
+      <span class="status-dot" id="netDot"></span>
+      <span id="netStatusText">متصل</span>
     </div>
   </div>
 
-  <!-- المنطقة الوسطى: الجمعة - الساعة الكبيرة - الشروق -->
+  <!-- المنطقة الوسطى -->
   <div class="center-section">
     <div class="side-box">
       <div class="side-title">الجمعة</div>
@@ -251,7 +256,7 @@
     <span class="count-val" id="countdownVal">--:--:--</span>
   </div>
 
-  <!-- الصلوات الخمس بستايل مواقيت السليم -->
+  <!-- الصلوات الخمس -->
   <div class="prayers-row">
     <div class="p-card" id="card-Fajr">
       <div class="p-name">الفجر</div>
@@ -291,40 +296,130 @@
 
     let prayerTimings = {};
     let sunriseTime = "--:--";
+    let showHijri = false;
+    let cachedDay = -1;
+
+    // متابعة حالة الإنترنت وتحديث المؤشر فوراً
+    function checkNetworkState() {
+      const dot = document.getElementById('netDot');
+      const text = document.getElementById('netStatusText');
+      if (navigator.onLine) {
+        dot.classList.remove('offline');
+        text.innerText = "متصل";
+      } else {
+        dot.classList.add('offline');
+        text.innerText = "محلي (بدون نت)";
+      }
+    }
+    window.addEventListener('online', checkNetworkState);
+    window.addEventListener('offline', checkNetworkState);
+
+    // تبديل التاريخ بالتناوب كل 6 ثوانٍ
+    setInterval(() => {
+      showHijri = !showHijri;
+      const dateEl = document.getElementById('liveDate');
+      dateEl.style.opacity = '0';
+      setTimeout(() => {
+        updateDateText();
+        dateEl.style.opacity = '1';
+      }, 400);
+    }, 6000);
+
+    function updateDateText() {
+      const now = new Date();
+      const dateEl = document.getElementById('liveDate');
+      if (showHijri) {
+        const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        }).format(now);
+        dateEl.innerText = `${hijri} هـ`;
+        dateEl.style.color = '#facc15';
+      } else {
+        const gregorian = now.toLocaleDateString('ar-MA', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+        dateEl.innerText = `${gregorian} م`;
+        dateEl.style.color = '#bfdbfe';
+      }
+    }
 
     function cleanT(str) {
       if (!str) return "--:--";
       return str.split(' ')[0].substring(0, 5);
     }
 
-    async function getKenitraPrayers() {
+    // جلب وحفظ شهر كامل فـ التلفاز للأوفلاين
+    async function syncMonthPrayers() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth() + 1;
+      const storageKey = `masjid_times_${y}_${m}`;
+
+      try {
+        const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${y}/${m}?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0`);
+        const json = await res.json();
+        if (json.data && Array.isArray(json.data)) {
+          localStorage.setItem(storageKey, JSON.stringify(json.data));
+        }
+      } catch (e) {
+        // إذا انقطعت النت يستمر في العمل
+      }
+      applyDayFromCache();
+    }
+
+    function applyDayFromCache() {
       const now = new Date();
       const y = now.getFullYear();
       const m = now.getMonth() + 1;
       const d = now.getDate();
+      const storageKey = `masjid_times_${y}_${m}`;
 
-      try {
-        const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${y}/${m}?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0`);
-        const result = await res.json();
-        if (result.data && result.data[d - 1]) {
-          const t = result.data[d - 1].timings;
-          prayerTimings = {
-            Fajr: cleanT(t.Fajr),
-            Dhuhr: cleanT(t.Dhuhr),
-            Asr: cleanT(t.Asr),
-            Maghrib: cleanT(t.Maghrib),
-            Isha: cleanT(t.Isha)
-          };
-          sunriseTime = cleanT(t.Sunrise);
-          document.getElementById('dispSunrise').innerText = sunriseTime;
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        try {
+          const days = JSON.parse(stored);
+          const today = days[d - 1];
+          if (today && today.timings) {
+            const t = today.timings;
+            prayerTimings = {
+              Fajr: cleanT(t.Fajr),
+              Dhuhr: cleanT(t.Dhuhr),
+              Asr: cleanT(t.Asr),
+              Maghrib: cleanT(t.Maghrib),
+              Isha: cleanT(t.Isha)
+            };
+            sunriseTime = cleanT(t.Sunrise);
+            document.getElementById('dispSunrise').innerText = sunriseTime;
 
-          PRAYER_LIST.forEach(p => {
-            document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
-          });
-        }
-      } catch (e) {
-        console.error(e);
+            PRAYER_LIST.forEach(p => {
+              document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
+            });
+            cachedDay = d;
+            return;
+          }
+        } catch (e) {}
       }
+
+      // إذا لم يجد الشهر في الذاكرة يحاول الاتصال المباشر
+      fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0")
+        .then(r => r.json())
+        .then(res => {
+          if (res.data && res.data.timings) {
+            const t = res.data.timings;
+            prayerTimings = {
+              Fajr: cleanT(t.Fajr),
+              Dhuhr: cleanT(t.Dhuhr),
+              Asr: cleanT(t.Asr),
+              Maghrib: cleanT(t.Maghrib),
+              Isha: cleanT(t.Isha)
+            };
+            sunriseTime = cleanT(t.Sunrise);
+            document.getElementById('dispSunrise').innerText = sunriseTime;
+            PRAYER_LIST.forEach(p => {
+              document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
+            });
+          }
+        }).catch(err => {});
     }
 
     function updateTick() {
@@ -334,9 +429,9 @@
       const s = String(now.getSeconds()).padStart(2, '0');
       document.getElementById('liveClock').innerText = `${h}:${m}:${s}`;
 
-      // اليوم والتاريخ الميلادي
-      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-      document.getElementById('liveDate').innerText = now.toLocaleDateString('ar-MA', options);
+      if (now.getDate() !== cachedDay) {
+        applyDayFromCache();
+      }
 
       if (Object.keys(prayerTimings).length === 0) return;
 
@@ -345,12 +440,10 @@
       let diff = 0;
       let inAdhan = false;
 
-      // فحص الأذان والعد التنازلي
       for (let p of PRAYER_LIST) {
         let [ph, pm] = (prayerTimings[p.key] || "0:0").split(':').map(Number);
         let pSecs = ph * 3600 + pm * 60;
 
-        // حالة وقت الأذان (لمدة 3 دقائق)
         if (curSecs >= pSecs && curSecs < pSecs + 180) {
           inAdhan = true;
           document.getElementById('adhanOverlay').style.display = 'flex';
@@ -369,12 +462,11 @@
       }
 
       if (!nextP) {
-        nextP = PRAYER_LIST[0]; // الفجر غداً
+        nextP = PRAYER_LIST[0];
         let [fh, fm] = (prayerTimings["Fajr"] || "0:0").split(':').map(Number);
         diff = (86400 - curSecs) + (fh * 3600 + fm * 60);
       }
 
-      // تحديد الكارت المفعل
       document.querySelectorAll('.p-card').forEach(c => c.classList.remove('active-p'));
       if (nextP) {
         document.getElementById(`card-${nextP.key}`).classList.add('active-p');
@@ -387,9 +479,11 @@
       }
     }
 
-    getKenitraPrayers();
+    checkNetworkState();
+    updateDateText();
+    syncMonthPrayers();
     setInterval(updateTick, 1000);
-    setInterval(getKenitraPrayers, 12 * 3600 * 1000);
+    setInterval(syncMonthPrayers, 12 * 3600 * 1000);
   </script>
 </body>
 </html>
