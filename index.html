@@ -20,7 +20,7 @@
       justify-content: space-between;
     }
 
-    /* الشريط العلوي مع درجة الحرارة */
+    /* الشريط العلوي */
     .top-bar {
       background: rgba(10, 25, 55, 0.85);
       backdrop-filter: blur(8px);
@@ -75,7 +75,7 @@
       box-shadow: 0 0 8px #f97316 !important;
     }
 
-    /* المنطقة الوسطى: الجمعة - الساعة - الشروق */
+    /* المنطقة الوسطى */
     .center-section {
       display: flex;
       align-items: center;
@@ -102,7 +102,7 @@
       letter-spacing: 1px;
     }
 
-    /* صندوق الساعة والتاريخ */
+    /* صندوق الساعة */
     .clock-card {
       background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
       border-radius: 20px;
@@ -129,7 +129,7 @@
       min-height: 32px;
     }
 
-    /* المنطقة المضافة: شريط الأذكار + العد التنازلي */
+    /* شريط الأذكار والعد التنازلي */
     .middle-info-bar {
       display: flex;
       align-items: center;
@@ -140,7 +140,7 @@
     }
 
     .dhikr-box {
-      flex: 2;
+      flex: 1.8;
       background: rgba(15, 23, 42, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.22);
       border-radius: 25px;
@@ -158,7 +158,7 @@
     }
 
     .countdown-bar {
-      flex: 1;
+      flex: 1.2;
       background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 25px;
@@ -177,12 +177,12 @@
     }
     .countdown-bar .count-val {
       font-family: monospace;
-      font-size: 1.7rem;
+      font-size: 1.8rem;
       color: #38bdf8;
       direction: ltr;
     }
 
-    /* أشرطة الصلوات الخمس */
+    /* الصلوات الخمس */
     .prayers-row {
       display: flex;
       justify-content: center;
@@ -227,85 +227,192 @@
       direction: ltr;
     }
 
-    /* حركة وميض الأذان (Clignotement) */
+    /* وميض الأذان */
     @keyframes blinkAdhan {
       0% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 25px rgba(250, 204, 21, 0.8)); }
-      50% { opacity: 0.25; transform: scale(0.97); filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.2)); }
+      50% { opacity: 0.3; transform: scale(0.97); filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.2)); }
       100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 25px rgba(250, 204, 21, 0.8)); }
     }
 
-    /* شاشة الأذان الكاملة مع العد التنازلي للإقامة */
     #adhanOverlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(rgba(7, 18, 48, 0.88), rgba(4, 10, 28, 0.95)), 
+      background: linear-gradient(rgba(7, 18, 48, 0.90), rgba(4, 10, 28, 0.96)), 
                   url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
       background-size: cover;
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 999;
+      z-index: 998;
     }
     .adhan-big-title {
       font-size: 7.5rem;
       font-weight: 900;
       color: #facc15;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
       gap: 25px;
-      animation: blinkAdhan 1.3s infinite ease-in-out;
+      animation: blinkAdhan 1.2s infinite ease-in-out;
     }
     .adhan-sub {
-      font-size: 2.8rem;
+      font-size: 3rem;
       font-weight: 800;
       color: #ffffff;
-      margin-bottom: 25px;
       text-shadow: 0 2px 10px rgba(0,0,0,0.8);
     }
-    .adhan-iqama-box {
-      background: rgba(15, 23, 42, 0.8);
-      border: 2px solid rgba(74, 222, 128, 0.5);
-      border-radius: 25px;
-      padding: 15px 45px;
-      display: flex;
+
+    /* شاشة العد التنازلي للإقامة */
+    #iqamaCountdownOverlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(rgba(5, 12, 30, 0.92), rgba(2, 6, 18, 0.97)), 
+                  url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: none;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 8px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      text-align: center;
+      z-index: 999;
+      padding: 30px;
     }
-    .adhan-iqama-label {
-      font-size: 1.8rem;
-      font-weight: bold;
+    .iqama-screen-label {
+      font-size: 3.8rem;
+      font-weight: 900;
       color: #cbd5e1;
+      margin-bottom: 20px;
     }
-    .adhan-iqama-countdown {
-      font-size: 5rem;
+    .iqama-big-counter {
+      font-size: 9.5rem;
       font-weight: 900;
       font-family: monospace;
       color: #4ade80;
       direction: ltr;
-      letter-spacing: 3px;
-      text-shadow: 0 0 20px rgba(74, 222, 128, 0.7);
+      letter-spacing: 4px;
+      text-shadow: 0 0 40px rgba(74, 222, 128, 0.8);
+      background: rgba(15, 23, 42, 0.85);
+      border: 3px solid rgba(74, 222, 128, 0.5);
+      border-radius: 35px;
+      padding: 10px 70px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+    }
+    .iqama-notice {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #facc15;
+      margin-top: 35px;
+    }
+
+    .iqama-now-title {
+      font-size: 6rem;
+      font-weight: 900;
+      color: #facc15;
+      margin-bottom: 25px;
+      text-shadow: 0 0 30px rgba(250, 204, 21, 0.7);
+    }
+    .iqama-now-sub {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.7;
+    }
+    .phone-warning {
+      font-size: 2.2rem;
+      color: #f87171;
+      margin-top: 30px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* شاشة أذكار ما بعد الصلاة */
+    #afterPrayerOverlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(rgba(5, 12, 28, 0.92), rgba(3, 8, 20, 0.96)), 
+                  url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      z-index: 1000;
+      padding: 40px 60px;
+    }
+    .after-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #facc15;
+      border-bottom: 2px solid rgba(250, 204, 21, 0.4);
+      padding-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    .after-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      padding: 35px 50px;
+      max-width: 1200px;
+      width: 100%;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+    }
+    .after-text {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.8;
+      transition: opacity 0.5s ease;
+    }
+    .after-footer {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #93c5fd;
     }
   </style>
 </head>
 <body>
 
-  <!-- شاشة الأذان الوامضة + عداد الإقامة -->
+  <!-- 1. وميض الأذان -->
   <div id="adhanOverlay">
     <div class="adhan-big-title">
       <span>🕌</span> الأذان <span>🕌</span>
     </div>
     <div class="adhan-sub" id="adhanPrayerSub">حان الآن موعد أذان الصلاة</div>
-    <div class="adhan-iqama-box">
-      <div class="adhan-iqama-label" id="adhanIqamaLabel">باقي على الإقامة</div>
-      <div class="adhan-iqama-countdown" id="adhanIqamaTimer">00:00</div>
+  </div>
+
+  <!-- 2. العد التنازلي للإقامة / إقامة الصلاة -->
+  <div id="iqamaCountdownOverlay">
+    <div id="iqamaCountingBox">
+      <div class="iqama-screen-label" id="iqamaScreenTitle">باقي على الإقامة</div>
+      <div class="iqama-big-counter" id="iqamaScreenTimer">00:00</div>
+      <div class="iqama-notice">يرجى الاستعداد للصلاة وترديد الأذكار</div>
+    </div>
+    
+    <div id="iqamaDoneBox" style="display: none; flex-direction: column; align-items: center;">
+      <div class="iqama-now-title">أُقِيمَتِ الصَّلَاةُ</div>
+      <div class="iqama-now-sub">اسْتَوُوا وَاعْتَدِلُوا وَتَرَاصُّوا رَحِمَكُمُ اللهُ</div>
+      <div class="phone-warning">
+        <span>📴</span> يرجى التأكد من إغلاق الهواتف النقالة
+      </div>
     </div>
   </div>
 
-  <!-- الشريط العلوي -->
+  <!-- 3. أذكار ما بعد الصلاة -->
+  <div id="afterPrayerOverlay">
+    <div class="after-title">أذكار ما بعد الصلاة المأثورة</div>
+    <div class="after-card">
+      <div class="after-text" id="postPrayerDhikrText">
+        «أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، اللَّهُمَّ أَنْتَ السَّلاَمُ وَمِنْكَ السَّلاَمُ، تَبَارَكْتَ يَا ذَا الْجَلاَلِ وَالإِكْرَامِ»
+      </div>
+    </div>
+    <div class="after-footer">تقبل الله صلاتكم وصالح أعمالكم</div>
+  </div>
+
+  <!-- 4. الشاشة الرئيسية -->
   <div class="top-bar">
     <div class="title" id="dispMasjidTitle">مسجد أبي هريرة تجزئة أندلس القنيطرة - KENITRA</div>
     <div class="top-info-left">
@@ -317,7 +424,6 @@
     </div>
   </div>
 
-  <!-- المنطقة الوسطى: الجمعة - الساعة - الشروق -->
   <div class="center-section">
     <div class="side-box">
       <div class="side-title">الجمعة</div>
@@ -335,7 +441,6 @@
     </div>
   </div>
 
-  <!-- المنطقة المضافة: شريط الأذكار + العد التنازلي -->
   <div class="middle-info-bar">
     <div class="dhikr-box" id="dhikrText">
       عن أبي هريرة رضي الله عنه قال: قال رسول الله ﷺ: «كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ ثَقِيلَتَانِ فِي الْمِيزَانِ: سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»
@@ -347,7 +452,6 @@
     </div>
   </div>
 
-  <!-- الصلوات الخمس -->
   <div class="prayers-row">
     <div class="p-card" id="card-Fajr">
       <div class="p-name">الفجر</div>
@@ -395,12 +499,20 @@
     ];
     let dhikrIndex = 0;
 
+    const POST_PRAYER_DHIKR = [
+      "«أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، اللَّهُمَّ أَنْتَ السَّلاَمُ وَمِنْكَ السَّلاَمُ، تَبَارَكْتَ يَا ذَا الْجَلاَلِ وَالإِكْرَامِ»",
+      "«لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، اللَّهُمَّ لاَ مَانِعَ لِمَا أَعْطَيْتَ، وَلاَ مُعْطِيَ لِمَا مَنَعْتَ، وَلاَ يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ»",
+      "«سُبْحَانَ اللهِ (33) ، الْحَمْدُ للهِ (33) ، اللهُ أَكْبَرُ (33) تَمَامَ الْمِائَةِ: لاَ إِلَهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ»",
+      "﴿اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ﴾ [آية الكرسي]",
+      "«اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ، وَشُكْرِكَ، وَحُسْنِ عِبَادَتِكَ»"
+    ];
+    let postDhikrIndex = 0;
+
     let prayerTimings = {};
     let sunriseTime = "--:--";
     let showHijri = false;
     let cachedDay = -1;
 
-    // تدوير الأذكار بسلاسة كل 15 ثانية
     setInterval(() => {
       dhikrIndex = (dhikrIndex + 1) % DHIKR_LIST.length;
       const el = document.getElementById('dhikrText');
@@ -411,7 +523,18 @@
       }, 500);
     }, 15000);
 
-    // مراقبة الاتصال
+    setInterval(() => {
+      postDhikrIndex = (postDhikrIndex + 1) % POST_PRAYER_DHIKR.length;
+      const el = document.getElementById('postPrayerDhikrText');
+      if (el) {
+        el.style.opacity = '0';
+        setTimeout(() => {
+          el.innerText = POST_PRAYER_DHIKR[postDhikrIndex];
+          el.style.opacity = '1';
+        }, 500);
+      }
+    }, 15000);
+
     function checkNetworkState() {
       const dot = document.getElementById('netDot');
       const text = document.getElementById('netStatusText');
@@ -426,7 +549,6 @@
     window.addEventListener('online', checkNetworkState);
     window.addEventListener('offline', checkNetworkState);
 
-    // تبديل التاريخ بالتناوب كل 6 ثوانٍ
     setInterval(() => {
       showHijri = !showHijri;
       const dateEl = document.getElementById('liveDate');
@@ -455,14 +577,13 @@
       }
     }
 
-    // جلب درجة حرارة القنيطرة وتخزينها
     async function fetchWeatherKenitra() {
       try {
         const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=34.261&longitude=-6.5802&current=temperature_2m");
         const data = await res.json();
         if (data.current && data.current.temperature_2m !== undefined) {
           const temp = Math.round(data.current.temperature_2m);
-          document.getElementById('tempDisplay').innerText = `🌤️ ${temp}°C`;
+          document.getElementById('tempDisplay').innerText = `🌤️️ ${temp}°C`;
           localStorage.setItem('cached_kenitra_temp', `${temp}`);
         }
       } catch (e) {
@@ -478,7 +599,6 @@
       return str.split(' ')[0].substring(0, 5);
     }
 
-    // جلب وتخزين مواقيت الشهر أوفلاين
     async function syncMonthPrayers() {
       const now = new Date();
       const y = now.getFullYear();
@@ -565,36 +685,85 @@
       const curSecs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
       let nextP = null;
       let diff = 0;
-      let isBetweenAdhanAndIqama = false;
+      let inSpecialMode = false;
 
-      // فحص الأذان والإقامة
+      const adhanOverlay = document.getElementById('adhanOverlay');
+      const iqamaOverlay = document.getElementById('iqamaCountdownOverlay');
+      const iqamaCountingBox = document.getElementById('iqamaCountingBox');
+      const iqamaDoneBox = document.getElementById('iqamaDoneBox');
+      const afterPrayerOverlay = document.getElementById('afterPrayerOverlay');
+
       for (let p of PRAYER_LIST) {
         let [ph, pm] = (prayerTimings[p.key] || "0:0").split(':').map(Number);
         let adhanSecs = ph * 3600 + pm * 60;
         let delaySecs = (p.delay || 15) * 60;
         let iqamaSecs = adhanSecs + delaySecs;
+        let iqamaEndSecs = iqamaSecs + 120;
 
-        // حالة وقت الأذان وبداية العد التنازلي للإقامة
-        if (curSecs >= adhanSecs && curSecs < iqamaSecs) {
-          isBetweenAdhanAndIqama = true;
-          let remainingIqama = iqamaSecs - curSecs;
-          let remM = Math.floor(remainingIqama / 60);
-          let remS = remainingIqama % 60;
-          let formattedTime = `${String(remM).padStart(2, '0')}:${String(remS).padStart(2, '0')}`;
+        let prayerDurationMinutes = 10;
+        if (p.key === 'Maghrib') prayerDurationMinutes = 7;
+        else if (p.key === 'Dhuhr' || p.key === 'Asr') prayerDurationMinutes = 8.5;
+        else if (p.key === 'Fajr' || p.key === 'Isha') prayerDurationMinutes = 10;
 
-          // إظهار شاشة الأذان الكبيرة الوامضة
-          document.getElementById('adhanOverlay').style.display = 'flex';
+        let prayerDuration = prayerDurationMinutes * 60;
+        let afterPrayerStart = iqamaSecs + prayerDuration;
+        let afterPrayerEnd = afterPrayerStart + (7 * 60);
+
+        // 1. وميض الأذان
+        if (curSecs >= adhanSecs && curSecs < adhanSecs + 60) {
+          inSpecialMode = true;
+          adhanOverlay.style.display = 'flex';
+          iqamaOverlay.style.display = 'none';
+          afterPrayerOverlay.style.display = 'none';
           document.getElementById('adhanPrayerSub').innerText = `حان الآن موعد أذان صلاة ${p.nameAr}`;
-          document.getElementById('adhanIqamaLabel').innerText = `باقي على إقامة صلاة ${p.nameAr}`;
-          document.getElementById('adhanIqamaTimer').innerText = formattedTime;
+          break;
+        }
 
-          // تحديث الشريط الرئيسي في نفس الوقت
-          document.getElementById('countdownLabel').innerText = `باقي على الإقامة`;
-          document.getElementById('countdownVal').innerText = formattedTime;
+        // 2. عداد الإقامة
+        else if (curSecs >= adhanSecs + 60 && curSecs < iqamaSecs) {
+          inSpecialMode = true;
+          adhanOverlay.style.display = 'none';
+          iqamaOverlay.style.display = 'flex';
+          afterPrayerOverlay.style.display = 'none';
+          iqamaCountingBox.style.display = 'block';
+          iqamaDoneBox.style.display = 'none';
 
-          // تفعيل كارت الصلاة الحالية
-          document.querySelectorAll('.p-card').forEach(c => c.classList.remove('active-p'));
-          document.getElementById(`card-${p.key}`).classList.add('active-p');
+          let rem = iqamaSecs - curSecs;
+          let rm = Math.floor(rem / 60);
+          let rs = rem % 60;
+          document.getElementById('iqamaScreenTitle').innerText = `باقي على إقامة صلاة ${p.nameAr}`;
+          document.getElementById('iqamaScreenTimer').innerText = `${String(rm).padStart(2, '0')}:${String(rs).padStart(2, '0')}`;
+          break;
+        }
+
+        // 3. أقيمت الصلاة
+        else if (curSecs >= iqamaSecs && curSecs < iqamaEndSecs) {
+          inSpecialMode = true;
+          adhanOverlay.style.display = 'none';
+          iqamaOverlay.style.display = 'flex';
+          afterPrayerOverlay.style.display = 'none';
+          iqamaCountingBox.style.display = 'none';
+          iqamaDoneBox.style.display = 'flex';
+          break;
+        }
+
+        // 4. وقت الصلاة (شاشة هادئة)
+        else if (curSecs >= iqamaEndSecs && curSecs < afterPrayerStart) {
+          inSpecialMode = true;
+          adhanOverlay.style.display = 'none';
+          iqamaOverlay.style.display = 'flex';
+          afterPrayerOverlay.style.display = 'none';
+          iqamaCountingBox.style.display = 'none';
+          iqamaDoneBox.style.display = 'none';
+          break;
+        }
+
+        // 5. أذكار ما بعد الصلاة
+        else if (curSecs >= afterPrayerStart && curSecs < afterPrayerEnd) {
+          inSpecialMode = true;
+          adhanOverlay.style.display = 'none';
+          iqamaOverlay.style.display = 'none';
+          afterPrayerOverlay.style.display = 'flex';
           break;
         }
 
@@ -604,12 +773,14 @@
         }
       }
 
-      // إذا انتهت فترة ما بين الأذان والإقامة تُغلق شاشة الأذان تلقائياً
-      if (!isBetweenAdhanAndIqama) {
-        document.getElementById('adhanOverlay').style.display = 'none';
+      // الرجوع للشاشة الرئيسية
+      if (!inSpecialMode) {
+        adhanOverlay.style.display = 'none';
+        iqamaOverlay.style.display = 'none';
+        afterPrayerOverlay.style.display = 'none';
 
         if (!nextP) {
-          nextP = PRAYER_LIST[0]; // الفجر غداً
+          nextP = PRAYER_LIST[0];
           let [fh, fm] = (prayerTimings["Fajr"] || "0:0").split(':').map(Number);
           diff = (86400 - curSecs) + (fh * 3600 + fm * 60);
         }
