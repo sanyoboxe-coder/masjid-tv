@@ -3,596 +3,393 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>شاشة مسجد ابي هريرة - القنيطرة</title>
+  <title>مسجد أبي هريرة - القنيطرة</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: linear-gradient(rgba(10, 16, 30, 0.35), rgba(5, 9, 18, 0.45)), 
+      background: linear-gradient(rgba(8, 20, 48, 0.45), rgba(5, 12, 30, 0.60)), 
                   url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #ffffff;
-      font-family: system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 15px 25px;
-      overflow-x: hidden;
     }
 
-    body.praying-mode {
-      background: #050811 !important;
-    }
-    body.praying-mode .tv-container {
-      display: none !important;
-    }
-    #prayerOverlay {
-      display: none;
-      min-height: 100vh;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 30px;
-    }
-    body.praying-mode #prayerOverlay {
-      display: flex !important;
-    }
-
-    .tv-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .top-header {
+    /* الشريط العلوي على طراز مواقيت */
+    .top-bar {
+      background: rgba(10, 25, 55, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 10px 25px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 3px solid rgba(255, 215, 0, 0.35);
-      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 1.3rem;
+      font-weight: 700;
     }
-    .masjid-imam-group {
-      display: flex;
-      align-items: center;
-      gap: 25px;
-    }
-    .masjid-title {
-      font-size: 3.2rem;
-      font-weight: 900;
-      color: #f6e05e;
-      text-shadow: 0 3px 12px rgba(0,0,0,0.6);
-    }
-    .imam-badge {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #ffffff;
-      background: rgba(16, 185, 129, 0.3);
-      padding: 8px 22px;
-      border-radius: 12px;
-      border: 2px solid #10b981;
-    }
-    .live-clock {
-      font-size: 5rem;
-      font-weight: 900;
-      color: #38bdf8;
-      font-family: monospace;
-      text-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
-      letter-spacing: 2px;
-    }
-
-    .hero-banner {
-      background: rgba(15, 23, 42, 0.88);
-      border: 2px solid rgba(255, 215, 0, 0.4);
-      border-radius: 18px;
-      padding: 15px 30px;
-      display: grid;
-      grid-template-columns: 1.3fr 2fr 1.1fr;
-      align-items: center;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      text-align: center;
-    }
-    .hero-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .hero-label {
+    .top-bar .title {
       font-size: 1.5rem;
-      font-weight: bold;
-      color: #cbd5e1;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+    .top-bar .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1rem;
+      color: #93c5fd;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    /* المنطقة الوسطى: الجمعة - الساعة الرئيسية - الشروق */
+    .center-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 10px 40px;
+      width: 100%;
+    }
+
+    .side-box {
+      text-align: center;
+      min-width: 170px;
+    }
+    .side-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #ffffff;
       margin-bottom: 4px;
     }
-    .hero-next-prayer {
-      font-size: 3.6rem;
-      font-weight: 900;
-      color: #facc15;
-      text-shadow: 0 2px 15px rgba(250, 204, 21, 0.4);
-    }
-    .hero-countdown {
-      font-size: 4.8rem;
-      font-weight: 900;
-      font-family: monospace;
-      color: #ffffff;
-      direction: ltr;
-      letter-spacing: 3px;
-      text-shadow: 0 0 25px rgba(250, 204, 21, 0.6);
-    }
-    .hero-location {
-      font-size: 2.2rem;
-      font-weight: 900;
-      color: #e2e8f0;
-    }
-
-    .date-bar {
-      background: rgba(30, 41, 59, 0.9);
-      padding: 15px 35px;
-      border-radius: 16px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      border: 2px solid rgba(255, 215, 0, 0.35);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-    }
-    .date-hijri {
-      font-size: 2.3rem;
-      font-weight: 900;
-      color: #facc15;
-      letter-spacing: 1px;
-    }
-    .date-separator {
-      font-size: 2rem;
-      color: rgba(255, 255, 255, 0.3);
-    }
-    .date-gregorian {
-      font-size: 2.1rem;
+    .side-time {
+      font-size: 2.8rem;
       font-weight: 900;
       color: #ffffff;
-      letter-spacing: 0.5px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px;
-    }
-    .card {
-      background: rgba(15, 23, 42, 0.85);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
-      padding: 16px 6px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-    }
-    .card.active-prayer {
-      border: 3px solid #facc15;
-      background: rgba(250, 204, 21, 0.25);
-      transform: scale(1.03);
-      box-shadow: 0 0 30px rgba(250, 204, 21, 0.4);
-    }
-    .card .name-ar { font-size: 2.2rem; font-weight: 900; color: #ffffff; }
-    .card .name-fr { font-size: 1.1rem; color: #94a3b8; margin-bottom: 6px; font-weight: bold; }
-    .card .adhan { 
-      font-size: 3.2rem; 
-      font-weight: 900; 
-      color: #ffffff; 
-      margin-bottom: 8px;
       font-family: monospace;
       letter-spacing: 1px;
     }
-    .card .iqama-box {
-      border-top: 2px dashed rgba(255, 255, 255, 0.3);
-      padding-top: 8px;
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: #cbd5e1;
-    }
-    .card .iqama-time {
-      font-size: 2.4rem;
-      font-weight: 900;
-      color: #4ade80;
-      display: block;
-      margin-top: 4px;
-      font-family: monospace;
-      text-shadow: 0 0 12px rgba(74, 222, 128, 0.4);
-    }
 
-    .announcement-box {
-      background: rgba(2, 6, 23, 0.88);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 14px;
-      padding: 12px 25px;
+    /* الصندوق الأزرق الرئيسي للساعة */
+    .clock-card {
+      background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
+      border-radius: 20px;
+      padding: 15px 50px 12px 50px;
       text-align: center;
-      font-size: 1.6rem;
-      font-weight: bold;
-      color: #f8fafc;
+      box-shadow: 0 10px 25px rgba(29, 78, 216, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
-
-    .footer-dev {
-      text-align: center;
-      font-size: 1.05rem;
-      color: rgba(255, 255, 255, 0.6);
-      letter-spacing: 0.5px;
-    }
-
-    .prayer-title {
+    .main-clock {
       font-size: 5rem;
       font-weight: 900;
-      color: #facc15;
-      margin-bottom: 25px;
-      text-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
+      font-family: monospace;
+      color: #ffffff;
+      line-height: 1;
+      letter-spacing: 3px;
     }
-    .prayer-dua-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid rgba(250, 204, 21, 0.3);
-      border-radius: 20px;
-      padding: 30px 45px;
-      max-width: 1000px;
-      margin: 20px auto;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .prayer-dua-text {
-      font-size: 2.8rem;
-      color: #e2e8f0;
-      line-height: 1.8;
+    .main-date {
+      font-size: 1.4rem;
       font-weight: bold;
+      color: #bfdbfe;
+      margin-top: 8px;
     }
-    .prayer-sub {
-      font-size: 2rem;
-      color: #94a3b8;
-      margin-top: 25px;
+
+    /* شريط التنبيه والعد التنازلي */
+    .countdown-bar {
+      margin: 0 auto;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      padding: 8px 35px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.6rem;
+      font-weight: 800;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .countdown-bar .badge-icon {
+      color: #facc15;
+    }
+    .countdown-bar .count-val {
+      font-family: monospace;
+      font-size: 1.8rem;
+      color: #38bdf8;
+      direction: ltr;
+    }
+
+    /* أشرطة الصلوات الخمس السفلية (مثل مواقيت) */
+    .prayers-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 10px 30px 25px 30px;
+      width: 100%;
+    }
+    .p-card {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      border-radius: 18px;
+      padding: 15px 5px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .p-card.active-p {
+      background: rgba(30, 64, 175, 0.85);
+      border: 2px solid #60a5fa;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5);
+    }
+    .p-name {
+      font-size: 1.9rem;
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+    .p-time {
+      font-size: 2.8rem;
+      font-weight: 900;
+      font-family: monospace;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+    .p-iqama {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: #93c5fd;
+      margin-top: 6px;
+      direction: ltr;
+    }
+
+    /* شاشة الأذان الكاملة (كما في صورتك الثانية) */
+    #adhanOverlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(rgba(7, 18, 48, 0.85), rgba(4, 10, 28, 0.95)),
+                  url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .adhan-big-title {
+      font-size: 7.5rem;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 0 35px rgba(255, 255, 255, 0.7);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    .adhan-icon {
+      width: 90px;
+      height: 90px;
+    }
+    .adhan-sub {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #facc15;
     }
   </style>
 </head>
 <body>
 
-  <div id="prayerOverlay">
-    <div class="prayer-title">حان وقت الصلاة - استووا واعتدلوا</div>
-    <div class="prayer-dua-card">
-      <div class="prayer-dua-text" id="liveDuaText">أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ</div>
+  <!-- شاشة الأذان التلقائية عند دخول الوقت -->
+  <div id="adhanOverlay">
+    <div class="adhan-big-title">
+      <span>🕌</span> الأذان <span>🕌</span>
     </div>
-    <div class="prayer-sub">يرجى التأكد من إغلاق الهواتف النقالة | تقبل الله صلاتكم</div>
+    <div class="adhan-sub" id="adhanPrayerSub">حان الآن موعد أذان الصلاة</div>
   </div>
 
-  <div class="tv-container">
-    
-    <div class="top-header">
-      <div class="masjid-imam-group">
-        <div class="masjid-title" id="dispMasjid">مسجد أبي هريرة</div>
-       
-      </div>
-      <div class="live-clock" id="liveClock">00:00:00</div>
+  <!-- الشريط العلوي -->
+  <div class="top-bar">
+    <div class="title" id="dispMasjidTitle">مسجد أبي هريرة تجزئة أندلس القنيطرة - KENITRA</div>
+    <div class="status-badge">
+      <span class="status-dot"></span> متصل
+    </div>
+  </div>
+
+  <!-- المنطقة الوسطى: الجمعة - الساعة الكبيرة - الشروق -->
+  <div class="center-section">
+    <div class="side-box">
+      <div class="side-title">الجمعة</div>
+      <div class="side-time" id="dispJumua">13:30</div>
     </div>
 
-    <div class="hero-banner">
-      <div class="hero-item">
-        <div class="hero-label" id="heroStatusLabel">الصلاة الحالية / القادمة</div>
-        <div class="hero-next-prayer" id="nextPrayerName">الفجر</div>
-      </div>
-      <div class="hero-item">
-        <div class="hero-label" id="heroCountdownLabel">الوقت المتبقي للأذان</div>
-        <div class="hero-countdown" id="heroCountdown">-00:00:00</div>
-      </div>
-      <div class="hero-item">
-        <div class="hero-label">المدينة</div>
-        <div class="hero-location">📍 القنيطرة</div>
-      </div>
+    <div class="clock-card">
+      <div class="main-clock" id="liveClock">00:00:00</div>
+      <div class="main-date" id="liveDate">جاري التحميل...</div>
     </div>
 
-    <div class="date-bar">
-      <div class="date-hijri" id="hijriText">جاري التحميل...</div>
-      <div class="date-separator">|</div>
-      <div class="date-gregorian" id="gregorianText">جاري التحميل...</div>
+    <div class="side-box">
+      <div class="side-title">الشروق</div>
+      <div class="side-time" id="dispSunrise">--:--</div>
     </div>
+  </div>
 
-    <div class="grid" id="prayerGrid"></div>
+  <!-- شريط العد التنازلي -->
+  <div class="countdown-bar">
+    <span class="badge-icon">⏳</span>
+    <span id="countdownLabel">الصلاة بعد</span>
+    <span class="count-val" id="countdownVal">--:--:--</span>
+  </div>
 
-    <div class="announcement-box" id="dispAnnouncement">
-      عن أبي هريرة رضي الله عنه أن رسول الله صلى الله عليه وسلم قال: «أقْرَبُ ما يَكونُ العَبْدُ مِن رَبِّهِ وهو ساجِدٌ، فأكْثِرُوا الدُّعاءَ».
+  <!-- الصلوات الخمس بستايل مواقيت السليم -->
+  <div class="prayers-row">
+    <div class="p-card" id="card-Fajr">
+      <div class="p-name">الفجر</div>
+      <div class="p-time" id="time-Fajr">--:--</div>
+      <div class="p-iqama">+20</div>
     </div>
-
-    <div class="footer-dev">
-      إعداد وبرمجة: عبد العالي العزري | للتواصل والدعم الفني: 0670626834
+    <div class="p-card" id="card-Dhuhr">
+      <div class="p-name">الظهر</div>
+      <div class="p-time" id="time-Dhuhr">--:--</div>
+      <div class="p-iqama">+15</div>
     </div>
-
+    <div class="p-card" id="card-Asr">
+      <div class="p-name">العصر</div>
+      <div class="p-time" id="time-Asr">--:--</div>
+      <div class="p-iqama">+15</div>
+    </div>
+    <div class="p-card" id="card-Maghrib">
+      <div class="p-name">المغرب</div>
+      <div class="p-time" id="time-Maghrib">--:--</div>
+      <div class="p-iqama">+10</div>
+    </div>
+    <div class="p-card" id="card-Isha">
+      <div class="p-name">العشاء</div>
+      <div class="p-time" id="time-Isha">--:--</div>
+      <div class="p-iqama">+15</div>
+    </div>
   </div>
 
   <script>
-    if (localStorage.getItem('cached_bg_real') !== 'v_real_bg_wa_2') {
-      localStorage.clear();
-      localStorage.setItem('cached_bg_real', 'v_real_bg_wa_2');
-    }
-
-    const SHEET_ID = "1u457jpdyZTBZoSbKV9BTX2SBTrodelKw7GIR-a3J-5A";
-    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
-
-    let masjidName = localStorage.getItem('cached_masjid') || "مسجد أبي هريرة";
-    let imamName = localStorage.getItem('cached_imam') || "بوسلهام";
-    let announcement = localStorage.getItem('cached_announcement') || "عن أبي هريرة رضي الله عنه أن رسول الله صلى الله عليه وسلم قال: «أقْرَبُ ما يَكونُ العَبْدُ مِن رَبِّهِ وهو ساجِدٌ، فأكْثِرُوا الدُّعاءَ».";
-    let timings = {};
-    let soundPlayedFor = "";
-    let currentLoadedDay = -1;
-
-    const DUAS = [
-      "«أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، اللَّهُمَّ أَنْتَ السَّلاَمُ وَمِنْكَ السَّلاَمُ، تَبَارَكْتَ يَا ذَا الْجَلاَلِ وَالإِكْرَامِ»",
-      "«لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ»",
-      "«اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ، وَشُكْرِكَ، وَحُسْنِ عِبَادَتِكَ»",
-      "«سُبْحَانَ اللهِ (33) ، الْحَمْدُ للهِ (33) ، اللهُ أَكْبَرُ (33)»",
-      "«اللَّهُمَّ لاَ مَانِعَ لِمَا أَعْطَيْتَ، وَلاَ مُعْطِيَ لِمَا مَنَعْتَ، وَلاَ يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ»"
-    ];
-    let duaIndex = 0;
-
-    const IQAMA_DELAYS = { Fajr: 20, Dhuhr: 15, Asr: 15, Maghrib: 10, Isha: 15 };
-
-    const PRAYERS = [
-      { key: "Fajr", nameAr: "الفجر", nameFr: "Fajr", isPrayer: true },
-      { key: "Sunrise", nameAr: "الشروق", nameFr: "Chourouk", isPrayer: false },
-      { key: "Dhuhr", nameAr: "الظهر", nameFr: "Dhuhr", isPrayer: true },
-      { key: "Asr", nameAr: "العصر", nameFr: "Asr", isPrayer: true },
-      { key: "Maghrib", nameAr: "المغرب", nameFr: "Maghrib", isPrayer: true },
-      { key: "Isha", nameAr: "العشاء", nameFr: "Isha", isPrayer: true }
+    const PRAYER_LIST = [
+      { key: "Fajr", nameAr: "الفجر", delay: 20 },
+      { key: "Dhuhr", nameAr: "الظهر", delay: 15 },
+      { key: "Asr", nameAr: "العصر", delay: 15 },
+      { key: "Maghrib", nameAr: "المغرب", delay: 10 },
+      { key: "Isha", nameAr: "العشاء", delay: 15 }
     ];
 
-    function cleanTime(tStr) {
-      if (!tStr) return "--:--";
-      return tStr.split(' ')[0].substring(0, 5);
+    let prayerTimings = {};
+    let sunriseTime = "--:--";
+
+    function cleanT(str) {
+      if (!str) return "--:--";
+      return str.split(' ')[0].substring(0, 5);
     }
 
-    function addMinutes(timeStr, mins) {
-      if (!timeStr || timeStr === "--:--") return "--:--";
-      let [h, m] = timeStr.split(':').map(Number);
-      let date = new Date();
-      date.setHours(h, m + mins, 0);
-      return String(date.getHours()).padStart(2, '0') + ":" + String(date.getMinutes()).padStart(2, '0');
-    }
+    async function getKenitraPrayers() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth() + 1;
+      const d = now.getDate();
 
-    function updateHeaderUI() {
-      document.getElementById('dispMasjid').innerText = masjidName;
-      let cleanImam = imamName.replace(/الشيخ/g, '').replace(/^إمام\s*المسجد\s*:?/i, '').replace(/^الإمام\s*:?/i, '').trim();
-     
-      document.getElementById('dispAnnouncement').innerText = announcement;
-    }
-
-    async function loadSheetData() {
       try {
-        const response = await fetch(CSV_URL);
-        const text = await response.text();
-        const lines = text.split('\n');
+        const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${y}/${m}?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0`);
+        const result = await res.json();
+        if (result.data && result.data[d - 1]) {
+          const t = result.data[d - 1].timings;
+          prayerTimings = {
+            Fajr: cleanT(t.Fajr),
+            Dhuhr: cleanT(t.Dhuhr),
+            Asr: cleanT(t.Asr),
+            Maghrib: cleanT(t.Maghrib),
+            Isha: cleanT(t.Isha)
+          };
+          sunriseTime = cleanT(t.Sunrise);
+          document.getElementById('dispSunrise').innerText = sunriseTime;
 
-        lines.forEach(line => {
-          const parts = line.split(',').map(s => s.replace(/"/g, '').trim());
-          if (parts.length >= 2) {
-            const key = parts[0].toLowerCase();
-            const val = parts[1];
-            if (key.includes('masjid') || key.includes('مسجد')) {
-              masjidName = val;
-              localStorage.setItem('cached_masjid', val);
-            } else if (key.includes('imam') || key.includes('إمام')) {
-              imamName = val;
-              localStorage.setItem('cached_imam', val);
-            } else if (key.includes('announcement') || key.includes('اعلان') || key.includes('ملاحظة') || key.includes('حديث')) {
-              announcement = val;
-              localStorage.setItem('cached_announcement', val);
-            }
-          }
-        });
-        updateHeaderUI();
+          PRAYER_LIST.forEach(p => {
+            document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
+          });
+        }
       } catch (e) {
-        updateHeaderUI();
+        console.error(e);
       }
     }
 
-    async function fetchAndCacheMonthTimes() {
+    function updateTick() {
       const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      const cacheKey = `p_kenitra_bg_wa_${year}_${month}`;
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('liveClock').innerText = `${h}:${m}:${s}`;
 
-      try {
-        const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0`);
-        const data = await res.json();
-        if (data.code === 200 && data.data) {
-          localStorage.setItem(cacheKey, JSON.stringify(data.data));
-        }
-      } catch (e) {}
+      // اليوم والتاريخ الميلادي
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      document.getElementById('liveDate').innerText = now.toLocaleDateString('ar-MA', options);
 
-      applyTimingsForToday();
-    }
+      if (Object.keys(prayerTimings).length === 0) return;
 
-    function applyTimingsForToday() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      const day = now.getDate();
-      const cacheKey = `p_kenitra_bg_wa_${year}_${month}`;
+      const curSecs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+      let nextP = null;
+      let diff = 0;
+      let inAdhan = false;
 
-      const raw = localStorage.getItem(cacheKey);
-      if (raw) {
-        try {
-          const monthData = JSON.parse(raw);
-          const todayEntry = monthData[day - 1];
-          if (todayEntry && todayEntry.timings) {
-            timings = {
-              Fajr: cleanTime(todayEntry.timings.Fajr),
-              Sunrise: cleanTime(todayEntry.timings.Sunrise),
-              Dhuhr: cleanTime(todayEntry.timings.Dhuhr),
-              Asr: cleanTime(todayEntry.timings.Asr),
-              Maghrib: cleanTime(todayEntry.timings.Maghrib),
-              Isha: cleanTime(todayEntry.timings.Isha)
-            };
-            currentLoadedDay = day;
-            renderGrid();
-            return;
-          }
-        } catch (e) {}
-      }
+      // فحص الأذان والعد التنازلي
+      for (let p of PRAYER_LIST) {
+        let [ph, pm] = (prayerTimings[p.key] || "0:0").split(':').map(Number);
+        let pSecs = ph * 3600 + pm * 60;
 
-      fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0")
-        .then(r => r.json())
-        .then(d => {
-          if (d.data && d.data.timings) {
-            timings = {
-              Fajr: cleanTime(d.data.timings.Fajr),
-              Sunrise: cleanTime(d.data.timings.Sunrise),
-              Dhuhr: cleanTime(d.data.timings.Dhuhr),
-              Asr: cleanTime(d.data.timings.Asr),
-              Maghrib: cleanTime(d.data.timings.Maghrib),
-              Isha: cleanTime(d.data.timings.Isha)
-            };
-            currentLoadedDay = day;
-            renderGrid();
-          }
-        }).catch(err => console.log(err));
-    }
-
-    function renderGrid() {
-      const grid = document.getElementById("prayerGrid");
-      grid.innerHTML = "";
-      PRAYERS.forEach(p => {
-        const adhan = timings[p.key] || "--:--";
-        const delay = IQAMA_DELAYS[p.key];
-        const iqama = delay ? addMinutes(adhan, delay) : "--:--";
-
-        grid.innerHTML += `
-          <div class="card" id="card-${p.key}">
-            <div class="name-ar">${p.nameAr}</div>
-            <div class="name-fr">${p.nameFr}</div>
-            <div class="adhan">${adhan}</div>
-            <div class="iqama-box">
-              ${delay ? `الإقامة<span class="iqama-time">${iqama}</span>` : `الشروق<span class="iqama-time">--:--</span>`}
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function updateLogic() {
-      const now = new Date();
-      const hStr = String(now.getHours()).padStart(2, '0');
-      const mStr = String(now.getMinutes()).padStart(2, '0');
-      const sStr = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('liveClock').innerText = `${hStr}:${mStr}:${sStr}`;
-
-      if (now.getDate() !== currentLoadedDay) {
-        applyTimingsForToday();
-      }
-
-      const hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
-        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-      }).format(now);
-
-      const gregorianAr = now.toLocaleDateString('ar-MA', { 
-        day: 'numeric', month: 'long', year: 'numeric' 
-      });
-
-      document.getElementById('hijriText').innerText = `${hijriDate} هـ`;
-      document.getElementById('gregorianText').innerText = `الموافق لـ ${gregorianAr} م`;
-
-      if (Object.keys(timings).length === 0) return;
-
-      const currentSecs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-      const validPrayers = PRAYERS.filter(p => p.isPrayer);
-
-      let currentActivePrayer = null;
-      let isBetweenAdhanAndIqama = false;
-      let isPraying = false;
-
-      for (let p of validPrayers) {
-        let [ah, am] = (timings[p.key] || "0:0").split(':').map(Number);
-        let adhanS = ah * 3600 + am * 60;
-        let delay = IQAMA_DELAYS[p.key] || 15;
-        let iqamaS = adhanS + (delay * 60);
-        let endS = iqamaS + (15 * 60);
-
-        if (currentSecs >= adhanS && currentSecs < iqamaS) {
-          currentActivePrayer = p;
-          isBetweenAdhanAndIqama = true;
-          let sinceSecs = currentSecs - adhanS;
-          let sH = String(Math.floor(sinceSecs / 3600)).padStart(2, '0');
-          let sM = String(Math.floor((sinceSecs % 3600) / 60)).padStart(2, '0');
-          let sS = String(sinceSecs % 60).padStart(2, '0');
-
-          let remIqamaSecs = iqamaS - currentSecs;
-          let rM = Math.floor(remIqamaSecs / 60);
-          let rS = remIqamaSecs % 60;
-
-          document.getElementById('heroStatusLabel').innerText = `أذان ${p.nameAr}`;
-          document.getElementById('nextPrayerName').innerText = `منذ ${sH}:${sM}:${sS}`;
-          document.getElementById('heroCountdownLabel').innerText = `باقي على الإقامة`;
-          document.getElementById('heroCountdown').innerText = `${rM}:${String(rS).padStart(2, '0')}`;
-          break;
-        } 
-        else if (currentSecs >= iqamaS && currentSecs < endS) {
-          isPraying = true;
-          currentActivePrayer = p;
+        // حالة وقت الأذان (لمدة 3 دقائق)
+        if (curSecs >= pSecs && curSecs < pSecs + 180) {
+          inAdhan = true;
+          document.getElementById('adhanOverlay').style.display = 'flex';
+          document.getElementById('adhanPrayerSub').innerText = `حان الآن موعد أذان صلاة ${p.nameAr}`;
           break;
         }
-      }
 
-      if (!isBetweenAdhanAndIqama && !isPraying) {
-        let nextP = null;
-        let nextDiff = 0;
-
-        for (let p of validPrayers) {
-          let [h, m] = (timings[p.key] || "0:0").split(':').map(Number);
-          let s = h * 3600 + m * 60;
-          if (s > currentSecs) {
-            nextP = p;
-            nextDiff = s - currentSecs;
-            break;
-          }
+        if (pSecs > curSecs && !nextP) {
+          nextP = p;
+          diff = pSecs - curSecs;
         }
-
-        if (!nextP) {
-          nextP = validPrayers[0];
-          let [h, m] = (timings["Fajr"] || "0:0").split(':').map(Number);
-          let s = h * 3600 + m * 60;
-          nextDiff = (86400 - currentSecs) + s;
-        }
-
-        currentActivePrayer = nextP;
-        document.getElementById('heroStatusLabel').innerText = "الصلاة القادمة";
-        document.getElementById('nextPrayerName').innerText = nextP.nameAr;
-        document.getElementById('heroCountdownLabel').innerText = "الوقت المتبقي للأذان";
-
-        let rH = String(Math.floor(nextDiff / 3600)).padStart(2, '0');
-        let rM = String(Math.floor((nextDiff % 3600) / 60)).padStart(2, '0');
-        let rS = String(nextDiff % 60).padStart(2, '0');
-        document.getElementById('heroCountdown').innerText = `-${rH}:${rM}:${rS}`;
       }
 
-      document.querySelectorAll('.card').forEach(c => c.classList.remove('active-prayer'));
-      if (currentActivePrayer) {
-        let activeCard = document.getElementById(`card-${currentActivePrayer.key}`);
-        if (activeCard) activeCard.classList.add('active-prayer');
+      if (!inAdhan) {
+        document.getElementById('adhanOverlay').style.display = 'none';
       }
 
-      if (isPraying) {
-        document.body.classList.add('praying-mode');
-      } else {
-        document.body.classList.remove('praying-mode');
+      if (!nextP) {
+        nextP = PRAYER_LIST[0]; // الفجر غداً
+        let [fh, fm] = (prayerTimings["Fajr"] || "0:0").split(':').map(Number);
+        diff = (86400 - curSecs) + (fh * 3600 + fm * 60);
+      }
+
+      // تحديد الكارت المفعل
+      document.querySelectorAll('.p-card').forEach(c => c.classList.remove('active-p'));
+      if (nextP) {
+        document.getElementById(`card-${nextP.key}`).classList.add('active-p');
+        document.getElementById('countdownLabel').innerText = `${nextP.nameAr} بعد`;
+        
+        let rh = String(Math.floor(diff / 3600)).padStart(2, '0');
+        let rm = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+        let rs = String(diff % 60).padStart(2, '0');
+        document.getElementById('countdownVal').innerText = `${rh}:${rm}:${rs}`;
       }
     }
 
-    setInterval(() => {
-      duaIndex = (duaIndex + 1) % DUAS.length;
-      const el = document.getElementById('liveDuaText');
-      if (el) el.innerText = DUAS[duaIndex];
-    }, 15000);
-
-    updateHeaderUI();
-    loadSheetData();
-    fetchAndCacheMonthTimes();
-    setInterval(updateLogic, 1000);
-    setInterval(loadSheetData, 20000);
-    setInterval(fetchAndCacheMonthTimes, 12 * 60 * 60 * 1000);
+    getKenitraPrayers();
+    setInterval(updateTick, 1000);
+    setInterval(getKenitraPrayers, 12 * 3600 * 1000);
   </script>
 </body>
 </html>
