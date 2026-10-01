@@ -20,11 +20,11 @@
       justify-content: space-between;
     }
 
-    /* الشريط العلوي */
+    /* الشريط العلوي مع درجة الحرارة */
     .top-bar {
       background: rgba(10, 25, 55, 0.85);
       backdrop-filter: blur(8px);
-      padding: 10px 25px;
+      padding: 8px 25px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -37,16 +37,33 @@
       color: #ffffff;
       letter-spacing: 0.5px;
     }
-    .top-bar .status-badge {
+    .top-info-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 20px;
+    }
+    .temp-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #facc15;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(250, 204, 21, 0.4);
+    }
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-size: 1.05rem;
       color: #93c5fd;
     }
     .status-dot {
-      width: 12px;
-      height: 12px;
+      width: 11px;
+      height: 11px;
       background-color: #22c55e;
       border-radius: 50%;
       display: inline-block;
@@ -58,27 +75,27 @@
       box-shadow: 0 0 8px #f97316 !important;
     }
 
-    /* المنطقة الوسطى */
+    /* المنطقة الوسطى: الجمعة - الساعة الكبيرة - الشروق */
     .center-section {
       display: flex;
       align-items: center;
       justify-content: space-around;
-      padding: 10px 40px;
+      padding: 6px 30px;
       width: 100%;
     }
 
     .side-box {
       text-align: center;
-      min-width: 170px;
+      min-width: 160px;
     }
     .side-title {
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       font-weight: 800;
       color: #ffffff;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
     .side-time {
-      font-size: 2.8rem;
+      font-size: 2.7rem;
       font-weight: 900;
       color: #ffffff;
       font-family: monospace;
@@ -89,14 +106,14 @@
     .clock-card {
       background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
       border-radius: 20px;
-      padding: 15px 50px 12px 50px;
+      padding: 12px 45px 10px 45px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(29, 78, 216, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.25);
-      min-width: 480px;
+      min-width: 460px;
     }
     .main-clock {
-      font-size: 5rem;
+      font-size: 4.8rem;
       font-weight: 900;
       font-family: monospace;
       color: #ffffff;
@@ -104,25 +121,53 @@
       letter-spacing: 3px;
     }
     .main-date {
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: bold;
       color: #facc15;
-      margin-top: 8px;
+      margin-top: 6px;
       transition: opacity 0.4s ease;
-      min-height: 35px;
+      min-height: 32px;
     }
 
-    /* شريط العد التنازلي */
-    .countdown-bar {
-      margin: 0 auto;
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 30px;
-      padding: 8px 35px;
+    /* شريط الأذكار والعد التنازلي بين الساعة والأوقات */
+    .middle-info-bar {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 1.6rem;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 0 35px;
+      margin: 4px 0;
+    }
+
+    .dhikr-box {
+      flex: 2;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 25px;
+      padding: 8px 25px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: opacity 0.5s ease;
+    }
+
+    .countdown-bar {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 25px;
+      padding: 8px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 1.5rem;
       font-weight: 800;
       backdrop-filter: blur(8px);
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -132,7 +177,7 @@
     }
     .countdown-bar .count-val {
       font-family: monospace;
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       color: #38bdf8;
       direction: ltr;
     }
@@ -142,7 +187,7 @@
       display: flex;
       justify-content: center;
       gap: 12px;
-      padding: 10px 30px 25px 30px;
+      padding: 8px 30px 20px 30px;
       width: 100%;
     }
     .p-card {
@@ -151,38 +196,38 @@
       backdrop-filter: blur(10px);
       border: 2px solid rgba(255, 255, 255, 0.18);
       border-radius: 18px;
-      padding: 15px 5px;
+      padding: 12px 5px;
       text-align: center;
       transition: all 0.3s ease;
     }
     .p-card.active-p {
       background: rgba(30, 64, 175, 0.85);
       border: 2px solid #60a5fa;
-      transform: translateY(-5px);
+      transform: translateY(-4px);
       box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5);
     }
     .p-name {
-      font-size: 1.9rem;
+      font-size: 1.85rem;
       font-weight: 900;
       color: #ffffff;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
     .p-time {
-      font-size: 2.8rem;
+      font-size: 2.7rem;
       font-weight: 900;
       font-family: monospace;
       color: #ffffff;
       letter-spacing: 1px;
     }
     .p-iqama {
-      font-size: 1.7rem;
+      font-size: 1.6rem;
       font-weight: 900;
       color: #93c5fd;
-      margin-top: 6px;
+      margin-top: 4px;
       direction: ltr;
     }
 
-    /* شاشة الأذان */
+    /* شاشة الأذان الكاملة */
     #adhanOverlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -196,17 +241,17 @@
       z-index: 999;
     }
     .adhan-big-title {
-      font-size: 7.5rem;
+      font-size: 7rem;
       font-weight: 900;
       color: #ffffff;
       text-shadow: 0 0 35px rgba(255, 255, 255, 0.7);
       margin-bottom: 20px;
       display: flex;
       align-items: center;
-      gap: 30px;
+      gap: 25px;
     }
     .adhan-sub {
-      font-size: 2.5rem;
+      font-size: 2.4rem;
       font-weight: 800;
       color: #facc15;
     }
@@ -225,13 +270,16 @@
   <!-- الشريط العلوي -->
   <div class="top-bar">
     <div class="title" id="dispMasjidTitle">مسجد أبي هريرة تجزئة أندلس القنيطرة - KENITRA</div>
-    <div class="status-badge" id="netStatusBadge">
-      <span class="status-dot" id="netDot"></span>
-      <span id="netStatusText">متصل</span>
+    <div class="top-info-left">
+      <div class="temp-badge" id="tempDisplay">🌤️️ --°C</div>
+      <div class="status-badge" id="netStatusBadge">
+        <span class="status-dot" id="netDot"></span>
+        <span id="netStatusText">متصل</span>
+      </div>
     </div>
   </div>
 
-  <!-- المنطقة الوسطى -->
+  <!-- المنطقة الوسطى: الجمعة - الساعة - الشروق -->
   <div class="center-section">
     <div class="side-box">
       <div class="side-title">الجمعة</div>
@@ -249,11 +297,16 @@
     </div>
   </div>
 
-  <!-- شريط العد التنازلي -->
-  <div class="countdown-bar">
-    <span class="badge-icon">⏳</span>
-    <span id="countdownLabel">الصلاة بعد</span>
-    <span class="count-val" id="countdownVal">--:--:--</span>
+  <!-- المنطقة المضافة: شريط الأذكار + العد التنازلي -->
+  <div class="middle-info-bar">
+    <div class="dhikr-box" id="dhikrText">
+      عن أبي هريرة رضي الله عنه قال: قال رسول الله ﷺ: «كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ ثَقِيلَتَانِ فِي الْمِيزَانِ: سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»
+    </div>
+    <div class="countdown-bar">
+      <span class="badge-icon">⏳</span>
+      <span id="countdownLabel">الصلاة بعد</span>
+      <span class="count-val" id="countdownVal">--:--:--</span>
+    </div>
   </div>
 
   <!-- الصلوات الخمس -->
@@ -294,12 +347,33 @@
       { key: "Isha", nameAr: "العشاء", delay: 15 }
     ];
 
+    const DHIKR_LIST = [
+      "عن أبي هريرة رضي الله عنه قال: قال رسول الله ﷺ: «كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ ثَقِيلَتَانِ فِي الْمِيزَانِ: سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»",
+      "عن أبي هريرة رضي الله عنه أن رسول الله ﷺ قال: «أَقْرَبُ مَا يَكُونُ الْعَبْدُ مِنْ رَبِّهِ وَهُوَ سَاجِدٌ فَأَكْثِرُوا الدُّعَاءَ»",
+      "قال رسول الله ﷺ: «مَنْ صَلَّى عَلَيَّ صَلَاةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا»",
+      "«أَسْتَغْفِرُ اللهَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ»",
+      "«اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",
+      "«لا حَوْلَ وَلا قُوَّةَ إِلَّا بِاللهِ الْعَلِيِّ الْعَظِيمِ كَنْزٌ مِنْ كُنُوزِ الْجَنَّةِ»"
+    ];
+    let dhikrIndex = 0;
+
     let prayerTimings = {};
     let sunriseTime = "--:--";
     let showHijri = false;
     let cachedDay = -1;
 
-    // متابعة حالة الإنترنت وتحديث المؤشر فوراً
+    // تدوير الأذكار بسلاسة كل 15 ثانية
+    setInterval(() => {
+      dhikrIndex = (dhikrIndex + 1) % DHIKR_LIST.length;
+      const el = document.getElementById('dhikrText');
+      el.style.opacity = '0';
+      setTimeout(() => {
+        el.innerText = DHIKR_LIST[dhikrIndex];
+        el.style.opacity = '1';
+      }, 500);
+    }, 15000);
+
+    // مراقبة الاتصال
     function checkNetworkState() {
       const dot = document.getElementById('netDot');
       const text = document.getElementById('netStatusText');
@@ -343,12 +417,30 @@
       }
     }
 
+    // جلب درجة حرارة القنيطرة وتخزينها
+    async function fetchWeatherKenitra() {
+      try {
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=34.261&longitude=-6.5802&current=temperature_2m");
+        const data = await res.json();
+        if (data.current && data.current.temperature_2m !== undefined) {
+          const temp = Math.round(data.current.temperature_2m);
+          document.getElementById('tempDisplay').innerText = `🌤️ ${temp}°C`;
+          localStorage.setItem('cached_kenitra_temp', `${temp}`);
+        }
+      } catch (e) {
+        const saved = localStorage.getItem('cached_kenitra_temp');
+        if (saved) {
+          document.getElementById('tempDisplay').innerText = `🌤️ ${saved}°C`;
+        }
+      }
+    }
+
     function cleanT(str) {
       if (!str) return "--:--";
       return str.split(' ')[0].substring(0, 5);
     }
 
-    // جلب وحفظ شهر كامل فـ التلفاز للأوفلاين
+    // جلب وتخزين مواقيت الشهر أوفلاين
     async function syncMonthPrayers() {
       const now = new Date();
       const y = now.getFullYear();
@@ -361,9 +453,7 @@
         if (json.data && Array.isArray(json.data)) {
           localStorage.setItem(storageKey, JSON.stringify(json.data));
         }
-      } catch (e) {
-        // إذا انقطعت النت يستمر في العمل
-      }
+      } catch (e) {}
       applyDayFromCache();
     }
 
@@ -400,7 +490,6 @@
         } catch (e) {}
       }
 
-      // إذا لم يجد الشهر في الذاكرة يحاول الاتصال المباشر
       fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0")
         .then(r => r.json())
         .then(res => {
@@ -481,8 +570,10 @@
 
     checkNetworkState();
     updateDateText();
+    fetchWeatherKenitra();
     syncMonthPrayers();
     setInterval(updateTick, 1000);
+    setInterval(fetchWeatherKenitra, 30 * 60 * 1000);
     setInterval(syncMonthPrayers, 12 * 3600 * 1000);
   </script>
 </body>
