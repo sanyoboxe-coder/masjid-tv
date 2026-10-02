@@ -20,7 +20,6 @@
       justify-content: space-between;
     }
 
-    /* الشريط العلوي */
     .top-bar {
       background: rgba(10, 25, 55, 0.85);
       backdrop-filter: blur(8px);
@@ -68,19 +67,17 @@
       border-radius: 50%;
       display: inline-block;
       box-shadow: 0 0 8px #22c55e;
-      transition: background-color 0.3s;
     }
     .status-dot.offline {
-      background-color: #f97316 !important;
-      box-shadow: 0 0 8px #f97316 !important;
+      background-color: #38bdf8 !important;
+      box-shadow: 0 0 8px #38bdf8 !important;
     }
 
-    /* المنطقة الوسطى */
     .center-section {
       display: flex;
       align-items: center;
       justify-content: space-around;
-      padding: 6px 30px;
+      padding: 4px 30px;
       width: 100%;
     }
 
@@ -102,11 +99,10 @@
       letter-spacing: 1px;
     }
 
-    /* صندوق الساعة */
     .clock-card {
       background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
       border-radius: 20px;
-      padding: 12px 45px 10px 45px;
+      padding: 10px 45px 8px 45px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(29, 78, 216, 0.5);
       border: 1px solid rgba(255, 255, 255, 0.25);
@@ -124,19 +120,18 @@
       font-size: 1.45rem;
       font-weight: bold;
       color: #facc15;
-      margin-top: 6px;
-      transition: opacity 0.4s ease;
+      margin-top: 4px;
       min-height: 32px;
+      transition: opacity 0.4s ease;
     }
 
-    /* شريط الأذكار والعد التنازلي */
     .middle-info-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
       padding: 0 35px;
-      margin: 4px 0;
+      margin: 2px 0;
     }
 
     .dhikr-box {
@@ -144,7 +139,7 @@
       background: rgba(15, 23, 42, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.22);
       border-radius: 25px;
-      padding: 8px 25px;
+      padding: 7px 25px;
       font-size: 1.35rem;
       font-weight: 700;
       color: #ffffff;
@@ -162,7 +157,7 @@
       background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 25px;
-      padding: 8px 25px;
+      padding: 7px 25px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -182,12 +177,11 @@
       direction: ltr;
     }
 
-    /* الصلوات الخمس */
     .prayers-row {
       display: flex;
       justify-content: center;
       gap: 12px;
-      padding: 8px 30px 20px 30px;
+      padding: 6px 30px 6px 30px;
       width: 100%;
     }
     .p-card {
@@ -196,14 +190,14 @@
       backdrop-filter: blur(10px);
       border: 2px solid rgba(255, 255, 255, 0.18);
       border-radius: 18px;
-      padding: 12px 5px;
+      padding: 10px 5px;
       text-align: center;
       transition: all 0.3s ease;
     }
     .p-card.active-p {
       background: rgba(30, 64, 175, 0.85);
       border: 2px solid #60a5fa;
-      transform: translateY(-4px);
+      transform: translateY(-3px);
       box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5);
     }
     .p-name {
@@ -223,11 +217,32 @@
       font-size: 1.6rem;
       font-weight: 900;
       color: #93c5fd;
-      margin-top: 4px;
+      margin-top: 3px;
       direction: ltr;
     }
 
-    /* وميض الأذان */
+    /* الشريط السفلي البسيط */
+    .bottom-bar {
+      background: rgba(10, 25, 55, 0.90);
+      backdrop-filter: blur(8px);
+      padding: 6px 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #cbd5e1;
+    }
+    .bottom-bar .contact-phone {
+      font-family: monospace;
+      font-size: 1.4rem;
+      color: #facc15;
+      direction: ltr;
+      letter-spacing: 1.5px;
+    }
+
     @keyframes blinkAdhan {
       0% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 25px rgba(250, 204, 21, 0.8)); }
       50% { opacity: 0.3; transform: scale(0.97); filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.2)); }
@@ -263,7 +278,6 @@
       text-shadow: 0 2px 10px rgba(0,0,0,0.8);
     }
 
-    /* شاشة العد التنازلي للإقامة */
     #iqamaCountdownOverlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -328,7 +342,6 @@
       gap: 15px;
     }
 
-    /* شاشة أذكار ما بعد الصلاة */
     #afterPrayerOverlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -376,7 +389,6 @@
 </head>
 <body>
 
-  <!-- 1. وميض الأذان -->
   <div id="adhanOverlay">
     <div class="adhan-big-title">
       <span>🕌</span> الأذان <span>🕌</span>
@@ -384,7 +396,6 @@
     <div class="adhan-sub" id="adhanPrayerSub">حان الآن موعد أذان الصلاة</div>
   </div>
 
-  <!-- 2. العد التنازلي للإقامة / إقامة الصلاة -->
   <div id="iqamaCountdownOverlay">
     <div id="iqamaCountingBox">
       <div class="iqama-screen-label" id="iqamaScreenTitle">باقي على الإقامة</div>
@@ -401,7 +412,6 @@
     </div>
   </div>
 
-  <!-- 3. أذكار ما بعد الصلاة -->
   <div id="afterPrayerOverlay">
     <div class="after-title">أذكار ما بعد الصلاة المأثورة</div>
     <div class="after-card">
@@ -412,14 +422,13 @@
     <div class="after-footer">تقبل الله صلاتكم وصالح أعمالكم</div>
   </div>
 
-  <!-- 4. الشاشة الرئيسية -->
   <div class="top-bar">
     <div class="title" id="dispMasjidTitle">مسجد أبي هريرة تجزئة أندلس القنيطرة - KENITRA</div>
     <div class="top-info-left">
       <div class="temp-badge" id="tempDisplay">🌤 --°C</div>
       <div class="status-badge" id="netStatusBadge">
         <span class="status-dot" id="netDot"></span>
-        <span id="netStatusText">متصل</span>
+        <span id="netStatusText">تلقائي محلي</span>
       </div>
     </div>
   </div>
@@ -480,7 +489,89 @@
     </div>
   </div>
 
+  <!-- الشريط السفلي السامبل -->
+  <div class="bottom-bar">
+    <span>عبد العالي العزري</span>
+    <span>•</span>
+    <span class="contact-phone">06 70 62 68 34</span>
+  </div>
+
   <script>
+    const KENITRA_LAT = 34.2610;
+    const KENITRA_LNG = -6.5802;
+    const TIMEZONE = 1;
+
+    function computeKenitraPrayers(date) {
+      const rad = d => d * Math.PI / 180;
+      const deg = r => r * 180 / Math.PI;
+
+      const y = date.getFullYear();
+      const m = date.getMonth() + 1;
+      const d = date.getDate();
+
+      const N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
+      const lngHour = KENITRA_LNG / 15;
+
+      function calcPrayer(angle, isRise, isSunAngle = true) {
+        const t = N + ((isRise ? 6 : 18) - lngHour) / 24;
+        const M = (0.9856 * t) - 3.289;
+        let L = M + (1.916 * Math.sin(rad(M))) + (0.020 * Math.sin(rad(2 * M))) + 282.634;
+        L = (L % 360 + 360) % 360;
+
+        let RA = deg(Math.atan(0.91764 * Math.tan(rad(L))));
+        RA = (RA % 360 + 360) % 360;
+        const Lquadrant = Math.floor(L / 90) * 90;
+        const RAquadrant = Math.floor(RA / 90) * 90;
+        RA = (RA + (Lquadrant - RAquadrant)) / 15;
+
+        const sinDec = 0.39782 * Math.sin(rad(L));
+        const cosDec = Math.cos(Math.asin(sinDec));
+
+        let cosH;
+        if (isSunAngle) {
+          cosH = (Math.sin(rad(angle)) - (sinDec * Math.sin(rad(KENITRA_LAT)))) / (cosDec * Math.cos(rad(KENITRA_LAT)));
+        } else {
+          const term = Math.tan(rad(Math.abs(KENITRA_LAT - deg(Math.asin(sinDec)))));
+          const alt = deg(Math.atan(1 / (1 + term)));
+          cosH = (Math.sin(rad(alt)) - (sinDec * Math.sin(rad(KENITRA_LAT)))) / (cosDec * Math.cos(rad(KENITRA_LAT)));
+        }
+
+        if (cosH > 1) cosH = 1;
+        if (cosH < -1) cosH = -1;
+
+        let H = isRise ? (360 - deg(Math.acos(cosH))) : deg(Math.acos(cosH));
+        H = H / 15;
+
+        const T = H + RA - (0.06571 * t) - 6.622;
+        let UT = (T - lngHour) % 24;
+        if (UT < 0) UT += 24;
+        return UT + TIMEZONE;
+      }
+
+      function formatTime(val) {
+        let h = Math.floor(val);
+        let min = Math.round((val - h) * 60);
+        if (min >= 60) { h += 1; min = 0; }
+        return `${String(h % 24).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+      }
+
+      const fajrT = calcPrayer(-19.0, true) + (2 / 60);
+      const sunriseT = calcPrayer(-0.833, true);
+      const dhuhrT = (12 + TIMEZONE - (KENITRA_LNG / 15) - (0.162 * Math.sin(rad(N * 0.9856)))) + (5 / 60);
+      const asrT = calcPrayer(0, false, false) + (2 / 60);
+      const maghribT = calcPrayer(-0.833, false) + (3 / 60);
+      const ishaT = calcPrayer(-17.5, false) + (2 / 60);
+
+      return {
+        Fajr: formatTime(fajrT),
+        Sunrise: formatTime(sunriseT),
+        Dhuhr: formatTime(dhuhrT),
+        Asr: formatTime(asrT),
+        Maghrib: formatTime(maghribT),
+        Isha: formatTime(ishaT)
+      };
+    }
+
     const PRAYER_LIST = [
       { key: "Fajr", nameAr: "الفجر", delay: 20 },
       { key: "Dhuhr", nameAr: "الظهر", delay: 15 },
@@ -543,7 +634,7 @@
         text.innerText = "متصل";
       } else {
         dot.classList.add('offline');
-        text.innerText = "محلي (بدون نت)";
+        text.innerText = "أوفلاين دائم";
       }
     }
     window.addEventListener('online', checkNetworkState);
@@ -583,7 +674,7 @@
         const data = await res.json();
         if (data.current && data.current.temperature_2m !== undefined) {
           const temp = Math.round(data.current.temperature_2m);
-          document.getElementById('tempDisplay').innerText = `🌤️️ ${temp}°C`;
+          document.getElementById('tempDisplay').innerText = `🌤 ${temp}°C`;
           localStorage.setItem('cached_kenitra_temp', `${temp}`);
         }
       } catch (e) {
@@ -599,74 +690,47 @@
       return str.split(' ')[0].substring(0, 5);
     }
 
-    async function syncMonthPrayers() {
+    function loadTodayPrayers() {
       const now = new Date();
-      const y = now.getFullYear();
-      const m = now.getMonth() + 1;
-      const storageKey = `masjid_times_${y}_${m}`;
-
-      try {
-        const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${y}/${m}?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0`);
-        const json = await res.json();
-        if (json.data && Array.isArray(json.data)) {
-          localStorage.setItem(storageKey, JSON.stringify(json.data));
-        }
-      } catch (e) {}
-      applyDayFromCache();
-    }
-
-    function applyDayFromCache() {
-      const now = new Date();
-      const y = now.getFullYear();
-      const m = now.getMonth() + 1;
       const d = now.getDate();
-      const storageKey = `masjid_times_${y}_${m}`;
 
-      const stored = localStorage.getItem(storageKey);
-      if (stored) {
-        try {
-          const days = JSON.parse(stored);
-          const today = days[d - 1];
-          if (today && today.timings) {
-            const t = today.timings;
-            prayerTimings = {
-              Fajr: cleanT(t.Fajr),
-              Dhuhr: cleanT(t.Dhuhr),
-              Asr: cleanT(t.Asr),
-              Maghrib: cleanT(t.Maghrib),
-              Isha: cleanT(t.Isha)
-            };
-            sunriseTime = cleanT(t.Sunrise);
-            document.getElementById('dispSunrise').innerText = sunriseTime;
+      const computed = computeKenitraPrayers(now);
+      prayerTimings = {
+        Fajr: computed.Fajr,
+        Dhuhr: computed.Dhuhr,
+        Asr: computed.Asr,
+        Maghrib: computed.Maghrib,
+        Isha: computed.Isha
+      };
+      sunriseTime = computed.Sunrise;
+      document.getElementById('dispSunrise').innerText = sunriseTime;
 
-            PRAYER_LIST.forEach(p => {
-              document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
-            });
-            cachedDay = d;
-            return;
-          }
-        } catch (e) {}
+      PRAYER_LIST.forEach(p => {
+        document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
+      });
+      cachedDay = d;
+
+      if (navigator.onLine) {
+        fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0")
+          .then(r => r.json())
+          .then(res => {
+            if (res.data && res.data.timings) {
+              const t = res.data.timings;
+              prayerTimings = {
+                Fajr: cleanT(t.Fajr),
+                Dhuhr: cleanT(t.Dhuhr),
+                Asr: cleanT(t.Asr),
+                Maghrib: cleanT(t.Maghrib),
+                Isha: cleanT(t.Isha)
+              };
+              sunriseTime = cleanT(t.Sunrise);
+              document.getElementById('dispSunrise').innerText = sunriseTime;
+              PRAYER_LIST.forEach(p => {
+                document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
+              });
+            }
+          }).catch(e => {});
       }
-
-      fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21&tune=0,-1,0,0,0,0,0,0")
-        .then(r => r.json())
-        .then(res => {
-          if (res.data && res.data.timings) {
-            const t = res.data.timings;
-            prayerTimings = {
-              Fajr: cleanT(t.Fajr),
-              Dhuhr: cleanT(t.Dhuhr),
-              Asr: cleanT(t.Asr),
-              Maghrib: cleanT(t.Maghrib),
-              Isha: cleanT(t.Isha)
-            };
-            sunriseTime = cleanT(t.Sunrise);
-            document.getElementById('dispSunrise').innerText = sunriseTime;
-            PRAYER_LIST.forEach(p => {
-              document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
-            });
-          }
-        }).catch(err => {});
     }
 
     function updateTick() {
@@ -677,7 +741,7 @@
       document.getElementById('liveClock').innerText = `${h}:${m}:${s}`;
 
       if (now.getDate() !== cachedDay) {
-        applyDayFromCache();
+        loadTodayPrayers();
       }
 
       if (Object.keys(prayerTimings).length === 0) return;
@@ -709,7 +773,6 @@
         let afterPrayerStart = iqamaSecs + prayerDuration;
         let afterPrayerEnd = afterPrayerStart + (7 * 60);
 
-        // 1. وميض الأذان
         if (curSecs >= adhanSecs && curSecs < adhanSecs + 60) {
           inSpecialMode = true;
           adhanOverlay.style.display = 'flex';
@@ -717,10 +780,7 @@
           afterPrayerOverlay.style.display = 'none';
           document.getElementById('adhanPrayerSub').innerText = `حان الآن موعد أذان صلاة ${p.nameAr}`;
           break;
-        }
-
-        // 2. عداد الإقامة
-        else if (curSecs >= adhanSecs + 60 && curSecs < iqamaSecs) {
+        } else if (curSecs >= adhanSecs + 60 && curSecs < iqamaSecs) {
           inSpecialMode = true;
           adhanOverlay.style.display = 'none';
           iqamaOverlay.style.display = 'flex';
@@ -734,10 +794,7 @@
           document.getElementById('iqamaScreenTitle').innerText = `باقي على إقامة صلاة ${p.nameAr}`;
           document.getElementById('iqamaScreenTimer').innerText = `${String(rm).padStart(2, '0')}:${String(rs).padStart(2, '0')}`;
           break;
-        }
-
-        // 3. أقيمت الصلاة
-        else if (curSecs >= iqamaSecs && curSecs < iqamaEndSecs) {
+        } else if (curSecs >= iqamaSecs && curSecs < iqamaEndSecs) {
           inSpecialMode = true;
           adhanOverlay.style.display = 'none';
           iqamaOverlay.style.display = 'flex';
@@ -745,10 +802,7 @@
           iqamaCountingBox.style.display = 'none';
           iqamaDoneBox.style.display = 'flex';
           break;
-        }
-
-        // 4. وقت الصلاة (شاشة هادئة)
-        else if (curSecs >= iqamaEndSecs && curSecs < afterPrayerStart) {
+        } else if (curSecs >= iqamaEndSecs && curSecs < afterPrayerStart) {
           inSpecialMode = true;
           adhanOverlay.style.display = 'none';
           iqamaOverlay.style.display = 'flex';
@@ -756,10 +810,7 @@
           iqamaCountingBox.style.display = 'none';
           iqamaDoneBox.style.display = 'none';
           break;
-        }
-
-        // 5. أذكار ما بعد الصلاة
-        else if (curSecs >= afterPrayerStart && curSecs < afterPrayerEnd) {
+        } else if (curSecs >= afterPrayerStart && curSecs < afterPrayerEnd) {
           inSpecialMode = true;
           adhanOverlay.style.display = 'none';
           iqamaOverlay.style.display = 'none';
@@ -773,7 +824,6 @@
         }
       }
 
-      // الرجوع للشاشة الرئيسية
       if (!inSpecialMode) {
         adhanOverlay.style.display = 'none';
         iqamaOverlay.style.display = 'none';
@@ -800,11 +850,10 @@
 
     checkNetworkState();
     updateDateText();
+    loadTodayPrayers();
     fetchWeatherKenitra();
-    syncMonthPrayers();
     setInterval(updateTick, 1000);
     setInterval(fetchWeatherKenitra, 30 * 60 * 1000);
-    setInterval(syncMonthPrayers, 12 * 3600 * 1000);
   </script>
 </body>
 </html>
