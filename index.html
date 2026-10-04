@@ -436,7 +436,7 @@
   <div class="center-section">
     <div class="side-box">
       <div class="side-title">الجمعة</div>
-      <div class="side-time" id="dispJumua">13:30</div>
+      <div class="side-time" id="dispJumua">--:--</div>
     </div>
 
     <div class="clock-card">
@@ -704,6 +704,7 @@
       };
       sunriseTime = computed.Sunrise;
       document.getElementById('dispSunrise').innerText = sunriseTime;
+      document.getElementById('dispJumua').innerText = prayerTimings.Dhuhr;
 
       PRAYER_LIST.forEach(p => {
         document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
