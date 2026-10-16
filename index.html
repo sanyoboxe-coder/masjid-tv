@@ -68,6 +68,10 @@
       display: inline-block;
       box-shadow: 0 0 8px #22c55e;
     }
+    .status-dot.offline {
+      background-color: #38bdf8 !important;
+      box-shadow: 0 0 8px #38bdf8 !important;
+    }
 
     .center-section {
       display: flex;
@@ -422,8 +426,8 @@
     <div class="top-info-left">
       <div class="temp-badge" id="tempDisplay">🌤 20°C</div>
       <div class="status-badge" id="netStatusBadge">
-        <span class="status-dot"></span>
-        <span id="netStatusText">الأوقاف رسمية</span>
+        <span class="status-dot" id="netDot"></span>
+        <span id="netStatusText">مضبوط محلياً</span>
       </div>
     </div>
   </div>
@@ -491,33 +495,14 @@
   </div>
 
   <script>
-    // جدول وزارة الأوقاف والشؤون الإسلامية المعتمد لمدينة القنيطرة (محقق بالدقيقة)
-    const HABOUS_KENITRA = {
-      13: { Fajr: "05:01", Sunrise: "06:27", Dhuhr: "12:18", Asr: "15:27", Maghrib: "17:59", Isha: "19:13" },
-      14: { Fajr: "05:02", Sunrise: "06:27", Dhuhr: "12:17", Asr: "15:26", Maghrib: "17:58", Isha: "19:12" },
-      15: { Fajr: "05:03", Sunrise: "06:28", Dhuhr: "12:17", Asr: "15:25", Maghrib: "17:57", Isha: "19:11" },
-      16: { Fajr: "05:04", Sunrise: "06:29", Dhuhr: "12:17", Asr: "15:24", Maghrib: "17:55", Isha: "19:10" },
-      17: { Fajr: "05:04", Sunrise: "06:30", Dhuhr: "12:17", Asr: "15:23", Maghrib: "17:54", Isha: "19:08" },
-      18: { Fajr: "05:05", Sunrise: "06:31", Dhuhr: "12:17", Asr: "15:22", Maghrib: "17:53", Isha: "19:07" },
-      19: { Fajr: "05:06", Sunrise: "06:31", Dhuhr: "12:16", Asr: "15:21", Maghrib: "17:52", Isha: "19:06" },
-      20: { Fajr: "05:07", Sunrise: "06:32", Dhuhr: "12:16", Asr: "15:20", Maghrib: "17:51", Isha: "19:05" },
-      21: { Fajr: "05:07", Sunrise: "06:33", Dhuhr: "12:16", Asr: "15:19", Maghrib: "17:49", Isha: "19:04" },
-      22: { Fajr: "05:08", Sunrise: "06:34", Dhuhr: "12:16", Asr: "15:19", Maghrib: "17:48", Isha: "19:03" },
-      23: { Fajr: "05:09", Sunrise: "06:35", Dhuhr: "12:16", Asr: "15:18", Maghrib: "17:47", Isha: "19:02" },
-      24: { Fajr: "05:10", Sunrise: "06:36", Dhuhr: "12:16", Asr: "15:17", Maghrib: "17:46", Isha: "19:01" },
-      25: { Fajr: "05:10", Sunrise: "06:36", Dhuhr: "12:15", Asr: "15:16", Maghrib: "17:45", Isha: "19:00" },
-      26: { Fajr: "05:11", Sunrise: "06:37", Dhuhr: "12:15", Asr: "15:15", Maghrib: "17:44", Isha: "18:59" },
-      27: { Fajr: "05:12", Sunrise: "06:38", Dhuhr: "12:15", Asr: "15:14", Maghrib: "17:43", Isha: "18:58" },
-      28: { Fajr: "05:13", Sunrise: "06:39", Dhuhr: "12:15", Asr: "15:14", Maghrib: "17:42", Isha: "18:57" },
-      29: { Fajr: "05:14", Sunrise: "06:40", Dhuhr: "12:15", Asr: "15:13", Maghrib: "17:41", Isha: "18:56" },
-      30: { Fajr: "05:14", Sunrise: "06:41", Dhuhr: "12:15", Asr: "15:12", Maghrib: "17:40", Isha: "18:55" },
-      31: { Fajr: "05:15", Sunrise: "06:42", Dhuhr: "12:15", Asr: "15:11", Maghrib: "17:39", Isha: "18:54" }
-    };
+    const KENITRA_LAT = 34.2610;
+    const KENITRA_LNG = -6.5802;
+    const TIMEZONE = 0; // توقيت غرينتش القانوني لوزارة الأوقاف بالمغرب
 
     let prayerTimings = {};
     let sunriseTime = "--:--";
     let showHijri = false;
-    let cachedDay = -1;
+    let cachedDayKey = "";
 
     let PRAYER_LIST = [
       { key: "Fajr", nameAr: "الفجر", delay: 20 },
@@ -532,7 +517,7 @@
       "عن أبي هريرة رضي الله عنه أن رسول الله ﷺ قال: «أَقْرَبُ مَا يَكُونُ الْعَبْدُ مِنْ رَبِّهِ وَهُوَ سَاجِدٌ فَأَكْثِرُوا الدُّعَاءَ»",
       "قال رسول الله ﷺ: «مَنْ صَلَّى عَلَيَّ صَلَاةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا»",
       "«أَسْتَغْفِرُ اللهَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ»",
-      "«اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",
+      "«اللَّهُمَّ أَعِّنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",
       "«لا حَوْلَ وَلا قُوَّةَ إِلَّا بِاللهِ الْعَلِيِّ الْعَظِيمِ كَنْزٌ مِنْ كُنُوزِ الْجَنَّةِ»"
     ];
     let dhikrIndex = 0;
@@ -546,28 +531,141 @@
     ];
     let postDhikrIndex = 0;
 
+    function cleanT(str) {
+      if (!str) return "--:--";
+      return str.split(' ')[0].substring(0, 5);
+    }
+
+    // معادلة فلكية ديناميكية سنوية شاملة لمدينة القنيطرة (تعمل 365 يوماً بدون إنترنت)
+    function calculateFullYearPrayers(date) {
+      const rad = d => d * Math.PI / 180;
+      const deg = r => r * 180 / Math.PI;
+
+      const y = date.getFullYear();
+      const m = date.getMonth() + 1;
+      const d = date.getDate();
+
+      const N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
+      const lngHour = KENITRA_LNG / 15;
+
+      function calcSunPos(t) {
+        const M = (0.9856 * t) - 3.289;
+        let L = M + (1.916 * Math.sin(rad(M))) + (0.020 * Math.sin(rad(2 * M))) + 282.634;
+        L = (L % 360 + 360) % 360;
+        let RA = deg(Math.atan(0.91764 * Math.tan(rad(L))));
+        RA = (RA % 360 + 360) % 360;
+        const Lq = Math.floor(L / 90) * 90;
+        const RAq = Math.floor(RA / 90) * 90;
+        RA = (RA + (Lq - RAq)) / 15;
+        const sinDec = 0.39782 * Math.sin(rad(L));
+        const cosDec = Math.cos(Math.asin(sinDec));
+        return { RA, sinDec, cosDec };
+      }
+
+      function calcTime(angle, isRise, isSunAngle = true) {
+        const t = N + ((isRise ? 6 : 18) - lngHour) / 24;
+        const pos = calcSunPos(t);
+        let cosH;
+        if (isSunAngle) {
+          cosH = (Math.sin(rad(angle)) - (pos.sinDec * Math.sin(rad(KENITRA_LAT)))) / (pos.cosDec * Math.cos(rad(KENITRA_LAT)));
+        } else {
+          const term = Math.tan(rad(Math.abs(KENITRA_LAT - deg(Math.asin(pos.sinDec)))));
+          const alt = deg(Math.atan(1 / (1 + term)));
+          cosH = (Math.sin(rad(alt)) - (pos.sinDec * Math.sin(rad(KENITRA_LAT)))) / (pos.cosDec * Math.cos(rad(KENITRA_LAT)));
+        }
+        if (cosH > 1) cosH = 1;
+        if (cosH < -1) cosH = -1;
+        let H = isRise ? (360 - deg(Math.acos(cosH))) : deg(Math.acos(cosH));
+        H = H / 15;
+        const T = H + pos.RA - (0.06571 * t) - 6.622;
+        let UT = (T - lngHour) % 24;
+        if (UT < 0) UT += 24;
+        return UT + TIMEZONE;
+      }
+
+      function toStr(val) {
+        let h = Math.floor(val);
+        let min = Math.round((val - h) * 60);
+        if (min >= 60) { h += 1; min = 0; }
+        return String(h % 24).padStart(2, '0') + ':' + String(min).padStart(2, '0');
+      }
+
+      // حساب زوال الظهر الدقيق بالقنيطرة مع معادلة الوقت
+      const M = (0.9856 * N) - 3.289;
+      const EoT = -7.655 * Math.sin(rad(M)) + 9.873 * Math.sin(2 * rad(M) + 3.588);
+      const solarNoon = 12.0 - lngHour - (EoT / 60) + (5 / 60) - 0.44;
+
+      return {
+        Fajr: toStr(calcTime(-19.0, true) + (2 / 60)),
+        Sunrise: toStr(calcTime(-0.833, true) - (3 / 60)),
+        Dhuhr: toStr(solarNoon),
+        Asr: toStr(calcTime(0, false, false)),
+        Maghrib: toStr(calcTime(-0.833, false) - (2 / 60)),
+        Isha: toStr(calcTime(-17.0, false) + (2 / 60))
+      };
+    }
+
     function loadTodayPrayers() {
       const now = new Date();
-      const d = now.getDate();
+      const dayKey = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
 
-      // قراءة التوقيت الرسمي مباشرة من الجدول
-      const row = HABOUS_KENITRA[d] || HABOUS_KENITRA[16];
+      // حساب اليوم فلكياً للقنيطرة (أوفلاين دائم لجميع شهور السنة)
+      const computed = calculateFullYearPrayers(now);
       prayerTimings = {
-        Fajr: row.Fajr,
-        Dhuhr: row.Dhuhr,
-        Asr: row.Asr,
-        Maghrib: row.Maghrib,
-        Isha: row.Isha
+        Fajr: computed.Fajr,
+        Dhuhr: computed.Dhuhr,
+        Asr: computed.Asr,
+        Maghrib: computed.Maghrib,
+        Isha: computed.Isha
       };
-      sunriseTime = row.Sunrise;
+      sunriseTime = computed.Sunrise;
+
+      // قراءة التوقيت المخزن مسبقاً إذا توفر
+      try {
+        const saved = localStorage.getItem("habous_day_" + dayKey);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          prayerTimings = parsed.timings;
+          sunriseTime = parsed.sunrise;
+        }
+      } catch(e) {}
 
       document.getElementById('dispSunrise').innerText = sunriseTime;
       document.getElementById('dispJumua').innerText = prayerTimings.Dhuhr;
       PRAYER_LIST.forEach(function(p) {
         const el = document.getElementById('time-' + p.key);
-        if (el) el.innerText = prayerTimings[p.key];
+        if (el) el.innerText = prayerTimings[p.key] || "--:--";
       });
-      cachedDay = d;
+      cachedDayKey = dayKey;
+
+      // تحديث تلقائي مستمر عبر الإنترنت وحفظ أوقات الوزارة
+      if (navigator.onLine) {
+        fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21&tune=0,-3,0,0,-3,-1,0,0")
+          .then(function(r) { return r.json(); })
+          .then(function(res) {
+            if (res.data && res.data.timings) {
+              const t = res.data.timings;
+              prayerTimings = {
+                Fajr: cleanT(t.Fajr),
+                Dhuhr: cleanT(t.Dhuhr),
+                Asr: cleanT(t.Asr),
+                Maghrib: cleanT(t.Maghrib),
+                Isha: cleanT(t.Isha)
+              };
+              sunriseTime = cleanT(t.Sunrise);
+              document.getElementById('dispSunrise').innerText = sunriseTime;
+              document.getElementById('dispJumua').innerText = prayerTimings.Dhuhr;
+              PRAYER_LIST.forEach(function(p) {
+                const el = document.getElementById('time-' + p.key);
+                if (el) el.innerText = prayerTimings[p.key];
+              });
+              localStorage.setItem("habous_day_" + dayKey, JSON.stringify({
+                timings: prayerTimings,
+                sunrise: sunriseTime
+              }));
+            }
+          }).catch(function(e) {});
+      }
     }
 
     function updateDateText() {
@@ -578,15 +676,32 @@
         const dayName = days[now.getDay()];
         
         if (showHijri) {
-          const hijriDays = { 13: 1, 14: 2, 15: 3, 16: 4, 17: 5, 18: 6, 19: 7, 20: 8, 21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16, 29: 17, 30: 18, 31: 19 };
-          const hDay = hijriDays[now.getDate()] || 4;
-          dateEl.innerText = dayName + '، ' + hDay + ' جمادى الأولى 1448 هـ';
+          try {
+            const hFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+              day: 'numeric', month: 'long', year: 'numeric'
+            });
+            dateEl.innerText = dayName + '، ' + hFormatter.format(now) + ' هـ';
+          } catch(err) {
+            dateEl.innerText = dayName + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
+          }
           dateEl.style.color = '#facc15';
         } else {
-          dateEl.innerText = dayName + '، ' + now.getDate() + '-10-' + now.getFullYear() + ' م';
+          dateEl.innerText = dayName + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
           dateEl.style.color = '#bfdbfe';
         }
       } catch(e) {}
+    }
+
+    function checkNetworkState() {
+      const dot = document.getElementById('netDot');
+      const text = document.getElementById('netStatusText');
+      if (navigator.onLine) {
+        dot.classList.remove('offline');
+        text.innerText = "متصل";
+      } else {
+        dot.classList.add('offline');
+        text.innerText = "أوفلاين محلي";
+      }
     }
 
     function updateTick() {
@@ -597,7 +712,8 @@
         const s = String(now.getSeconds()).padStart(2, '0');
         document.getElementById('liveClock').innerText = h + ':' + m + ':' + s;
 
-        if (now.getDate() !== cachedDay) {
+        const currentDayKey = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+        if (currentDayKey !== cachedDayKey) {
           loadTodayPrayers();
         }
 
@@ -708,6 +824,7 @@
       } catch(e) {}
     }
 
+    checkNetworkState();
     loadTodayPrayers();
     updateTick();
     updateDateText();
@@ -749,6 +866,9 @@
         }, 400);
       }
     }, 6000);
+
+    window.addEventListener('online', checkNetworkState);
+    window.addEventListener('offline', checkNetworkState);
   </script>
 </body>
 </html>
