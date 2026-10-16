@@ -596,8 +596,8 @@
           Fajr: formatTime(calcPrayer(-19.0, true) + (2 / 60)),
           Sunrise: formatTime(calcPrayer(-0.833, true) - (3 / 60)),
           Dhuhr: formatTime((12.0 - lngHour) - (0.162 * Math.sin(rad(N * 0.9856))) - (0.126 * Math.cos(rad(N * 0.9856))) + (5 / 60) - 0.44),
-          Asr: formatTime(calcPrayer(0, false, false)),
-          Maghrib: formatTime(calcPrayer(-0.833, false) - (2 / 60)),
+          Asr: formatTime(calcPrayer(0, false, false) + (2 / 60)),
+          Maghrib: formatTime(calcPrayer(-0.833, false) - (1 / 60)),
           Isha: formatTime(calcPrayer(-17.0, false) + (2 / 60))
         };
       } catch (e) {
@@ -673,7 +673,8 @@
       cachedDay = d;
 
       if (navigator.onLine) {
-        fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21&tune=0,-3,0,0,-3,-1,0,0")
+        // ترتيب التعديل: Imsak, Fajr, Sunrise(-3), Dhuhr, Asr(+2), Sunset, Maghrib(-1), Isha
+        fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21&tune=0,0,-3,0,2,0,-1,0")
           .then(function(r) { return r.json(); })
           .then(function(res) {
             if (res.data && res.data.timings) {
@@ -820,7 +821,6 @@
       } catch(e) {}
     }
 
-    // تشغيل مباشر وفوري للساعة والمواقيت
     checkNetworkState();
     updateTick();
     loadTodayPrayers();
