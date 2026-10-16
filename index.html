@@ -497,12 +497,13 @@
   <script>
     const KENITRA_LAT = 34.2610;
     const KENITRA_LNG = -6.5802;
-    const TIMEZONE = 0; // توقيت غرينتش القانوني المعتمد بدون زيادة
+    const TIMEZONE = 0; // توقيت غرينتش القانوني لوزارة الأوقاف
 
     function getStandardNow() {
       return new Date();
     }
 
+    // معادلة فلكية مصححة ومطابقة لرزنامة القنيطرة أوفلاين
     function computeKenitraPrayers(date) {
       const rad = d => d * Math.PI / 180;
       const deg = r => r * 180 / Math.PI;
@@ -560,8 +561,9 @@
       const fajrT = calcPrayer(-19.0, true) + (2 / 60);
       const sunriseT = calcPrayer(-0.833, true);
       const dhuhrT = (12.0 - lngHour) - (0.162 * Math.sin(rad(N * 0.9856))) - (0.126 * Math.cos(rad(N * 0.9856))) + (5 / 60) - 0.44; 
-      const asrT = calcPrayer(0, false, false) + (2 / 60);
-      const maghribT = calcPrayer(-0.833, false) + (2 / 60);
+      // تم حذف الدقائق الزائدة لتطابق رزنامة وزارة الأوقاف تماماً
+      const asrT = calcPrayer(0, false, false);
+      const maghribT = calcPrayer(-0.833, false);
       const ishaT = calcPrayer(-17.0, false) + (2 / 60);
 
       return {
@@ -748,8 +750,9 @@
       });
       cachedDay = d;
 
+      // ضبط بارامترات التعديل (tune) لجلب أوقات الأوقاف بالدقيقة وخصم الزيادة
       if (navigator.onLine) {
-        fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21")
+        fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21&tune=0,0,0,0,-1,-1,0,0")
           .then(r => r.json())
           .then(res => {
             if (res.data && res.data.timings) {
