@@ -497,14 +497,10 @@
   <script>
     const KENITRA_LAT = 34.2610;
     const KENITRA_LNG = -6.5802;
-    // تم التعديل إلى 0 لإلغاء الساعة الإضافية نهائياً والاعتماد على توقيت غرينتش القانوني
-    const TIMEZONE = 0; 
+    const TIMEZONE = 0; // توقيت غرينتش القانوني المعتمد بدون زيادة
 
-    // دالة موحدة لقراءة الوقت الحقيقي بدون أي زيادة للتوقيت الصيفي
     function getStandardNow() {
-      // قراءة التوقيت العالمي UTC مباشرة (GMT+0)
-      const d = new Date();
-      return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds());
+      return new Date();
     }
 
     function computeKenitraPrayers(date) {
@@ -563,10 +559,10 @@
 
       const fajrT = calcPrayer(-19.0, true) + (2 / 60);
       const sunriseT = calcPrayer(-0.833, true);
-      const dhuhrT = (12 + TIMEZONE - (KENITRA_LNG / 15) - (0.162 * Math.sin(rad(N * 0.9856)))) + (5 / 60);
+      const dhuhrT = (12.0 - lngHour) - (0.162 * Math.sin(rad(N * 0.9856))) - (0.126 * Math.cos(rad(N * 0.9856))) + (5 / 60) - 0.44; 
       const asrT = calcPrayer(0, false, false) + (2 / 60);
-      const maghribT = calcPrayer(-0.833, false) + (3 / 60);
-      const ishaT = calcPrayer(-17.5, false) + (2 / 60);
+      const maghribT = calcPrayer(-0.833, false) + (2 / 60);
+      const ishaT = calcPrayer(-17.0, false) + (2 / 60);
 
       return {
         Fajr: formatTime(fajrT),
@@ -687,14 +683,12 @@
       const dateEl = document.getElementById('liveDate');
       if (showHijri) {
         const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
-          timeZone: 'UTC',
           weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
         }).format(now);
         dateEl.innerText = `${hijri} هـ`;
         dateEl.style.color = '#facc15';
       } else {
         const gregorian = now.toLocaleDateString('ar-MA', {
-          timeZone: 'UTC',
           weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
         });
         dateEl.innerText = `${gregorian} م`;
@@ -728,7 +722,6 @@
       const now = getStandardNow();
       const d = now.getDate();
 
-      // الاعتماد التام على الحساب الفلكي المحلي للقنيطرة بتوقيت GMT+0
       const computed = computeKenitraPrayers(now);
       prayerTimings = {
         Fajr: computed.Fajr,
@@ -738,13 +731,50 @@
         Isha: computed.Isha
       };
       sunriseTime = computed.Sunrise;
+
+      const savedTimings = localStorage.getItem('habous_prayers_' + d);
+      if (savedTimings) {
+        try {
+          const parsed = JSON.parse(savedTimings);
+          prayerTimings = parsed.timings;
+          sunriseTime = parsed.sunrise;
+        } catch(e) {}
+      }
+
       document.getElementById('dispSunrise').innerText = sunriseTime;
       document.getElementById('dispJumua').innerText = prayerTimings.Dhuhr;
-
       PRAYER_LIST.forEach(p => {
         document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
       });
       cachedDay = d;
+
+      if (navigator.onLine) {
+        fetch("https://api.aladhan.com/v1/timingsByCity?city=Kenitra&country=Morocco&method=21")
+          .then(r => r.json())
+          .then(res => {
+            if (res.data && res.data.timings) {
+              const t = res.data.timings;
+              prayerTimings = {
+                Fajr: cleanT(t.Fajr),
+                Dhuhr: cleanT(t.Dhuhr),
+                Asr: cleanT(t.Asr),
+                Maghrib: cleanT(t.Maghrib),
+                Isha: cleanT(t.Isha)
+              };
+              sunriseTime = cleanT(t.Sunrise);
+              document.getElementById('dispSunrise').innerText = sunriseTime;
+              document.getElementById('dispJumua').innerText = prayerTimings.Dhuhr;
+              PRAYER_LIST.forEach(p => {
+                document.getElementById(`time-${p.key}`).innerText = prayerTimings[p.key] || "--:--";
+              });
+
+              localStorage.setItem('habous_prayers_' + d, JSON.stringify({
+                timings: prayerTimings,
+                sunrise: sunriseTime
+              }));
+            }
+          }).catch(e => {});
+      }
     }
 
     function updateTick() {
