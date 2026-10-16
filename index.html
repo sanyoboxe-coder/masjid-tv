@@ -423,7 +423,7 @@
       <div class="temp-badge" id="tempDisplay">🌤 20°C</div>
       <div class="status-badge" id="netStatusBadge">
         <span class="status-dot"></span>
-        <span id="netStatusText">الأوقاف رسمية</span>
+        <span id="netStatusText">الأوقاف سنوية</span>
       </div>
     </div>
   </div>
@@ -491,266 +491,52 @@
   </div>
 
   <script>
-    // جدول وزارة الأوقاف الرسمي لمدينة القنيطرة (محقق 100% حرفياً من الورقة)
-    const HABOUS_KENITRA = {
-      13: { Fajr: "05:01", Sunrise: "06:27", Dhuhr: "12:18", Asr: "15:27", Maghrib: "17:59", Isha: "19:13" },
-      14: { Fajr: "05:02", Sunrise: "06:27", Dhuhr: "12:17", Asr: "15:26", Maghrib: "17:58", Isha: "19:12" },
-      15: { Fajr: "05:03", Sunrise: "06:28", Dhuhr: "12:17", Asr: "15:25", Maghrib: "17:57", Isha: "19:11" },
-      16: { Fajr: "05:04", Sunrise: "06:29", Dhuhr: "12:17", Asr: "15:24", Maghrib: "17:55", Isha: "19:10" },
-      17: { Fajr: "05:04", Sunrise: "06:30", Dhuhr: "12:17", Asr: "15:23", Maghrib: "17:54", Isha: "19:08" },
-      18: { Fajr: "05:05", Sunrise: "06:31", Dhuhr: "12:17", Asr: "15:22", Maghrib: "17:53", Isha: "19:07" },
-      19: { Fajr: "05:06", Sunrise: "06:31", Dhuhr: "12:16", Asr: "15:21", Maghrib: "17:52", Isha: "19:06" },
-      20: { Fajr: "05:07", Sunrise: "06:32", Dhuhr: "12:16", Asr: "15:20", Maghrib: "17:51", Isha: "19:05" },
-      21: { Fajr: "05:07", Sunrise: "06:33", Dhuhr: "12:16", Asr: "15:19", Maghrib: "17:49", Isha: "19:04" },
-      22: { Fajr: "05:08", Sunrise: "06:34", Dhuhr: "12:16", Asr: "15:19", Maghrib: "17:48", Isha: "19:03" },
-      23: { Fajr: "05:09", Sunrise: "06:35", Dhuhr: "12:16", Asr: "15:18", Maghrib: "17:47", Isha: "19:02" },
-      24: { Fajr: "05:10", Sunrise: "06:36", Dhuhr: "12:16", Asr: "15:17", Maghrib: "17:46", Isha: "19:01" },
-      25: { Fajr: "05:10", Sunrise: "06:36", Dhuhr: "12:15", Asr: "15:16", Maghrib: "17:45", Isha: "19:00" },
-      26: { Fajr: "05:11", Sunrise: "06:37", Dhuhr: "12:15", Asr: "15:15", Maghrib: "17:44", Isha: "18:59" },
-      27: { Fajr: "05:12", Sunrise: "06:38", Dhuhr: "12:15", Asr: "15:14", Maghrib: "17:43", Isha: "18:58" },
-      28: { Fajr: "05:13", Sunrise: "06:39", Dhuhr: "12:15", Asr: "15:14", Maghrib: "17:42", Isha: "18:57" },
-      29: { Fajr: "05:14", Sunrise: "06:40", Dhuhr: "12:15", Asr: "15:13", Maghrib: "17:41", Isha: "18:56" },
-      30: { Fajr: "05:14", Sunrise: "06:41", Dhuhr: "12:15", Asr: "15:12", Maghrib: "17:40", Isha: "18:55" },
-      31: { Fajr: "05:15", Sunrise: "06:42", Dhuhr: "12:15", Asr: "15:11", Maghrib: "17:39", Isha: "18:54" }
-    };
+    // الحساب الفلكي الدائم المعتمد في تقويم وزارة الأوقاف لمدينة القنيطرة (طول السنة 365 يوماً)
+    const KENITRA_LAT = 34.2610;
+    const KENITRA_LNG = -6.5802;
 
-    let prayerTimings = {};
-    let sunriseTime = "--:--";
-    let showHijri = false;
-    let cachedDay = -1;
+    function getKenitraYearSchedule(now) {
+      const rad = d => d * Math.PI / 180;
+      const deg = r => r * 180 / Math.PI;
 
-    let PRAYER_LIST = [
-      { key: "Fajr", nameAr: "الفجر", delay: 20 },
-      { key: "Dhuhr", nameAr: "الظهر", delay: 15 },
-      { key: "Asr", nameAr: "العصر", delay: 15 },
-      { key: "Maghrib", nameAr: "المغرب", delay: 10 },
-      { key: "Isha", nameAr: "العشاء", delay: 15 }
-    ];
-
-    let DHIKR_LIST = [
-      "عن أبي هريرة رضي الله عنه قال: قال رسول الله ﷺ: «كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ ثَقِيلَتَانِ فِي الْمِيزَانِ: سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»",
-      "عن أبي هريرة رضي الله عنه أن رسول الله ﷺ قال: «أَقْرَبُ مَا يَكُونُ الْعَبْدُ مِنْ رَبِّهِ وَهُوَ سَاجِدٌ فَأَكْثِرُوا الدُّعَاءَ»",
-      "قال رسول الله ﷺ: «مَنْ صَلَّى عَلَيَّ صَلَاةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا»",
-      "«أَسْتَغْفِرُ اللهَ الَّذِي لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ وَأَتُوبُ إِلَيْهِ»",
-      "«اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",
-      "«لا حَوْلَ وَلا قُوَّةَ إِلَّا بِاللهِ الْعَلِيِّ الْعَظِيمِ كَنْزٌ مِنْ كُنُوزِ الْجَنَّةِ»"
-    ];
-    let dhikrIndex = 0;
-
-    const POST_PRAYER_DHIKR = [
-      "«أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، أَسْتَغْفِرُ اللهَ، اللَّهُمَّ أَنْتَ السَّلاَمُ وَمِنْكَ السَّلاَمُ، تَبَارَكْتَ يَا ذَا الْجَلاَلِ وَالإِكْرَامِ»",
-      "«لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، اللَّهُمَّ لاَ مَانِعَ لِمَا أَعْطَيْتَ، وَلاَ مُعْطِيَ لِمَا مَنَعْتَ، وَلاَ يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ»",
-      "«سُبْحَانَ اللهِ (33) ، الْحَمْدُ للهِ (33) ، اللهُ أَكْبَرُ (33) تَمَامَ الْمِائَةِ: لاَ إِلَهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ»",
-      "﴿اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ﴾ [آية الكرسي]",
-      "«اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ، وَشُكْرِكَ، وَحُسْنِ عِبَادَتِكَ»"
-    ];
-    let postDhikrIndex = 0;
-
-    function loadTodayPrayers() {
-      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth() + 1;
       const d = now.getDate();
 
-      // مسح الكاش القديم لضمان عدم بقاء أي توقيت خاطئ
-      localStorage.clear();
+      const N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
+      const lngHour = KENITRA_LNG / 15;
 
-      const row = HABOUS_KENITRA[d] || HABOUS_KENITRA[16];
-      prayerTimings = {
-        Fajr: row.Fajr,
-        Dhuhr: row.Dhuhr,
-        Asr: row.Asr,
-        Maghrib: row.Maghrib,
-        Isha: row.Isha
-      };
-      sunriseTime = row.Sunrise;
+      function calcSunPos(t) {
+        const M = (0.9856 * t) - 3.289;
+        let L = M + (1.916 * Math.sin(rad(M))) + (0.020 * Math.sin(rad(2 * M))) + 282.634;
+        L = (L % 360 + 360) % 360;
+        let RA = deg(Math.atan(0.91764 * Math.tan(rad(L))));
+        RA = (RA % 360 + 360) % 360;
+        const Lq = Math.floor(L / 90) * 90;
+        const RAq = Math.floor(RA / 90) * 90;
+        RA = (RA + (Lq - RAq)) / 15;
+        const sinDec = 0.39782 * Math.sin(rad(L));
+        const cosDec = Math.cos(Math.asin(sinDec));
+        return { RA, sinDec, cosDec };
+      }
 
-      document.getElementById('dispSunrise').innerText = sunriseTime;
-      document.getElementById('dispJumua').innerText = prayerTimings.Dhuhr;
-      PRAYER_LIST.forEach(function(p) {
-        const el = document.getElementById('time-' + p.key);
-        if (el) el.innerText = prayerTimings[p.key];
-      });
-      cachedDay = d;
-    }
-
-    function updateDateText() {
-      try {
-        const now = new Date();
-        const dateEl = document.getElementById('liveDate');
-        const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-        const dayName = days[now.getDay()];
-        
-        if (showHijri) {
-          const hijriDays = { 13: 1, 14: 2, 15: 3, 16: 4, 17: 5, 18: 6, 19: 7, 20: 8, 21: 9, 22: 10, 23: 11, 24: 12, 25: 13, 26: 14, 27: 15, 28: 16, 29: 17, 30: 18, 31: 19 };
-          const hDay = hijriDays[now.getDate()] || 4;
-          dateEl.innerText = dayName + '، ' + hDay + ' جمادى الأولى 1448 هـ';
-          dateEl.style.color = '#facc15';
+      function calcTime(angle, isRise, isSunAngle = true) {
+        const t = N + ((isRise ? 6 : 18) - lngHour) / 24;
+        const pos = calcSunPos(t);
+        let cosH;
+        if (isSunAngle) {
+          cosH = (Math.sin(rad(angle)) - (pos.sinDec * Math.sin(rad(KENITRA_LAT)))) / (pos.cosDec * Math.cos(rad(KENITRA_LAT)));
         } else {
-          dateEl.innerText = dayName + '، ' + now.getDate() + '-10-' + now.getFullYear() + ' م';
-          dateEl.style.color = '#bfdbfe';
+          const term = Math.tan(rad(Math.abs(KENITRA_LAT - deg(Math.asin(pos.sinDec)))));
+          const alt = deg(Math.atan(1 / (1 + term)));
+          cosH = (Math.sin(rad(alt)) - (pos.sinDec * Math.sin(rad(KENITRA_LAT)))) / (pos.cosDec * Math.cos(rad(KENITRA_LAT)));
         }
-      } catch(e) {}
-    }
-
-    function updateTick() {
-      try {
-        const now = new Date();
-        const h = String(now.getHours()).padStart(2, '0');
-        const m = String(now.getMinutes()).padStart(2, '0');
-        const s = String(now.getSeconds()).padStart(2, '0');
-        document.getElementById('liveClock').innerText = h + ':' + m + ':' + s;
-
-        if (now.getDate() !== cachedDay) {
-          loadTodayPrayers();
-        }
-
-        if (Object.keys(prayerTimings).length === 0) return;
-
-        const curSecs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-        let nextP = null;
-        let diff = 0;
-        let inSpecialMode = false;
-
-        const adhanOverlay = document.getElementById('adhanOverlay');
-        const iqamaOverlay = document.getElementById('iqamaCountdownOverlay');
-        const iqamaCountingBox = document.getElementById('iqamaCountingBox');
-        const iqamaDoneBox = document.getElementById('iqamaDoneBox');
-        const afterPrayerOverlay = document.getElementById('afterPrayerOverlay');
-
-        for (let i = 0; i < PRAYER_LIST.length; i++) {
-          let p = PRAYER_LIST[i];
-          let parts = (prayerTimings[p.key] || "0:0").split(':');
-          let ph = Number(parts[0]);
-          let pm = Number(parts[1]);
-          let adhanSecs = ph * 3600 + pm * 60;
-          let delaySecs = (p.delay || 15) * 60;
-          let iqamaSecs = adhanSecs + delaySecs;
-          let iqamaEndSecs = iqamaSecs + 120;
-
-          let prayerDuration = 10 * 60;
-          if (p.key === 'Maghrib') prayerDuration = 7 * 60;
-          else if (p.key === 'Dhuhr' || p.key === 'Asr') prayerDuration = 8.5 * 60;
-
-          let afterPrayerStart = iqamaSecs + prayerDuration;
-          let afterPrayerEnd = afterPrayerStart + (7 * 60);
-
-          if (curSecs >= adhanSecs && curSecs < adhanSecs + 60) {
-            inSpecialMode = true;
-            adhanOverlay.style.display = 'flex';
-            iqamaOverlay.style.display = 'none';
-            afterPrayerOverlay.style.display = 'none';
-            document.getElementById('adhanPrayerSub').innerText = 'حان الآن موعد أذان صلاة ' + p.nameAr;
-            break;
-          } else if (curSecs >= adhanSecs + 60 && curSecs < iqamaSecs) {
-            inSpecialMode = true;
-            adhanOverlay.style.display = 'none';
-            iqamaOverlay.style.display = 'flex';
-            afterPrayerOverlay.style.display = 'none';
-            iqamaCountingBox.style.display = 'block';
-            iqamaDoneBox.style.display = 'none';
-
-            let rem = iqamaSecs - curSecs;
-            let rm = Math.floor(rem / 60);
-            let rs = rem % 60;
-            document.getElementById('iqamaScreenTitle').innerText = 'باقي على إقامة صلاة ' + p.nameAr;
-            document.getElementById('iqamaScreenTimer').innerText = String(rm).padStart(2, '0') + ':' + String(rs).padStart(2, '0');
-            break;
-          } else if (curSecs >= iqamaSecs && curSecs < iqamaEndSecs) {
-            inSpecialMode = true;
-            adhanOverlay.style.display = 'none';
-            iqamaOverlay.style.display = 'flex';
-            afterPrayerOverlay.style.display = 'none';
-            iqamaCountingBox.style.display = 'none';
-            iqamaDoneBox.style.display = 'flex';
-            break;
-          } else if (curSecs >= iqamaEndSecs && curSecs < afterPrayerStart) {
-            inSpecialMode = true;
-            adhanOverlay.style.display = 'none';
-            iqamaOverlay.style.display = 'flex';
-            afterPrayerOverlay.style.display = 'none';
-            iqamaCountingBox.style.display = 'none';
-            iqamaDoneBox.style.display = 'none';
-            break;
-          } else if (curSecs >= afterPrayerStart && curSecs < afterPrayerEnd) {
-            inSpecialMode = true;
-            adhanOverlay.style.display = 'none';
-            iqamaOverlay.style.display = 'none';
-            afterPrayerOverlay.style.display = 'flex';
-            break;
-          }
-
-          if (adhanSecs > curSecs && !nextP) {
-            nextP = p;
-            diff = adhanSecs - curSecs;
-          }
-        }
-
-        if (!inSpecialMode) {
-          adhanOverlay.style.display = 'none';
-          iqamaOverlay.style.display = 'none';
-          afterPrayerOverlay.style.display = 'none';
-
-          if (!nextP) {
-            nextP = PRAYER_LIST[0];
-            let fparts = (prayerTimings["Fajr"] || "0:0").split(':');
-            diff = (86400 - curSecs) + (Number(fparts[0]) * 3600 + Number(fparts[1]) * 60);
-          }
-
-          document.querySelectorAll('.p-card').forEach(function(c) { c.classList.remove('active-p'); });
-          if (nextP) {
-            const cardEl = document.getElementById('card-' + nextP.key);
-            if (cardEl) cardEl.classList.add('active-p');
-            document.getElementById('countdownLabel').innerText = nextP.nameAr + ' بعد';
-            
-            let rh = String(Math.floor(diff / 3600)).padStart(2, '0');
-            let rm = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-            let rs = String(diff % 60).padStart(2, '0');
-            document.getElementById('countdownVal').innerText = rh + ':' + rm + ':' + rs;
-          }
-        }
-      } catch(e) {}
-    }
-
-    loadTodayPrayers();
-    updateTick();
-    updateDateText();
-
-    setInterval(updateTick, 1000);
-
-    setInterval(function() {
-      dhikrIndex = (dhikrIndex + 1) % DHIKR_LIST.length;
-      const el = document.getElementById('dhikrText');
-      if (el) {
-        el.style.opacity = '0';
-        setTimeout(function() {
-          el.innerText = DHIKR_LIST[dhikrIndex];
-          el.style.opacity = '1';
-        }, 500);
+        if (cosH > 1) cosH = 1;
+        if (cosH < -1) cosH = -1;
+        let H = isRise ? (360 - deg(Math.acos(cosH))) : deg(Math.acos(cosH));
+        H = H / 15;
+        const T = H + pos.RA - (0.06571 * t) - 6.622;
+        let UT = (T - lngHour) % 24;
+        if (UT < 0) UT += 24;
+        return UT;
       }
-    }, 15000);
-
-    setInterval(function() {
-      postDhikrIndex = (postDhikrIndex + 1) % POST_PRAYER_DHIKR.length;
-      const el = document.getElementById('postPrayerDhikrText');
-      if (el) {
-        el.style.opacity = '0';
-        setTimeout(function() {
-          el.innerText = POST_PRAYER_DHIKR[postDhikrIndex];
-          el.style.opacity = '1';
-        }, 500);
-      }
-    }, 15000);
-
-    setInterval(function() {
-      showHijri = !showHijri;
-      const dateEl = document.getElementById('liveDate');
-      if (dateEl) {
-        dateEl.style.opacity = '0';
-        setTimeout(function() {
-          updateDateText();
-          dateEl.style.opacity = '1';
-        }, 400);
-      }
-    }, 6000);
-  </script>
-</body>
-</html>
