@@ -143,4 +143,82 @@
         Sunrise: toClock(calcHour(-0.833, true, true) - (5.0 / 60.0)),
         Dhuhr: toClock(noon),
         Asr: toClock(calcHour(0, false, false) - (6.0 / 60.0)),
-        Maghrib: toClock(calcHour(-0.833, false
+        Maghrib: toClock(calcHour(-0.833, false, true) + (4.0 / 60.0)),
+        Isha: toClock(calcHour(-17.0, false, true))
+      };
+    }
+
+    var hijriOffsetDays = 0;
+
+    function getHijriDisplay(now) {
+      try {
+        var d = new Date(now.getTime());
+        d.setDate(d.getDate() + hijriOffsetDays);
+        var formatted = new Intl.DateTimeFormat('ar-TN-u-ca-islamic-umalqura', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }).format(d);
+        return formatted;
+      } catch (e) {
+        var daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        return daysAr[now.getDay()] + ' ' + (20 + hijriOffsetDays) + ' جمادى الأولى 1448 هـ';
+      }
+    }
+
+    var timings = {};
+    var cachedDay = -1;
+
+    function refreshPrayers() {
+      var now = new Date();
+      timings = calcKenitraTimes(now);
+      document.getElementById('dispSunrise').innerText = timings.Sunrise;
+      document.getElementById('dispJumua').innerText = timings.Dhuhr;
+      for (var i = 0; i < PRAYERS.length; i++) {
+        var p = PRAYERS[i];
+        var el = document.getElementById('time-' + p.key);
+        if (el) el.innerText = timings[p.key];
+      }
+      cachedDay = now.getDate();
+    }
+
+    function tick() {
+      var now = new Date();
+      var h = now.getHours();
+      var m = now.getMinutes();
+      var s = now.getSeconds();
+      document.getElementById('liveClock').innerText = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+
+      document.getElementById('liveHijri').innerText = getHijriDisplay(now);
+      document.getElementById('liveGregorian').innerText = now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
+
+      if (now.getDate() !== cachedDay) {
+        refreshPrayers();
+      }
+
+      if (!timings.Fajr) return;
+
+      var curSecs = h * 3600 + m * 60 + s;
+      var nextP = null;
+      var diff = 0;
+
+      for (var i = 0; i < PRAYERS.length; i++) {
+        var p = PRAYERS[i];
+        var parts = timings[p.key].split(':');
+        var adhanSecs = Number(parts[0]) * 3600 + Number(parts[1]) * 60;
+        if (adhanSecs > curSecs) {
+          nextP = p;
+          diff = adhanSecs - curSecs;
+          break;
+        }
+      }
+
+      if (!nextP) {
+        nextP = PRAYERS[0];
+        var fparts = timings.Fajr.split(':');
+        diff = (86400 - curSecs) + (Number(fparts[0]) * 3600 + Number(fparts[1]) * 60);
+      }
+
+      var cards = document.querySelectorAll('.p-card');
+      for (var c = 0; c < cards.length; c++) cards[c].classList.remove('active-p');
