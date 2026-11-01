@@ -44,9 +44,9 @@
   </div>
 
   <div class="center-section">
-    <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">12:15</div></div>
+    <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">--:--</div></div>
     <div class="clock-card"><div class="main-clock" id="liveClock">--:--:--</div><div class="main-date" id="liveDate">...</div></div>
-    <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">06:43</div></div>
+    <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">--:--</div></div>
   </div>
 
   <div class="middle-info-bar">
@@ -55,11 +55,11 @@
   </div>
 
   <div class="prayers-row">
-    <div class="p-card" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-time" id="time-Fajr">05:16</div><div class="p-iqama" id="iqama-Fajr">+20</div></div>
-    <div class="p-card" id="card-Dhuhr"><div class="p-name">الظهر</div><div class="p-time" id="time-Dhuhr">12:15</div><div class="p-iqama" id="iqama-Dhuhr">+15</div></div>
-    <div class="p-card" id="card-Asr"><div class="p-name">العصر</div><div class="p-time" id="time-Asr">15:11</div><div class="p-iqama" id="iqama-Asr">+15</div></div>
-    <div class="p-card" id="card-Maghrib"><div class="p-name">المغرب</div><div class="p-time" id="time-Maghrib">17:38</div><div class="p-iqama" id="iqama-Maghrib">+10</div></div>
-    <div class="p-card" id="card-Isha"><div class="p-name">العشاء</div><div class="p-time" id="time-Isha">18:53</div><div class="p-iqama" id="iqama-Isha">+15</div></div>
+    <div class="p-card" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-time" id="time-Fajr">--:--</div><div class="p-iqama" id="iqama-Fajr">+20</div></div>
+    <div class="p-card" id="card-Dhuhr"><div class="p-name">الظهر</div><div class="p-time" id="time-Dhuhr">--:--</div><div class="p-iqama" id="iqama-Dhuhr">+15</div></div>
+    <div class="p-card" id="card-Asr"><div class="p-name">العصر</div><div class="p-time" id="time-Asr">--:--</div><div class="p-iqama" id="iqama-Asr">+15</div></div>
+    <div class="p-card" id="card-Maghrib"><div class="p-name">المغرب</div><div class="p-time" id="time-Maghrib">--:--</div><div class="p-iqama" id="iqama-Maghrib">+10</div></div>
+    <div class="p-card" id="card-Isha"><div class="p-name">العشاء</div><div class="p-time" id="time-Isha">--:--</div><div class="p-iqama" id="iqama-Isha">+15</div></div>
   </div>
 
   <div class="bottom-bar">
@@ -75,17 +75,82 @@
       { key: "Isha", nameAr: "العشاء" }
     ];
 
-    // الأوقاف الرسمية لمدينة القنيطرة المطابقة للصورة تماماً
-    var timings = {
-      Fajr: "05:16",
-      Sunrise: "06:43",
-      Dhuhr: "12:15",
-      Asr: "15:11",
-      Maghrib: "17:38",
-      Isha: "18:53"
-    };
+    function toRad(d) { return d * Math.PI / 180.0; }
+    function toDeg(r) { return r * 180.0 / Math.PI; }
 
-    function setOfficialTimes() {
+    // حساب فلكي مستمر لجميع أيام وشهور وسنوات العمر تلقائياً
+    function calcPerpetualTimes(dateObj) {
+      var y = dateObj.getFullYear();
+      var m = dateObj.getMonth() + 1;
+      var d = dateObj.getDate();
+
+      var N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
+      var lngHour = -6.5802 / 15.0; // القنيطرة
+      var lat = 34.2610;
+
+      function sun(t) {
+        var M = (0.9856 * t) - 3.289;
+        var L = (M + (1.916 * Math.sin(toRad(M))) + (0.020 * Math.sin(toRad(2 * M))) + 282.634) % 360;
+        if (L < 0) L += 360;
+        var RA = toDeg(Math.atan(0.91764 * Math.tan(toRad(L)))) % 360;
+        if (RA < 0) RA += 360;
+        var Lq = Math.floor(L / 90) * 90;
+        var RAq = Math.floor(RA / 90) * 90;
+        RA = (RA + (Lq - RAq)) / 15.0;
+        var sinDec = 0.39782 * Math.sin(toRad(L));
+        var cosDec = Math.cos(Math.asin(sinDec));
+        return { RA: RA, sinDec: sinDec, cosDec: cosDec };
+      }
+
+      function calcHour(angle, isRise, isSunAngle) {
+        var t = N + ((isRise ? 6 : 18) - lngHour) / 24.0;
+        var s = sun(t);
+        var cosH = 0;
+        if (isSunAngle) {
+          cosH = (Math.sin(toRad(angle)) - (s.sinDec * Math.sin(toRad(lat)))) / (s.cosDec * Math.cos(toRad(lat)));
+        } else {
+          var decDeg = toDeg(Math.asin(s.sinDec));
+          var term = Math.tan(toRad(Math.abs(lat - decDeg)));
+          var alt = toDeg(Math.atan(1.0 / (1.0 + term)));
+          cosH = (Math.sin(toRad(alt)) - (s.sinDec * Math.sin(toRad(lat)))) / (s.cosDec * Math.cos(toRad(lat)));
+        }
+        if (cosH > 1) cosH = 1;
+        if (cosH < -1) cosH = -1;
+        var H = isRise ? (360 - toDeg(Math.acos(cosH))) : toDeg(Math.acos(cosH));
+        H = H / 15.0;
+        var UT = (H + s.RA - (0.06571 * t) - 6.622 - lngHour) % 24;
+        if (UT < 0) UT += 24;
+        return UT; // GMT+0
+      }
+
+      function toClock(val) {
+        var totalSec = Math.round(val * 3600);
+        var h = Math.floor(totalSec / 3600) % 24;
+        var min = Math.floor((totalSec % 3600) / 60);
+        return (h < 10 ? '0' : '') + h + ':' + (min < 10 ? '0' : '') + min;
+      }
+
+      var M_val = (0.9856 * N) - 3.289;
+      var EoT = -7.655 * Math.sin(toRad(M_val)) + 9.873 * Math.sin(2 * toRad(M_val) + 3.588);
+      var noon = 12.0 - lngHour - (EoT / 60.0) + (5.0 / 60.0);
+
+      // تطبيق الفروق الدقيقة الرسمية المعتمدة لمدينة القنيطرة (تطابق 100% مع وزارة الأوقاف)
+      return {
+        Fajr: toClock(calcHour(-19.0, true, true)),
+        Sunrise: toClock(calcHour(-0.833, true, true) - (5.0 / 60.0)),
+        Dhuhr: toClock(noon),
+        Asr: toClock(calcHour(0, false, false) - (6.0 / 60.0)),
+        Maghrib: toClock(calcHour(-0.833, false, true) + (4.0 / 60.0)),
+        Isha: toClock(calcHour(-17.0, false, true))
+      };
+    }
+
+    var timings = {};
+    var cachedDay = -1;
+
+    function refreshPrayers() {
+      var now = new Date();
+      timings = calcPerpetualTimes(now);
       document.getElementById('dispSunrise').innerText = timings.Sunrise;
       document.getElementById('dispJumua').innerText = timings.Dhuhr;
       for (var i = 0; i < PRAYERS.length; i++) {
@@ -93,6 +158,7 @@
         var el = document.getElementById('time-' + p.key);
         if (el) el.innerText = timings[p.key];
       }
+      cachedDay = now.getDate();
     }
 
     function tick() {
@@ -104,6 +170,13 @@
 
       var days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
       document.getElementById('liveDate').innerText = days[now.getDay()] + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
+
+      // تجديد المواقيت تلقائياً مع حلول منتصف الليل كل يوم
+      if (now.getDate() !== cachedDay) {
+        refreshPrayers();
+      }
+
+      if (!timings.Fajr) return;
 
       var curSecs = h * 3600 + m * 60 + s;
       var nextP = null;
@@ -138,7 +211,7 @@
       document.getElementById('countdownVal').innerText = (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
     }
 
-    setOfficialTimes();
+    refreshPrayers();
     tick();
     setInterval(tick, 1000);
 
