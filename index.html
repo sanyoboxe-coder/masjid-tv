@@ -46,7 +46,7 @@
   <div class="center-section">
     <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">12:15</div></div>
     <div class="clock-card"><div class="main-clock" id="liveClock">--:--:--</div><div class="main-date" id="liveDate">...</div></div>
-    <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">06:48</div></div>
+    <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">06:43</div></div>
   </div>
 
   <div class="middle-info-bar">
@@ -55,10 +55,10 @@
   </div>
 
   <div class="prayers-row">
-    <div class="p-card" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-time" id="time-Fajr">05:21</div><div class="p-iqama" id="iqama-Fajr">+20</div></div>
+    <div class="p-card" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-time" id="time-Fajr">05:16</div><div class="p-iqama" id="iqama-Fajr">+20</div></div>
     <div class="p-card" id="card-Dhuhr"><div class="p-name">الظهر</div><div class="p-time" id="time-Dhuhr">12:15</div><div class="p-iqama" id="iqama-Dhuhr">+15</div></div>
-    <div class="p-card" id="card-Asr"><div class="p-name">العصر</div><div class="p-time" id="time-Asr">15:17</div><div class="p-iqama" id="iqama-Asr">+15</div></div>
-    <div class="p-card" id="card-Maghrib"><div class="p-name">المغرب</div><div class="p-time" id="time-Maghrib">17:34</div><div class="p-iqama" id="iqama-Maghrib">+10</div></div>
+    <div class="p-card" id="card-Asr"><div class="p-name">العصر</div><div class="p-time" id="time-Asr">15:11</div><div class="p-iqama" id="iqama-Asr">+15</div></div>
+    <div class="p-card" id="card-Maghrib"><div class="p-name">المغرب</div><div class="p-time" id="time-Maghrib">17:38</div><div class="p-iqama" id="iqama-Maghrib">+10</div></div>
     <div class="p-card" id="card-Isha"><div class="p-name">العشاء</div><div class="p-time" id="time-Isha">18:53</div><div class="p-iqama" id="iqama-Isha">+15</div></div>
   </div>
 
@@ -75,16 +75,17 @@
       { key: "Isha", nameAr: "العشاء" }
     ];
 
+    // الأوقاف الرسمية لمدينة القنيطرة المطابقة للصورة تماماً
     var timings = {
-      Fajr: "05:21",
-      Sunrise: "06:48",
+      Fajr: "05:16",
+      Sunrise: "06:43",
       Dhuhr: "12:15",
-      Asr: "15:17",
-      Maghrib: "17:34",
+      Asr: "15:11",
+      Maghrib: "17:38",
       Isha: "18:53"
     };
 
-    function setStaticTimes() {
+    function setOfficialTimes() {
       document.getElementById('dispSunrise').innerText = timings.Sunrise;
       document.getElementById('dispJumua').innerText = timings.Dhuhr;
       for (var i = 0; i < PRAYERS.length; i++) {
@@ -137,10 +138,11 @@
       document.getElementById('countdownVal').innerText = (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
     }
 
-    setStaticTimes();
+    setOfficialTimes();
     tick();
     setInterval(tick, 1000);
 
+    // نظام المراقبة والتحديث عن بعد
     var currentReloadVersion = null;
 
     function checkRemoteCommands() {
