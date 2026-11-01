@@ -118,4 +118,137 @@
     .p-name { font-size: 1.85rem; font-weight: 900; }
     .p-time { font-size: 2.7rem; font-weight: 900; font-family: monospace; }
     .p-iqama { font-size: 1.6rem; font-weight: 900; color: #93c5fd; direction: ltr; }
-    .bottom-
+    .bottom-bar {
+      background: rgba(10, 25, 55, 0.90);
+      padding: 6px 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #cbd5e1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div id="topMasjidTitle">مسجد أبي هريرة تجزئة أندلس القنيطرة - KENITRA</div>
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <div class="temp-badge">🌤 20°C</div>
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span>الأوقاف سنوية</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="center-section">
+    <div class="side-box">
+      <div class="side-title">الجمعة</div>
+      <div class="side-time" id="dispJumua">--:--</div>
+    </div>
+
+    <div class="clock-card">
+      <div class="main-clock" id="liveClock">--:--:--</div>
+      <div class="main-date" id="liveDate">...</div>
+    </div>
+
+    <div class="side-box">
+      <div class="side-title">الشروق</div>
+      <div class="side-time" id="dispSunrise">--:--</div>
+    </div>
+  </div>
+
+  <div class="middle-info-bar">
+    <div class="dhikr-box" id="dhikrText">«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»</div>
+    <div class="countdown-bar">
+      <span>⏳</span>
+      <span id="countdownLabel">الصلاة بعد</span>
+      <span class="count-val" id="countdownVal">--:--:--</span>
+    </div>
+  </div>
+
+  <div class="prayers-row">
+    <div class="p-card" id="card-Fajr">
+      <div class="p-name">الفجر</div>
+      <div class="p-time" id="time-Fajr">--:--</div>
+      <div class="p-iqama" id="iqama-Fajr">+20</div>
+    </div>
+    <div class="p-card" id="card-Dhuhr">
+      <div class="p-name">الظهر</div>
+      <div class="p-time" id="time-Dhuhr">--:--</div>
+      <div class="p-iqama" id="iqama-Dhuhr">+15</div>
+    </div>
+    <div class="p-card" id="card-Asr">
+      <div class="p-name">العصر</div>
+      <div class="p-time" id="time-Asr">--:--</div>
+      <div class="p-iqama" id="iqama-Asr">+15</div>
+    </div>
+    <div class="p-card" id="card-Maghrib">
+      <div class="p-name">المغرب</div>
+      <div class="p-time" id="time-Maghrib">--:--</div>
+      <div class="p-iqama" id="iqama-Maghrib">+10</div>
+    </div>
+    <div class="p-card" id="card-Isha">
+      <div class="p-name">العشاء</div>
+      <div class="p-time" id="time-Isha">--:--</div>
+      <div class="p-iqama" id="iqama-Isha">+15</div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <span>عبد العالي العزري</span>
+    <span>•</span>
+    <span>06 70 62 68 34</span>
+  </div>
+
+  <script>
+    var PRAYER_LIST = [
+      { key: "Fajr", nameAr: "الفجر" },
+      { key: "Dhuhr", nameAr: "الظهر" },
+      { key: "Asr", nameAr: "العصر" },
+      { key: "Maghrib", nameAr: "المغرب" },
+      { key: "Isha", nameAr: "العشاء" }
+    ];
+
+    function calculateYearTimes(dateObj) {
+      function rad(deg) { return deg * Math.PI / 180; }
+      function deg(rad) { return rad * 180 / Math.PI; }
+
+      var y = dateObj.getFullYear();
+      var m = dateObj.getMonth() + 1;
+      var d = dateObj.getDate();
+
+      var N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
+      var lngHour = -6.5802 / 15;
+
+      function calcSunPos(t) {
+        var M = (0.9856 * t) - 3.289;
+        var L = (M + (1.916 * Math.sin(rad(M))) + (0.020 * Math.sin(rad(2 * M))) + 282.634) % 360;
+        if (L < 0) L += 360;
+        var RA = deg(Math.atan(0.91764 * Math.tan(rad(L)))) % 360;
+        if (RA < 0) RA += 360;
+        var Lq = Math.floor(L / 90) * 90;
+        var RAq = Math.floor(RA / 90) * 90;
+        RA = (RA + (Lq - RAq)) / 15;
+        var sinDec = 0.39782 * Math.sin(rad(L));
+        var cosDec = Math.cos(Math.asin(sinDec));
+        return { RA: RA, sinDec: sinDec, cosDec: cosDec };
+      }
+
+      function calcTime(angle, isRise, isSunAngle) {
+        var t = N + ((isRise ? 6 : 18) - lngHour) / 24;
+        var pos = calcSunPos(t);
+        var cosH = 0;
+        if (isSunAngle) {
+          cosH = (Math.sin(rad(angle)) - (pos.sinDec * Math.sin(rad(34.2610)))) / (pos.cosDec * Math.cos(rad(34.2610)));
+        } else {
+          var term = Math.tan(rad(Math.abs(34.2610 - deg(Math.asin(pos.sinDec)))));
+          var alt = deg(Math.atan(1 / (1 + term)));
+          cosH = (Math.sin(rad(alt)) - (pos.sinDec * Math.sin(rad(34.2610)))) / (pos.cosDec * Math.cos(rad(34.2610)));
+        }
+        if (cosH > 1) cosH = 1;
+        if (cosH < -1) cosH = -1;
+        var H = isRise ? (360 - deg(Math.
