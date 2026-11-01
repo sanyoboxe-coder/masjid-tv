@@ -18,9 +18,10 @@
     .side-box { text-align: center; min-width: 160px; }
     .side-title { font-size: 1.7rem; font-weight: 800; }
     .side-time { font-size: 2.7rem; font-weight: 900; font-family: monospace; }
-    .clock-card { background: linear-gradient(180deg, #1d4ed8, #1e40af); border-radius: 20px; padding: 10px 45px 8px; text-align: center; min-width: 460px; box-shadow: 0 10px 25px rgba(29,78,216,0.5); }
-    .main-clock { font-size: 4.8rem; font-weight: 900; font-family: monospace; }
-    .main-date { font-size: 1.45rem; font-weight: bold; color: #facc15; margin-top: 4px; }
+    .clock-card { background: linear-gradient(180deg, #1d4ed8, #1e40af); border-radius: 20px; padding: 10px 45px 8px; text-align: center; min-width: 480px; box-shadow: 0 10px 25px rgba(29,78,216,0.5); }
+    .main-clock { font-size: 4.6rem; font-weight: 900; font-family: monospace; line-height: 1.1; }
+    .main-hijri { font-size: 1.6rem; font-weight: 900; color: #facc15; margin-top: 4px; }
+    .main-gregorian { font-size: 1.15rem; font-weight: bold; color: #e2e8f0; margin-top: 2px; }
     .middle-info-bar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 35px; }
     .dhikr-box { flex: 1.8; background: rgba(15,23,42,0.75); border-radius: 25px; padding: 7px 25px; font-size: 1.35rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .countdown-bar { flex: 1.2; background: rgba(15,23,42,0.85); border-radius: 25px; padding: 7px 25px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.5rem; font-weight: 800; }
@@ -45,7 +46,11 @@
 
   <div class="center-section">
     <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">--:--</div></div>
-    <div class="clock-card"><div class="main-clock" id="liveClock">--:--:--</div><div class="main-date" id="liveDate">...</div></div>
+    <div class="clock-card">
+      <div class="main-clock" id="liveClock">--:--:--</div>
+      <div class="main-hijri" id="liveHijri">...</div>
+      <div class="main-gregorian" id="liveGregorian">...</div>
+    </div>
     <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">--:--</div></div>
   </div>
 
@@ -78,14 +83,13 @@
     function toRad(d) { return d * Math.PI / 180.0; }
     function toDeg(r) { return r * 180.0 / Math.PI; }
 
-    // حساب فلكي مستمر لجميع أيام وشهور وسنوات العمر تلقائياً
-    function calcPerpetualTimes(dateObj) {
+    function calcKenitraTimes(dateObj) {
       var y = dateObj.getFullYear();
       var m = dateObj.getMonth() + 1;
       var d = dateObj.getDate();
 
       var N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
-      var lngHour = -6.5802 / 15.0; // القنيطرة
+      var lngHour = -6.5802 / 15.0;
       var lat = 34.2610;
 
       function sun(t) {
@@ -97,9 +101,9 @@
         var Lq = Math.floor(L / 90) * 90;
         var RAq = Math.floor(RA / 90) * 90;
         RA = (RA + (Lq - RAq)) / 15.0;
-        var sinDec = 0.39782 * Math.sin(toRad(L));
-        var cosDec = Math.cos(Math.asin(sinDec));
-        return { RA: RA, sinDec: sinDec, cosDec: cosDec };
+        var sD = 0.39782 * Math.sin(toRad(L));
+        var cD = Math.cos(Math.asin(sD));
+        return { RA: RA, sD: sD, cD: cD };
       }
 
       function calcHour(angle, isRise, isSunAngle) {
@@ -120,7 +124,7 @@
         H = H / 15.0;
         var UT = (H + s.RA - (0.06571 * t) - 6.622 - lngHour) % 24;
         if (UT < 0) UT += 24;
-        return UT; // GMT+0
+        return UT;
       }
 
       function toClock(val) {
@@ -134,124 +138,9 @@
       var EoT = -7.655 * Math.sin(toRad(M_val)) + 9.873 * Math.sin(2 * toRad(M_val) + 3.588);
       var noon = 12.0 - lngHour - (EoT / 60.0) + (5.0 / 60.0);
 
-      // تطبيق الفروق الدقيقة الرسمية المعتمدة لمدينة القنيطرة (تطابق 100% مع وزارة الأوقاف)
       return {
         Fajr: toClock(calcHour(-19.0, true, true)),
         Sunrise: toClock(calcHour(-0.833, true, true) - (5.0 / 60.0)),
         Dhuhr: toClock(noon),
         Asr: toClock(calcHour(0, false, false) - (6.0 / 60.0)),
-        Maghrib: toClock(calcHour(-0.833, false, true) + (4.0 / 60.0)),
-        Isha: toClock(calcHour(-17.0, false, true))
-      };
-    }
-
-    var timings = {};
-    var cachedDay = -1;
-
-    function refreshPrayers() {
-      var now = new Date();
-      timings = calcPerpetualTimes(now);
-      document.getElementById('dispSunrise').innerText = timings.Sunrise;
-      document.getElementById('dispJumua').innerText = timings.Dhuhr;
-      for (var i = 0; i < PRAYERS.length; i++) {
-        var p = PRAYERS[i];
-        var el = document.getElementById('time-' + p.key);
-        if (el) el.innerText = timings[p.key];
-      }
-      cachedDay = now.getDate();
-    }
-
-    function tick() {
-      var now = new Date();
-      var h = now.getHours();
-      var m = now.getMinutes();
-      var s = now.getSeconds();
-      document.getElementById('liveClock').innerText = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-
-      var days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-      document.getElementById('liveDate').innerText = days[now.getDay()] + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
-
-      // تجديد المواقيت تلقائياً مع حلول منتصف الليل كل يوم
-      if (now.getDate() !== cachedDay) {
-        refreshPrayers();
-      }
-
-      if (!timings.Fajr) return;
-
-      var curSecs = h * 3600 + m * 60 + s;
-      var nextP = null;
-      var diff = 0;
-
-      for (var i = 0; i < PRAYERS.length; i++) {
-        var p = PRAYERS[i];
-        var parts = timings[p.key].split(':');
-        var adhanSecs = Number(parts[0]) * 3600 + Number(parts[1]) * 60;
-        if (adhanSecs > curSecs) {
-          nextP = p;
-          diff = adhanSecs - curSecs;
-          break;
-        }
-      }
-
-      if (!nextP) {
-        nextP = PRAYERS[0];
-        var fparts = timings.Fajr.split(':');
-        diff = (86400 - curSecs) + (Number(fparts[0]) * 3600 + Number(fparts[1]) * 60);
-      }
-
-      var cards = document.querySelectorAll('.p-card');
-      for (var c = 0; c < cards.length; c++) cards[c].classList.remove('active-p');
-      var cardEl = document.getElementById('card-' + nextP.key);
-      if (cardEl) cardEl.classList.add('active-p');
-      document.getElementById('countdownLabel').innerText = nextP.nameAr + ' بعد';
-
-      var rh = Math.floor(diff / 3600);
-      var rm = Math.floor((diff % 3600) / 60);
-      var rs = diff % 60;
-      document.getElementById('countdownVal').innerText = (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
-    }
-
-    refreshPrayers();
-    tick();
-    setInterval(tick, 1000);
-
-    // نظام المراقبة والتحديث عن بعد
-    var currentReloadVersion = null;
-
-    function checkRemoteCommands() {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', 'remote_settings.json?t=' + new Date().getTime(), true);
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          try {
-            var data = JSON.parse(xhr.responseText);
-            if (data.reloadVersion !== undefined) {
-              if (currentReloadVersion !== null && currentReloadVersion !== data.reloadVersion) {
-                window.location.reload(true);
-              }
-              currentReloadVersion = data.reloadVersion;
-            }
-            if (data.announcement) {
-              var el = document.getElementById('dhikrText');
-              if (el && data.announcement !== "") {
-                el.innerText = data.announcement;
-              }
-            }
-            if (data.delays) {
-              if (data.delays.Fajr) document.getElementById('iqama-Fajr').innerText = '+' + data.delays.Fajr;
-              if (data.delays.Dhuhr) document.getElementById('iqama-Dhuhr').innerText = '+' + data.delays.Dhuhr;
-              if (data.delays.Asr) document.getElementById('iqama-Asr').innerText = '+' + data.delays.Asr;
-              if (data.delays.Maghrib) document.getElementById('iqama-Maghrib').innerText = '+' + data.delays.Maghrib;
-              if (data.delays.Isha) document.getElementById('iqama-Isha').innerText = '+' + data.delays.Isha;
-            }
-          } catch (e) {}
-        }
-      };
-      xhr.send();
-    }
-
-    setInterval(checkRemoteCommands, 15000);
-    checkRemoteCommands();
-  </script>
-</body>
-</html>
+        Maghrib: toClock(calcHour(-0.833, false
