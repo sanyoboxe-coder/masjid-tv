@@ -2,253 +2,114 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>مسجد أبي هريرة - القنيطرة</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: linear-gradient(rgba(8, 20, 48, 0.45), rgba(5, 12, 30, 0.60)), 
-                  url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #ffffff;
-      font-family: system-ui, -apple-system, sans-serif;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      background: linear-gradient(rgba(8, 20, 48, 0.45), rgba(5, 12, 30, 0.60)), url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
+      background-size: cover; color: #fff; font-family: system-ui, sans-serif;
+      height: 100vh; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
     }
-    .top-bar {
-      background: rgba(10, 25, 55, 0.85);
-      padding: 8px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-    .temp-badge {
-      font-size: 1.4rem;
-      font-weight: 900;
-      color: #facc15;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 4px 14px;
-      border-radius: 20px;
-    }
-    .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.05rem;
-      color: #93c5fd;
-    }
-    .status-dot {
-      width: 11px;
-      height: 11px;
-      background-color: #22c55e;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #22c55e;
-    }
-    .center-section {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      padding: 4px 30px;
-      width: 100%;
-    }
+    .top-bar { background: rgba(10, 25, 55, 0.85); padding: 8px 25px; display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: 700; }
+    .temp-badge { font-size: 1.4rem; font-weight: 900; color: #facc15; background: rgba(255,255,255,0.1); padding: 4px 14px; border-radius: 20px; }
+    .status-badge { display: flex; align-items: center; gap: 8px; font-size: 1.05rem; color: #93c5fd; }
+    .status-dot { width: 11px; height: 11px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; }
+    .center-section { display: flex; align-items: center; justify-content: space-around; padding: 4px 30px; }
     .side-box { text-align: center; min-width: 160px; }
     .side-title { font-size: 1.7rem; font-weight: 800; }
     .side-time { font-size: 2.7rem; font-weight: 900; font-family: monospace; }
-    .clock-card {
-      background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
-      border-radius: 20px;
-      padding: 10px 45px 8px 45px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(29, 78, 216, 0.5);
-      min-width: 460px;
-    }
+    .clock-card { background: linear-gradient(180deg, #1d4ed8, #1e40af); border-radius: 20px; padding: 10px 45px 8px; text-align: center; min-width: 460px; box-shadow: 0 10px 25px rgba(29,78,216,0.5); }
     .main-clock { font-size: 4.8rem; font-weight: 900; font-family: monospace; }
-    .main-date { font-size: 1.45rem; font-weight: bold; color: #facc15; margin-top: 4px; transition: opacity 0.3s; }
-    .middle-info-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 0 35px;
-    }
-    .dhikr-box {
-      flex: 1.8;
-      background: rgba(15, 23, 42, 0.75);
-      border-radius: 25px;
-      padding: 7px 25px;
-      font-size: 1.35rem;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .countdown-bar {
-      flex: 1.2;
-      background: rgba(15, 23, 42, 0.85);
-      border-radius: 25px;
-      padding: 7px 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-size: 1.5rem;
-      font-weight: 800;
-    }
+    .main-date { font-size: 1.45rem; font-weight: bold; color: #facc15; margin-top: 4px; }
+    .middle-info-bar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 35px; }
+    .dhikr-box { flex: 1.8; background: rgba(15,23,42,0.75); border-radius: 25px; padding: 7px 25px; font-size: 1.35rem; text-align: center; }
+    .countdown-bar { flex: 1.2; background: rgba(15,23,42,0.85); border-radius: 25px; padding: 7px 25px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.5rem; font-weight: 800; }
     .countdown-bar .count-val { font-family: monospace; font-size: 1.8rem; color: #38bdf8; direction: ltr; }
     .prayers-row { display: flex; justify-content: center; gap: 12px; padding: 6px 30px; }
-    .p-card {
-      flex: 1;
-      background: rgba(15, 23, 42, 0.72);
-      border-radius: 18px;
-      padding: 10px 5px;
-      text-align: center;
-      border: 2px solid rgba(255, 255, 255, 0.18);
-    }
-    .p-card.active-p {
-      background: rgba(30, 64, 175, 0.85);
-      border: 2px solid #60a5fa;
-      transform: translateY(-3px);
-    }
+    .p-card { flex: 1; background: rgba(15,23,42,0.72); border-radius: 18px; padding: 10px 5px; text-align: center; border: 2px solid rgba(255,255,255,0.18); }
+    .p-card.active-p { background: rgba(30,64,175,0.85); border: 2px solid #60a5fa; transform: translateY(-3px); }
     .p-name { font-size: 1.85rem; font-weight: 900; }
     .p-time { font-size: 2.7rem; font-weight: 900; font-family: monospace; }
     .p-iqama { font-size: 1.6rem; font-weight: 900; color: #93c5fd; direction: ltr; }
-    .bottom-bar {
-      background: rgba(10, 25, 55, 0.90);
-      padding: 6px 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: #cbd5e1;
-    }
+    .bottom-bar { background: rgba(10,25,55,0.9); padding: 6px 30px; display: flex; justify-content: center; align-items: center; gap: 20px; font-size: 1.3rem; font-weight: 800; color: #cbd5e1; }
   </style>
 </head>
 <body>
-
   <div class="top-bar">
-    <div id="topMasjidTitle">مسجد أبي هريرة تجزئة أندلس القنيطرة - KENITRA</div>
-    <div style="display: flex; align-items: center; gap: 20px;">
+    <div>مسجد أبي هريرة تجزئة أندلس القنيطرة - KENITRA</div>
+    <div style="display:flex;align-items:center;gap:20px;">
       <div class="temp-badge">🌤 20°C</div>
-      <div class="status-badge">
-        <span class="status-dot"></span>
-        <span>الأوقاف سنوية</span>
-      </div>
+      <div class="status-badge"><span class="status-dot"></span><span>الأوقاف سنوية</span></div>
     </div>
   </div>
 
   <div class="center-section">
-    <div class="side-box">
-      <div class="side-title">الجمعة</div>
-      <div class="side-time" id="dispJumua">--:--</div>
-    </div>
-
-    <div class="clock-card">
-      <div class="main-clock" id="liveClock">--:--:--</div>
-      <div class="main-date" id="liveDate">...</div>
-    </div>
-
-    <div class="side-box">
-      <div class="side-title">الشروق</div>
-      <div class="side-time" id="dispSunrise">--:--</div>
-    </div>
+    <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">--:--</div></div>
+    <div class="clock-card"><div class="main-clock" id="liveClock">--:--:--</div><div class="main-date" id="liveDate">...</div></div>
+    <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">--:--</div></div>
   </div>
 
   <div class="middle-info-bar">
     <div class="dhikr-box" id="dhikrText">«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»</div>
-    <div class="countdown-bar">
-      <span>⏳</span>
-      <span id="countdownLabel">الصلاة بعد</span>
-      <span class="count-val" id="countdownVal">--:--:--</span>
-    </div>
+    <div class="countdown-bar"><span>⏳</span><span id="countdownLabel">الصلاة بعد</span><span class="count-val" id="countdownVal">--:--:--</span></div>
   </div>
 
   <div class="prayers-row">
-    <div class="p-card" id="card-Fajr">
-      <div class="p-name">الفجر</div>
-      <div class="p-time" id="time-Fajr">--:--</div>
-      <div class="p-iqama" id="iqama-Fajr">+20</div>
-    </div>
-    <div class="p-card" id="card-Dhuhr">
-      <div class="p-name">الظهر</div>
-      <div class="p-time" id="time-Dhuhr">--:--</div>
-      <div class="p-iqama" id="iqama-Dhuhr">+15</div>
-    </div>
-    <div class="p-card" id="card-Asr">
-      <div class="p-name">العصر</div>
-      <div class="p-time" id="time-Asr">--:--</div>
-      <div class="p-iqama" id="iqama-Asr">+15</div>
-    </div>
-    <div class="p-card" id="card-Maghrib">
-      <div class="p-name">المغرب</div>
-      <div class="p-time" id="time-Maghrib">--:--</div>
-      <div class="p-iqama" id="iqama-Maghrib">+10</div>
-    </div>
-    <div class="p-card" id="card-Isha">
-      <div class="p-name">العشاء</div>
-      <div class="p-time" id="time-Isha">--:--</div>
-      <div class="p-iqama" id="iqama-Isha">+15</div>
-    </div>
+    <div class="p-card" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-time" id="time-Fajr">--:--</div><div class="p-iqama" id="iqama-Fajr">+20</div></div>
+    <div class="p-card" id="card-Dhuhr"><div class="p-name">الظهر</div><div class="p-time" id="time-Dhuhr">--:--</div><div class="p-iqama" id="iqama-Dhuhr">+15</div></div>
+    <div class="p-card" id="card-Asr"><div class="p-name">العصر</div><div class="p-time" id="time-Asr">--:--</div><div class="p-iqama" id="iqama-Asr">+15</div></div>
+    <div class="p-card" id="card-Maghrib"><div class="p-name">المغرب</div><div class="p-time" id="time-Maghrib">--:--</div><div class="p-iqama" id="iqama-Maghrib">+10</div></div>
+    <div class="p-card" id="card-Isha"><div class="p-name">العشاء</div><div class="p-time" id="time-Isha">--:--</div><div class="p-iqama" id="iqama-Isha">+15</div></div>
   </div>
 
   <div class="bottom-bar">
-    <span>عبد العالي العزري</span>
-    <span>•</span>
-    <span>06 70 62 68 34</span>
+    <span>عبد العالي العزري</span><span>•</span><span>06 70 62 68 34</span>
   </div>
 
   <script>
-    var PRAYER_LIST = [
-      { key: "Fajr", nameAr: "الفجر" },
-      { key: "Dhuhr", nameAr: "الظهر" },
-      { key: "Asr", nameAr: "العصر" },
-      { key: "Maghrib", nameAr: "المغرب" },
-      { key: "Isha", nameAr: "العشاء" }
-    ];
-
-    function calculateYearTimes(dateObj) {
-      function rad(deg) { return deg * Math.PI / 180; }
-      function deg(rad) { return rad * 180 / Math.PI; }
-
-      var y = dateObj.getFullYear();
-      var m = dateObj.getMonth() + 1;
-      var d = dateObj.getDate();
-
-      var N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
-      var lngHour = -6.5802 / 15;
-
-      function calcSunPos(t) {
-        var M = (0.9856 * t) - 3.289;
-        var L = (M + (1.916 * Math.sin(rad(M))) + (0.020 * Math.sin(rad(2 * M))) + 282.634) % 360;
-        if (L < 0) L += 360;
-        var RA = deg(Math.atan(0.91764 * Math.tan(rad(L)))) % 360;
-        if (RA < 0) RA += 360;
-        var Lq = Math.floor(L / 90) * 90;
-        var RAq = Math.floor(RA / 90) * 90;
-        RA = (RA + (Lq - RAq)) / 15;
-        var sinDec = 0.39782 * Math.sin(rad(L));
-        var cosDec = Math.cos(Math.asin(sinDec));
-        return { RA: RA, sinDec: sinDec, cosDec: cosDec };
+    var PRAYERS = [{k:"Fajr",n:"الفجر"},{k:"Dhuhr",n:"الظهر"},{k:"Asr",n:"العصر"},{k:"Maghrib",n:"المغرب"},{k:"Isha",n:"العشاء"}];
+    function r(d){return d*Math.PI/180;} function deg(ra){return ra*180/Math.PI;}
+    function calcTimes(dt){
+      var y=dt.getFullYear(), m=dt.getMonth()+1, d=dt.getDate();
+      var N=Math.floor(275*m/9)-Math.floor((m+9)/12)*(1+Math.floor((y-4*Math.floor(y/4)+2)/3))+d-30;
+      var lngH=-6.5802/15;
+      function sun(t){
+        var M=(0.9856*t)-3.289, L=(M+(1.916*Math.sin(r(M)))+(0.02*Math.sin(r(2*M)))+282.634)%360;
+        if(L<0) L+=360;
+        var RA=deg(Math.atan(0.91764*Math.tan(r(L))))%360; if(RA<0) RA+=360;
+        RA=(RA+(Math.floor(L/90)*90-Math.floor(RA/90)*90))/15;
+        var sD=0.39782*Math.sin(r(L)), cD=Math.cos(Math.asin(sD));
+        return {RA:RA, sD:sD, cD:cD};
       }
+      function getT(ang,rise,isSun){
+        var t=N+((rise?6:18)-lngH)/24, pos=sun(t), cosH=0;
+        if(isSun){ cosH=(Math.sin(r(ang))-(pos.sD*Math.sin(r(34.261))))/(pos.cD*Math.cos(r(34.261))); }
+        else { var alt=deg(Math.atan(1/(1+Math.tan(r(Math.abs(34.261-deg(Math.asin(pos.sD)))))))); cosH=(Math.sin(r(alt))-(pos.sD*Math.sin(r(34.261))))/(pos.cD*Math.cos(r(34.261))); }
+        cosH=Math.max(-1,Math.min(1,cosH));
+        var H=(rise?360-deg(Math.acos(cosH)):deg(Math.acos(cosH)))/15;
+        var UT=(H+pos.RA-0.06571*t-6.622-lngH)%24; if(UT<0) UT+=24;
+        return UT + 1.0;
+      }
+      function fmt(v){ var h=Math.floor(v), mn=Math.round((v-h)*60); if(mn>=60){h++; mn=0;} return (h<10?'0':'')+h+':'+(mn<10?'0':'')+mn; }
+      var M_v=(0.9856*N)-3.289, EoT=-7.655*Math.sin(r(M_v))+9.873*Math.sin(2*r(M_v)+3.588);
+      var noon=12.0-lngH-(EoT/60)+1.0+(5/60)-0.44;
+      return {
+        Fajr: fmt(getT(-19,true,true)+(5/60)), Sunrise: fmt(getT(-0.833,true,true)-(3/60)),
+        Dhuhr: fmt(noon), Asr: fmt(getT(0,false,false)+(2/60)),
+        Maghrib: fmt(getT(-0.833,false,true)-(2/60)), Isha: fmt(getT(-17,false,true)+(2/60))
+      };
+    }
 
-      function calcTime(angle, isRise, isSunAngle) {
-        var t = N + ((isRise ? 6 : 18) - lngHour) / 24;
-        var pos = calcSunPos(t);
-        var cosH = 0;
-        if (isSunAngle) {
-          cosH = (Math.sin(rad(angle)) - (pos.sinDec * Math.sin(rad(34.2610)))) / (pos.cosDec * Math.cos(rad(34.2610)));
-        } else {
-          var term = Math.tan(rad(Math.abs(34.2610 - deg(Math.asin(pos.sinDec)))));
-          var alt = deg(Math.atan(1 / (1 + term)));
-          cosH = (Math.sin(rad(alt)) - (pos.sinDec * Math.sin(rad(34.2610)))) / (pos.cosDec * Math.cos(rad(34.2610)));
-        }
-        if (cosH > 1) cosH = 1;
-        if (cosH < -1) cosH = -1;
-        var H = isRise ? (360 - deg(Math.
+    var timings={}, cachedD=-1;
+    function updatePrayers(){
+      var now=new Date(); timings=calcTimes(now);
+      document.getElementById('dispSunrise').innerText=timings.Sunrise;
+      document.getElementById('dispJumua').innerText=timings.Dhuhr;
+      for(var i=0;i<PRAYERS.length;i++){ var p=PRAYERS[i]; document.getElementById('time-'+p.k).innerText=timings[p.k]; }
+      cachedD=now.getDate();
+    }
+
+    function tick(){
+      var now=new Date();
+      var h=now.getHours(), m=now.getMinutes(), s=now.getSeconds();
+      document.getElementById('liveClock').innerText=(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s
