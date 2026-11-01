@@ -72,15 +72,6 @@
   </div>
 
   <script>
-    var timings = {
-      Fajr: "05:16",
-      Sunrise: "06:43",
-      Dhuhr: "12:15",
-      Asr: "15:11",
-      Maghrib: "17:38",
-      Isha: "18:53"
-    };
-
     var PRAYERS = [
       { key: "Fajr", nameAr: "الفجر" },
       { key: "Dhuhr", nameAr: "الظهر" },
@@ -89,7 +80,91 @@
       { key: "Isha", nameAr: "العشاء" }
     ];
 
-    function updateDisplay() {
+    function toRad(d) { return d * Math.PI / 180.0; }
+    function toDeg(r) { return r * 180.0 / Math.PI; }
+
+    // حساب أوقات القنيطرة فلكياً لجميع أيام وشهور وسنوات العمر تلقائياً
+    function calcAutoKenitra(dObj) {
+      var y = dObj.getFullYear();
+      var m = dObj.getMonth() + 1;
+      var d = dObj.getDate();
+
+      var N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
+      var lngH = -6.5802 / 15.0; // القنيطرة
+      var lat = 34.2610;
+
+      function sun(t) {
+        var M = (0.9856 * t) - 3.289;
+        var L = (M + (1.916 * Math.sin(toRad(M))) + (0.020 * Math.sin(toRad(2 * M))) + 282.634) % 360;
+        if (L < 0) L += 360;
+        var RA = toDeg(Math.atan(0.91764 * Math.tan(toRad(L)))) % 360;
+        if (RA < 0) RA += 360;
+        var Lq = Math.floor(L / 90) * 90;
+        var RAq = Math.floor(RA / 90) * 90;
+        RA = (RA + (Lq - RAq)) / 15.0;
+        var sD = 0.39782 * Math.sin(toRad(L));
+        var cD = Math.cos(Math.asin(sD));
+        return { RA: RA, sD: sD, cD: cD };
+      }
+
+      function calcH(ang, isRise, isSun) {
+        var t = N + ((isRise ? 6 : 18) - lngH) / 24.0;
+        var s = sun(t);
+        var cosH = 0;
+        if (isSun) {
+          cosH = (Math.sin(toRad(ang)) - (s.sD * Math.sin(toRad(lat)))) / (s.cD * Math.cos(toRad(lat)));
+        } else {
+          var decDeg = toDeg(Math.asin(s.sD));
+          var term = Math.tan(toRad(Math.abs(lat - decDeg)));
+          var alt = toDeg(Math.atan(1.0 / (1.0 + term)));
+          cosH = (Math.sin(toRad(alt)) - (s.sD * Math.sin(toRad(lat)))) / (s.cD * Math.cos(toRad(lat)));
+        }
+        if (cosH > 1) cosH = 1;
+        if (cosH < -1) cosH = -1;
+        var H = isRise ? (360 - toDeg(Math.acos(cosH))) : toDeg(Math.acos(cosH));
+        var UT = (H / 15.0 + s.RA - (0.06571 * t) - 6.622 - lngH) % 24;
+        if (UT < 0) UT += 24;
+        return UT;
+      }
+
+      function fmt(val) {
+        var sec = Math.round(val * 3600);
+        var hh = Math.floor(sec / 3600) % 24;
+        var mm = Math.floor((sec % 3600) / 60);
+        return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+      }
+
+      var M_val = (0.9856 * N) - 3.289;
+      var EoT = -7.655 * Math.sin(toRad(M_val)) + 9.873 * Math.sin(2 * toRad(M_val) + 3.588);
+      var noon = 12.0 - lngH - (EoT / 60.0) + (5.0 / 60.0);
+
+      return {
+        Fajr: fmt(calcH(-19.0, true, true)),
+        Sunrise: fmt(calcH(-0.833, true, true) - (5.0 / 60.0)),
+        Dhuhr: fmt(noon),
+        Asr: fmt(calcH(0, false, false) - (6.0 / 60.0)),
+        Maghrib: fmt(calcH(-0.833, false, true) + (4.0 / 60.0)),
+        Isha: fmt(calcH(-17.0, false, true))
+      };
+    }
+
+    var timings = {};
+    var lastDay = -1;
+    var customHijriText = "";
+
+    function updateDayTimes(dObj) {
+      timings = calcAutoKenitra(dObj);
+      document.getElementById('dispSunrise').innerText = timings.Sunrise;
+      document.getElementById('dispJumua').innerText = timings.Dhuhr;
+      for (var i = 0; i < PRAYERS.length; i++) {
+        var p = PRAYERS[i];
+        var el = document.getElementById('time-' + p.key);
+        if (el) el.innerText = timings[p.key];
+      }
+      lastDay = dObj.getDate();
+    }
+
+    function tick() {
       var now = new Date();
       var h = now.getHours();
       var m = now.getMinutes();
@@ -99,6 +174,15 @@
 
       var days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
       document.getElementById('liveGregorian').innerText = days[now.getDay()] + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
+
+      if (customHijriText !== "") {
+        document.getElementById('liveHijri').innerText = customHijriText;
+      }
+
+      // تحديث أوقات الصلوات تلقائياً كل ليلة عند منتصف الليل
+      if (now.getDate() !== lastDay) {
+        updateDayTimes(now);
+      }
 
       var curSecs = h * 3600 + m * 60 + s;
       var nextP = null;
@@ -133,8 +217,51 @@
       document.getElementById('countdownVal').innerText = (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
     }
 
-    updateDisplay();
-    setInterval(updateDisplay, 1000);
+    updateDayTimes(new Date());
+    tick();
+    setInterval(tick, 1000);
+
+    // الريموت كنترول للطوارئ فقط (تغيير الإعلان، تحديث الشاشة، أو دقائق الإقامة)
+    var currentReloadVersion = null;
+
+    function checkRemote() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'remote_settings.json?t=' + new Date().getTime(), true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            if (data.reloadVersion !== undefined) {
+              if (currentReloadVersion !== null && currentReloadVersion !== data.reloadVersion) {
+                window.location.reload(true);
+              }
+              currentReloadVersion = data.reloadVersion;
+            }
+            if (data.announcement) {
+              var el = document.getElementById('dhikrText');
+              if (el && data.announcement !== "") {
+                el.innerText = data.announcement;
+              }
+            }
+            if (data.hijriDate) {
+              customHijriText = data.hijriDate;
+              document.getElementById('liveHijri').innerText = data.hijriDate;
+            }
+            if (data.delays) {
+              if (data.delays.Fajr) document.getElementById('iqama-Fajr').innerText = '+' + data.delays.Fajr;
+              if (data.delays.Dhuhr) document.getElementById('iqama-Dhuhr').innerText = '+' + data.delays.Dhuhr;
+              if (data.delays.Asr) document.getElementById('iqama-Asr').innerText = '+' + data.delays.Asr;
+              if (data.delays.Maghrib) document.getElementById('iqama-Maghrib').innerText = '+' + data.delays.Maghrib;
+              if (data.delays.Isha) document.getElementById('iqama-Isha').innerText = '+' + data.delays.Isha;
+            }
+          } catch (e) {}
+        }
+      };
+      xhr.send();
+    }
+
+    setInterval(checkRemote, 15000);
+    checkRemote();
   </script>
 </body>
 </html>
