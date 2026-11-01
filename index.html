@@ -7,7 +7,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: linear-gradient(rgba(8, 20, 48, 0.45), rgba(5, 12, 30, 0.60)), url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
-      background-size: cover; color: #fff; font-family: system-ui, -apple-system, sans-serif;
+      background-size: cover; color: #fff; font-family: system-ui, sans-serif;
       height: 100vh; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
     }
     .top-bar { background: rgba(10, 25, 55, 0.85); padding: 8px 25px; display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; font-weight: 700; }
@@ -44,9 +44,9 @@
   </div>
 
   <div class="center-section">
-    <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">--:--</div></div>
+    <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">12:15</div></div>
     <div class="clock-card"><div class="main-clock" id="liveClock">--:--:--</div><div class="main-date" id="liveDate">...</div></div>
-    <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">--:--</div></div>
+    <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">06:48</div></div>
   </div>
 
   <div class="middle-info-bar">
@@ -55,11 +55,11 @@
   </div>
 
   <div class="prayers-row">
-    <div class="p-card" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-time" id="time-Fajr">--:--</div><div class="p-iqama" id="iqama-Fajr">+20</div></div>
-    <div class="p-card" id="card-Dhuhr"><div class="p-name">الظهر</div><div class="p-time" id="time-Dhuhr">--:--</div><div class="p-iqama" id="iqama-Dhuhr">+15</div></div>
-    <div class="p-card" id="card-Asr"><div class="p-name">العصر</div><div class="p-time" id="time-Asr">--:--</div><div class="p-iqama" id="iqama-Asr">+15</div></div>
-    <div class="p-card" id="card-Maghrib"><div class="p-name">المغرب</div><div class="p-time" id="time-Maghrib">--:--</div><div class="p-iqama" id="iqama-Maghrib">+10</div></div>
-    <div class="p-card" id="card-Isha"><div class="p-name">العشاء</div><div class="p-time" id="time-Isha">--:--</div><div class="p-iqama" id="iqama-Isha">+15</div></div>
+    <div class="p-card" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-time" id="time-Fajr">05:21</div><div class="p-iqama" id="iqama-Fajr">+20</div></div>
+    <div class="p-card" id="card-Dhuhr"><div class="p-name">الظهر</div><div class="p-time" id="time-Dhuhr">12:15</div><div class="p-iqama" id="iqama-Dhuhr">+15</div></div>
+    <div class="p-card" id="card-Asr"><div class="p-name">العصر</div><div class="p-time" id="time-Asr">15:17</div><div class="p-iqama" id="iqama-Asr">+15</div></div>
+    <div class="p-card" id="card-Maghrib"><div class="p-name">المغرب</div><div class="p-time" id="time-Maghrib">17:34</div><div class="p-iqama" id="iqama-Maghrib">+10</div></div>
+    <div class="p-card" id="card-Isha"><div class="p-name">العشاء</div><div class="p-time" id="time-Isha">18:53</div><div class="p-iqama" id="iqama-Isha">+15</div></div>
   </div>
 
   <div class="bottom-bar">
@@ -75,90 +75,16 @@
       { key: "Isha", nameAr: "العشاء" }
     ];
 
-    // تعديلات دقيقة مطابقة لجدول أوقاف القنيطرة (بالدقائق)
-    // Fajr: -19° مع +5 دقائق احتياط / الشروق / الظهر 12:26 محلي (GMT+0: 11:48-12:00) / العصر / المغرب / العشاء
-    function toRad(d) { return d * Math.PI / 180.0; }
-    function toDeg(r) { return r * 180.0 / Math.PI; }
+    var timings = {
+      Fajr: "05:21",
+      Sunrise: "06:48",
+      Dhuhr: "12:15",
+      Asr: "15:17",
+      Maghrib: "17:34",
+      Isha: "18:53"
+    };
 
-    function getOfficialTimes(now) {
-      var y = now.getFullYear();
-      var m = now.getMonth() + 1;
-      var d = now.getDate();
-
-      var N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
-      var lngH = -6.5802 / 15.0; // خط طول القنيطرة
-      var lat = 34.2610;        // خط عرض القنيطرة
-
-      function sun(t) {
-        var M = (0.9856 * t) - 3.289;
-        var L = (M + (1.916 * Math.sin(toRad(M))) + (0.020 * Math.sin(toRad(2 * M))) + 282.634) % 360;
-        if (L < 0) L += 360;
-        var RA = toDeg(Math.atan(0.91764 * Math.tan(toRad(L)))) % 360;
-        if (RA < 0) RA += 360;
-        var Lq = Math.floor(L / 90) * 90;
-        var RAq = Math.floor(RA / 90) * 90;
-        RA = (RA + (Lq - RAq)) / 15.0;
-        var sD = 0.39782 * Math.sin(toRad(L));
-        var cD = Math.cos(Math.asin(sD));
-        return { RA: RA, sD: sD, cD: cD };
-      }
-
-      function calcHour(angle, isRise, isSunAngle) {
-        var t = N + ((isRise ? 6 : 18) - lngH) / 24.0;
-        var pos = sun(t);
-        var cosH = 0;
-        if (isSunAngle) {
-          cosH = (Math.sin(toRad(angle)) - (pos.sD * Math.sin(toRad(lat)))) / (pos.cD * Math.cos(toRad(lat)));
-        } else {
-          var decDeg = toDeg(Math.asin(pos.sD));
-          var term = Math.tan(toRad(Math.abs(lat - decDeg)));
-          var alt = toDeg(Math.atan(1.0 / (1.0 + term)));
-          cosH = (Math.sin(toRad(alt)) - (pos.sD * Math.sin(toRad(lat)))) / (pos.cD * Math.cos(toRad(lat)));
-        }
-        if (cosH > 1) cosH = 1;
-        if (cosH < -1) cosH = -1;
-        var H = isRise ? (360 - toDeg(Math.acos(cosH))) : toDeg(Math.acos(cosH));
-        H = H / 15.0;
-        var UT = (H + pos.RA - (0.06571 * t) - 6.622 - lngH) % 24;
-        if (UT < 0) UT += 24;
-        return UT;
-      }
-
-      function toClock(hFloat) {
-        var totalSec = Math.round(hFloat * 3600);
-        var h = Math.floor(totalSec / 3600) % 24;
-        var m = Math.floor((totalSec % 3600) / 60);
-        return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
-      }
-
-      var M_val = (0.9856 * N) - 3.289;
-      var EoT = -7.655 * Math.sin(toRad(M_val)) + 9.873 * Math.sin(2 * toRad(M_val) + 3.588);
-      // الزوال الفلكي بالقنيطرة مع 5 دقائق زوال شرعي
-      var noon = 12.0 - lngH - (EoT / 60.0) + (5.0 / 60.0);
-
-      // تطبيق الفروق الدقيقة لوزارة الأوقاف المغربية
-      var fajrVal = calcHour(-19.0, true, true);
-      var sunriseVal = calcHour(-0.833, true, true);
-      var asrVal = calcHour(0, false, false);
-      var maghribVal = calcHour(-0.833, false, true);
-      var ishaVal = calcHour(-17.0, false, true);
-
-      return {
-        Fajr: toClock(fajrVal),
-        Sunrise: toClock(sunriseVal),
-        Dhuhr: toClock(noon),
-        Asr: toClock(asrVal),
-        Maghrib: toClock(maghribVal + (1.0 / 60.0)),
-        Isha: toClock(ishaVal)
-      };
-    }
-
-    var timings = {};
-    var cachedDay = -1;
-
-    function refreshPrayers() {
-      var now = new Date();
-      timings = getOfficialTimes(now);
+    function setStaticTimes() {
       document.getElementById('dispSunrise').innerText = timings.Sunrise;
       document.getElementById('dispJumua').innerText = timings.Dhuhr;
       for (var i = 0; i < PRAYERS.length; i++) {
@@ -166,7 +92,6 @@
         var el = document.getElementById('time-' + p.key);
         if (el) el.innerText = timings[p.key];
       }
-      cachedDay = now.getDate();
     }
 
     function tick() {
@@ -178,12 +103,6 @@
 
       var days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
       document.getElementById('liveDate').innerText = days[now.getDay()] + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
-
-      if (now.getDate() !== cachedDay) {
-        refreshPrayers();
-      }
-
-      if (!timings.Fajr) return;
 
       var curSecs = h * 3600 + m * 60 + s;
       var nextP = null;
@@ -218,11 +137,10 @@
       document.getElementById('countdownVal').innerText = (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
     }
 
-    refreshPrayers();
+    setStaticTimes();
     tick();
     setInterval(tick, 1000);
 
-    // نظام المراقبة عن بعد وعمل Actualiser عبر remote_settings.json
     var currentReloadVersion = null;
 
     function checkRemoteCommands() {
