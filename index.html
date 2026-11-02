@@ -32,7 +32,28 @@
     .p-name { font-size: 1.85rem; font-weight: 900; }
     .p-time { font-size: 2.7rem; font-weight: 900; font-family: monospace; }
     .p-iqama { font-size: 1.6rem; font-weight: 900; color: #93c5fd; direction: ltr; }
-    .bottom-bar { background: rgba(10,25,55,0.9); padding: 6px 30px; display: flex; justify-content: center; align-items: center; gap: 20px; font-size: 1.3rem; font-weight: 800; color: #cbd5e1; direction: rtl; }
+    .bottom-bar { 
+      background: rgba(10,25,55,0.92); 
+      padding: 6px 20px; 
+      overflow: hidden; 
+      white-space: nowrap; 
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 48px;
+    }
+    .marquee-content {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 25s linear infinite;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #facc15;
+    }
+    @keyframes marquee {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
   </style>
 </head>
 <body>
@@ -49,7 +70,7 @@
     <div class="clock-card">
       <div class="main-clock" id="liveClock">00:00:00</div>
       <div class="main-hijri" id="liveHijri">الأحد 20 جمادى الأولى 1448 هـ</div>
-      <div class="main-gregorian" id="liveGregorian">01-11-2026 م</div>
+      <div class="main-gregorian" id="liveGregorian">...</div>
     </div>
     <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">06:43</div></div>
   </div>
@@ -67,8 +88,8 @@
     <div class="p-card" id="card-Isha"><div class="p-name">العشاء</div><div class="p-time" id="time-Isha">18:53</div><div class="p-iqama" id="iqama-Isha">+15</div></div>
   </div>
 
-  <div class="bottom-bar">
-    <span>عبد العالي العزري</span><span>•</span><span style="direction: ltr; display: inline-block;">06 70 62 68 34</span>
+  <div class="bottom-bar" id="bottomContainer">
+    <div class="marquee-content" id="bottomMarquee">تقبل الله منا ومنكم صالح الأعمال</div>
   </div>
 
   <script>
@@ -83,14 +104,13 @@
     function toRad(d) { return d * Math.PI / 180.0; }
     function toDeg(r) { return r * 180.0 / Math.PI; }
 
-    // حساب أوقات القنيطرة فلكياً لجميع أيام وشهور وسنوات العمر تلقائياً
     function calcAutoKenitra(dObj) {
       var y = dObj.getFullYear();
       var m = dObj.getMonth() + 1;
       var d = dObj.getDate();
 
       var N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
-      var lngH = -6.5802 / 15.0; // القنيطرة
+      var lngH = -6.5802 / 15.0;
       var lat = 34.2610;
 
       function sun(t) {
@@ -179,7 +199,6 @@
         document.getElementById('liveHijri').innerText = customHijriText;
       }
 
-      // تحديث أوقات الصلوات تلقائياً كل ليلة عند منتصف الليل
       if (now.getDate() !== lastDay) {
         updateDayTimes(now);
       }
@@ -221,47 +240,8 @@
     tick();
     setInterval(tick, 1000);
 
-    // الريموت كنترول للطوارئ فقط (تغيير الإعلان، تحديث الشاشة، أو دقائق الإقامة)
     var currentReloadVersion = null;
 
     function checkRemote() {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', 'remote_settings.json?t=' + new Date().getTime(), true);
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          try {
-            var data = JSON.parse(xhr.responseText);
-            if (data.reloadVersion !== undefined) {
-              if (currentReloadVersion !== null && currentReloadVersion !== data.reloadVersion) {
-                window.location.reload(true);
-              }
-              currentReloadVersion = data.reloadVersion;
-            }
-            if (data.announcement) {
-              var el = document.getElementById('dhikrText');
-              if (el && data.announcement !== "") {
-                el.innerText = data.announcement;
-              }
-            }
-            if (data.hijriDate) {
-              customHijriText = data.hijriDate;
-              document.getElementById('liveHijri').innerText = data.hijriDate;
-            }
-            if (data.delays) {
-              if (data.delays.Fajr) document.getElementById('iqama-Fajr').innerText = '+' + data.delays.Fajr;
-              if (data.delays.Dhuhr) document.getElementById('iqama-Dhuhr').innerText = '+' + data.delays.Dhuhr;
-              if (data.delays.Asr) document.getElementById('iqama-Asr').innerText = '+' + data.delays.Asr;
-              if (data.delays.Maghrib) document.getElementById('iqama-Maghrib').innerText = '+' + data.delays.Maghrib;
-              if (data.delays.Isha) document.getElementById('iqama-Isha').innerText = '+' + data.delays.Isha;
-            }
-          } catch (e) {}
-        }
-      };
-      xhr.send();
-    }
-
-    setInterval(checkRemote, 15000);
-    checkRemote();
-  </script>
-</body>
-</html>
+      xhr.open('GET', 'remote_settings.
