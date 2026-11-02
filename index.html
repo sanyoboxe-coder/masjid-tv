@@ -70,7 +70,7 @@
     <div class="clock-card">
       <div class="main-clock" id="liveClock">00:00:00</div>
       <div class="main-hijri" id="liveHijri">الإثنين 21 جمادى الأولى 1448 هـ</div>
-      <div class="main-gregorian" id="liveGregorian">الإثنين، 2-11-2026 م</div>
+      <div class="main-gregorian" id="liveGregorian">...</div>
     </div>
     <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">06:44</div></div>
   </div>
@@ -100,15 +100,6 @@
       { key: "Maghrib", nameAr: "المغرب" },
       { key: "Isha", nameAr: "العشاء" }
     ];
-
-    var timings = {
-      Fajr: "05:17",
-      Sunrise: "06:44",
-      Dhuhr: "12:15",
-      Asr: "15:10",
-      Maghrib: "17:37",
-      Isha: "18:52"
-    };
 
     function toRad(d) { return d * Math.PI / 180.0; }
     function toDeg(r) { return r * 180.0 / Math.PI; }
@@ -166,18 +157,25 @@
 
         var M_val = (0.9856 * N) - 3.289;
         var EoT = -7.655 * Math.sin(toRad(M_val)) + 9.873 * Math.sin(2 * toRad(M_val) + 3.588);
-        var noon = 12.0 - lngH - (EoT / 60.0) + (5.0 / 60.0);
+        var noon = 12.0 - lngH - (EoT / 60.0) + (5.0 / 60.0) + (1.0 / 60.0);
 
         return {
           Fajr: fmt(calcH(-19.0, true, true) + (1.0 / 60.0)),
           Sunrise: fmt(calcH(-0.833, true, true) - (2.0 / 60.0)),
           Dhuhr: fmt(noon),
-          Asr: fmt(calcH(0, false, false) + (7.0 / 60.0)),
+          Asr: fmt(calcH(0, false, false) + (1.0 / 60.0)),
           Maghrib: fmt(calcH(-0.833, false, true) + (5.0 / 60.0)),
           Isha: fmt(calcH(-17.0, false, true))
         };
       } catch (e) {
-        return timings;
+        return {
+          Fajr: "05:17",
+          Sunrise: "06:44",
+          Dhuhr: "12:15",
+          Asr: "15:10",
+          Maghrib: "17:37",
+          Isha: "18:52"
+        };
       }
     }
 
@@ -190,12 +188,13 @@
       var m = dObj.getMonth();
       var d = dObj.getDate();
 
-      // حساب اليوم الهجري بدقة بناء على 2 نونبر 2026 = 21 جمادى الأولى
+      // ضبط اليوم مع الأوقاف: 2 نونبر 2026 يطابق 21 جمادى الأولى
       var diffDays = Math.round((Date.UTC(y, m, d) - Date.UTC(2026, 10, 2)) / 86400000);
       var hDay = 21 + diffDays;
       return dayName + ' ' + hDay + ' جمادى الأولى 1448 هـ';
     }
 
+    var timings = {};
     var lastDay = -1;
 
     function applyPrayerTimes(dObj) {
@@ -222,31 +221,26 @@
       var m = now.getMinutes();
       var s = now.getSeconds();
 
-      // 1. تحديث الساعة الحية فوراً
       var clockEl = document.getElementById('liveClock');
       if (clockEl) {
         clockEl.innerText = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
       }
 
-      // 2. تحديث التاريخ الميلادي
       var gregEl = document.getElementById('liveGregorian');
       if (gregEl) {
         var daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
         gregEl.innerText = daysAr[now.getDay()] + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
       }
 
-      // 3. تحديث التاريخ الهجري
       var hijEl = document.getElementById('liveHijri');
       if (hijEl) {
         hijEl.innerText = (customHijriText !== "") ? customHijriText : getMoroccanHijri(now);
       }
 
-      // تحديث اليوم عند منتصف الليل
       if (now.getDate() !== lastDay) {
         applyPrayerTimes(now);
       }
 
-      // 4. حساب العد التنازلي
       var curSecs = h * 3600 + m * 60 + s;
       var nextP = null;
       var diff = 0;
@@ -294,7 +288,6 @@
     tick();
     setInterval(tick, 1000);
 
-    // الريموت كنترول للتحكم عن بعد
     var currentReloadVersion = null;
 
     function checkRemote() {
