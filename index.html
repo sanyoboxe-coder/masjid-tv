@@ -68,16 +68,16 @@
   <div class="center-section">
     <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">12:15</div></div>
     <div class="clock-card">
-      <div class="main-clock" id="liveClock">--:--:--</div>
+      <div class="main-clock" id="liveClock">00:00:00</div>
       <div class="main-hijri" id="liveHijri">الإثنين 21 جمادى الأولى 1448 هـ</div>
-      <div class="main-gregorian" id="liveGregorian">...</div>
+      <div class="main-gregorian" id="liveGregorian">الإثنين، 2-11-2026 م</div>
     </div>
     <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">06:44</div></div>
   </div>
 
   <div class="middle-info-bar">
     <div class="dhikr-box" id="dhikrText">«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»</div>
-    <div class="countdown-bar"><span>⏳</span><span id="countdownLabel">الصلاة بعد</span><span class="count-val" id="countdownVal">--:--:--</span></div>
+    <div class="countdown-bar"><span>⏳</span><span id="countdownLabel">الصلاة بعد</span><span class="count-val" id="countdownVal">00:00:00</span></div>
   </div>
 
   <div class="prayers-row">
@@ -101,10 +101,18 @@
       { key: "Isha", nameAr: "العشاء" }
     ];
 
+    var timings = {
+      Fajr: "05:17",
+      Sunrise: "06:44",
+      Dhuhr: "12:15",
+      Asr: "15:10",
+      Maghrib: "17:37",
+      Isha: "18:52"
+    };
+
     function toRad(d) { return d * Math.PI / 180.0; }
     function toDeg(r) { return r * 180.0 / Math.PI; }
 
-    // حساب دقيق مطابق 100% لأوقاف القنيطرة
     function getAutoKenitra(dObj) {
       try {
         var y = dObj.getFullYear();
@@ -168,38 +176,33 @@
           Maghrib: fmt(calcH(-0.833, false, true) + (5.0 / 60.0)),
           Isha: fmt(calcH(-17.0, false, true))
         };
-      } catch (err) {
-        return {
-          Fajr: "05:17",
-          Sunrise: "06:44",
-          Dhuhr: "12:15",
-          Asr: "15:10",
-          Maghrib: "17:37",
-          Isha: "18:52"
-        };
+      } catch (e) {
+        return timings;
       }
     }
 
-    // حساب التاريخ الهجري الرسمي لوزارة الأوقاف المغربية
-    var hijriDayDelta = 0;
-    function computeMoroccanHijri(dObj) {
-      var daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-      var dayName = daysAr[dObj.getDay()];
-      
-      // مطابقة 2 نونبر 2026 مع 21 جمادى الأولى 1448 هـ
-      var baseDate = new Date(2026, 10, 2); // 2 November 2026
-      var diffDays = Math.round((dObj.getTime() - baseDate.getTime()) / (1000 * 3600 * 24));
-      var currentHijriDay = 21 + diffDays + hijriDayDelta;
-
-      return dayName + ' ' + currentHijriDay + ' جمادى الأولى 1448 هـ';
-    }
-
-    var timings = {};
-    var lastUpdatedDay = -1;
     var customHijriText = "";
 
+    function getMoroccanHijri(dObj) {
+      var daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+      var dayName = daysAr[dObj.getDay()];
+      var y = dObj.getFullYear();
+      var m = dObj.getMonth();
+      var d = dObj.getDate();
+
+      // حساب اليوم الهجري بدقة بناء على 2 نونبر 2026 = 21 جمادى الأولى
+      var diffDays = Math.round((Date.UTC(y, m, d) - Date.UTC(2026, 10, 2)) / 86400000);
+      var hDay = 21 + diffDays;
+      return dayName + ' ' + hDay + ' جمادى الأولى 1448 هـ';
+    }
+
+    var lastDay = -1;
+
     function applyPrayerTimes(dObj) {
-      timings = getAutoKenitra(dObj);
+      var calculated = getAutoKenitra(dObj);
+      if (calculated && calculated.Fajr) {
+        timings = calculated;
+      }
       var srEl = document.getElementById('dispSunrise');
       if (srEl) srEl.innerText = timings.Sunrise;
       var jmEl = document.getElementById('dispJumua');
@@ -210,7 +213,7 @@
         var el = document.getElementById('time-' + p.key);
         if (el) el.innerText = timings[p.key];
       }
-      lastUpdatedDay = dObj.getDate();
+      lastDay = dObj.getDate();
     }
 
     function tick() {
@@ -219,26 +222,31 @@
       var m = now.getMinutes();
       var s = now.getSeconds();
 
+      // 1. تحديث الساعة الحية فوراً
       var clockEl = document.getElementById('liveClock');
       if (clockEl) {
         clockEl.innerText = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
       }
 
+      // 2. تحديث التاريخ الميلادي
       var gregEl = document.getElementById('liveGregorian');
       if (gregEl) {
-        var days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-        gregEl.innerText = days[now.getDay()] + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
+        var daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        gregEl.innerText = daysAr[now.getDay()] + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
       }
 
+      // 3. تحديث التاريخ الهجري
       var hijEl = document.getElementById('liveHijri');
       if (hijEl) {
-        hijEl.innerText = (customHijriText !== "") ? customHijriText : computeMoroccanHijri(now);
+        hijEl.innerText = (customHijriText !== "") ? customHijriText : getMoroccanHijri(now);
       }
 
-      if (now.getDate() !== lastUpdatedDay) {
+      // تحديث اليوم عند منتصف الليل
+      if (now.getDate() !== lastDay) {
         applyPrayerTimes(now);
       }
 
+      // 4. حساب العد التنازلي
       var curSecs = h * 3600 + m * 60 + s;
       var nextP = null;
       var diff = 0;
@@ -265,7 +273,7 @@
 
       var cards = document.querySelectorAll('.p-card');
       for (var c = 0; c < cards.length; c++) cards[c].classList.remove('active-p');
-      
+
       if (nextP) {
         var cardEl = document.getElementById('card-' + nextP.key);
         if (cardEl) cardEl.classList.add('active-p');
@@ -286,6 +294,7 @@
     tick();
     setInterval(tick, 1000);
 
+    // الريموت كنترول للتحكم عن بعد
     var currentReloadVersion = null;
 
     function checkRemote() {
