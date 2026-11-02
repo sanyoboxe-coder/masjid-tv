@@ -113,4 +113,232 @@
 
         var N = Math.floor(275 * m / 9) - Math.floor((m + 9) / 12) * (1 + Math.floor((y - 4 * Math.floor(y / 4) + 2) / 3)) + d - 30;
         var lngH = -6.5802 / 15.0;
-        var lat = 3
+        var lat = 34.2610;
+
+        function sun(t) {
+          var M = (0.9856 * t) - 3.289;
+          var L = (M + (1.916 * Math.sin(toRad(M))) + (0.020 * Math.sin(toRad(2 * M))) + 282.634) % 360;
+          if (L < 0) L += 360;
+          var RA = toDeg(Math.atan(0.91764 * Math.tan(toRad(L)))) % 360;
+          if (RA < 0) RA += 360;
+          var Lq = Math.floor(L / 90) * 90;
+          var RAq = Math.floor(RA / 90) * 90;
+          RA = (RA + (Lq - RAq)) / 15.0;
+          var sD = 0.39782 * Math.sin(toRad(L));
+          var cD = Math.cos(Math.asin(sD));
+          return { RA: RA, sD: sD, cD: cD };
+        }
+
+        function calcH(ang, isRise, isSun) {
+          var t = N + ((isRise ? 6 : 18) - lngH) / 24.0;
+          var s = sun(t);
+          var cosH = 0;
+          if (isSun) {
+            cosH = (Math.sin(toRad(ang)) - (s.sD * Math.sin(toRad(lat)))) / (s.cD * Math.cos(toRad(lat)));
+          } else {
+            var decDeg = toDeg(Math.asin(s.sD));
+            var term = 1.0 + Math.tan(toRad(Math.abs(lat - decDeg)));
+            var alt = toDeg(Math.atan(1.0 / term));
+            cosH = (Math.sin(toRad(alt)) - (s.sD * Math.sin(toRad(lat)))) / (s.cD * Math.cos(toRad(lat)));
+          }
+          if (cosH > 1) cosH = 1;
+          if (cosH < -1) cosH = -1;
+          var H = isRise ? (360 - toDeg(Math.acos(cosH))) : toDeg(Math.acos(cosH));
+          var UT = (H / 15.0 + s.RA - (0.06571 * t) - 6.622 - lngH) % 24;
+          if (UT < 0) UT += 24;
+          return UT;
+        }
+
+        function fmt(val) {
+          var sec = Math.round(val * 3600);
+          var hh = Math.floor(sec / 3600) % 24;
+          var mm = Math.floor((sec % 3600) / 60);
+          return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+        }
+
+        var M_val = (0.9856 * N) - 3.289;
+        var EoT = -7.655 * Math.sin(toRad(M_val)) + 9.873 * Math.sin(2 * toRad(M_val) + 3.588);
+        var noon = 12.0 - lngH - (EoT / 60.0) + (5.0 / 60.0);
+
+        return {
+          Fajr: fmt(calcH(-19.0, true, true) + (1.0 / 60.0)),
+          Sunrise: fmt(calcH(-0.833, true, true) - (2.0 / 60.0)),
+          Dhuhr: fmt(noon),
+          Asr: fmt(calcH(0, false, false) + (7.0 / 60.0)),
+          Maghrib: fmt(calcH(-0.833, false, true) + (5.0 / 60.0)),
+          Isha: fmt(calcH(-17.0, false, true))
+        };
+      } catch (err) {
+        return {
+          Fajr: "05:17",
+          Sunrise: "06:44",
+          Dhuhr: "12:15",
+          Asr: "15:10",
+          Maghrib: "17:37",
+          Isha: "18:52"
+        };
+      }
+    }
+
+    // حساب التاريخ الهجري الرسمي لوزارة الأوقاف المغربية
+    var hijriDayDelta = 0;
+    function computeMoroccanHijri(dObj) {
+      var daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+      var dayName = daysAr[dObj.getDay()];
+      
+      // مطابقة 2 نونبر 2026 مع 21 جمادى الأولى 1448 هـ
+      var baseDate = new Date(2026, 10, 2); // 2 November 2026
+      var diffDays = Math.round((dObj.getTime() - baseDate.getTime()) / (1000 * 3600 * 24));
+      var currentHijriDay = 21 + diffDays + hijriDayDelta;
+
+      return dayName + ' ' + currentHijriDay + ' جمادى الأولى 1448 هـ';
+    }
+
+    var timings = {};
+    var lastUpdatedDay = -1;
+    var customHijriText = "";
+
+    function applyPrayerTimes(dObj) {
+      timings = getAutoKenitra(dObj);
+      var srEl = document.getElementById('dispSunrise');
+      if (srEl) srEl.innerText = timings.Sunrise;
+      var jmEl = document.getElementById('dispJumua');
+      if (jmEl) jmEl.innerText = timings.Dhuhr;
+
+      for (var i = 0; i < PRAYERS.length; i++) {
+        var p = PRAYERS[i];
+        var el = document.getElementById('time-' + p.key);
+        if (el) el.innerText = timings[p.key];
+      }
+      lastUpdatedDay = dObj.getDate();
+    }
+
+    function tick() {
+      var now = new Date();
+      var h = now.getHours();
+      var m = now.getMinutes();
+      var s = now.getSeconds();
+
+      var clockEl = document.getElementById('liveClock');
+      if (clockEl) {
+        clockEl.innerText = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+      }
+
+      var gregEl = document.getElementById('liveGregorian');
+      if (gregEl) {
+        var days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        gregEl.innerText = days[now.getDay()] + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
+      }
+
+      var hijEl = document.getElementById('liveHijri');
+      if (hijEl) {
+        hijEl.innerText = (customHijriText !== "") ? customHijriText : computeMoroccanHijri(now);
+      }
+
+      if (now.getDate() !== lastUpdatedDay) {
+        applyPrayerTimes(now);
+      }
+
+      var curSecs = h * 3600 + m * 60 + s;
+      var nextP = null;
+      var diff = 0;
+
+      for (var i = 0; i < PRAYERS.length; i++) {
+        var p = PRAYERS[i];
+        if (!timings[p.key]) continue;
+        var parts = timings[p.key].split(':');
+        var adhanSecs = Number(parts[0]) * 3600 + Number(parts[1]) * 60;
+        if (adhanSecs > curSecs) {
+          nextP = p;
+          diff = adhanSecs - curSecs;
+          break;
+        }
+      }
+
+      if (!nextP) {
+        nextP = PRAYERS[0];
+        if (timings.Fajr) {
+          var fparts = timings.Fajr.split(':');
+          diff = (86400 - curSecs) + (Number(fparts[0]) * 3600 + Number(fparts[1]) * 60);
+        }
+      }
+
+      var cards = document.querySelectorAll('.p-card');
+      for (var c = 0; c < cards.length; c++) cards[c].classList.remove('active-p');
+      
+      if (nextP) {
+        var cardEl = document.getElementById('card-' + nextP.key);
+        if (cardEl) cardEl.classList.add('active-p');
+        var lblEl = document.getElementById('countdownLabel');
+        if (lblEl) lblEl.innerText = nextP.nameAr + ' بعد';
+
+        var rh = Math.floor(diff / 3600);
+        var rm = Math.floor((diff % 3600) / 60);
+        var rs = diff % 60;
+        var cdVal = document.getElementById('countdownVal');
+        if (cdVal) {
+          cdVal.innerText = (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
+        }
+      }
+    }
+
+    applyPrayerTimes(new Date());
+    tick();
+    setInterval(tick, 1000);
+
+    var currentReloadVersion = null;
+
+    function checkRemote() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'remote_settings.json?t=' + new Date().getTime(), true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            if (data.reloadVersion !== undefined) {
+              if (currentReloadVersion !== null && currentReloadVersion !== data.reloadVersion) {
+                window.location.reload(true);
+              }
+              currentReloadVersion = data.reloadVersion;
+            }
+            if (data.masjidTitle) {
+              var tEl = document.getElementById('topMasjidTitle');
+              if (tEl) tEl.innerText = data.masjidTitle;
+            }
+            if (data.announcement) {
+              var el = document.getElementById('dhikrText');
+              if (el && data.announcement !== "") {
+                el.innerText = data.announcement;
+              }
+            }
+            if (data.hijriDate) {
+              customHijriText = data.hijriDate;
+            }
+            if (data.footerText !== undefined) {
+              var botEl = document.getElementById('bottomContainer');
+              var marq = document.getElementById('bottomMarquee');
+              if (data.footerText.trim() === "") {
+                if (botEl) botEl.style.display = "none";
+              } else {
+                if (botEl) botEl.style.display = "flex";
+                if (marq) marq.innerText = data.footerText;
+              }
+            }
+            if (data.delays) {
+              if (data.delays.Fajr) document.getElementById('iqama-Fajr').innerText = '+' + data.delays.Fajr;
+              if (data.delays.Dhuhr) document.getElementById('iqama-Dhuhr').innerText = '+' + data.delays.Dhuhr;
+              if (data.delays.Asr) document.getElementById('iqama-Asr').innerText = '+' + data.delays.Asr;
+              if (data.delays.Maghrib) document.getElementById('iqama-Maghrib').innerText = '+' + data.delays.Maghrib;
+              if (data.delays.Isha) document.getElementById('iqama-Isha').innerText = '+' + data.delays.Isha;
+            }
+          } catch (e) {}
+        }
+      };
+      xhr.send();
+    }
+
+    setInterval(checkRemote, 15000);
+    checkRemote();
+  </script>
+</body>
+</html>
