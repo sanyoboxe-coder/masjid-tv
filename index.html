@@ -134,7 +134,7 @@
         }, 500);
       }
     }
-    setInterval(rotateDhikr, 12000);
+    setInterval(rotateDhikr, 10000);
 
     function toRad(d) { return d * Math.PI / 180.0; }
     function toDeg(r) { return r * 180.0 / Math.PI; }
@@ -280,7 +280,6 @@
       var isIqamaWait = false;
       var diff = 0;
 
-      // فحص إذا كنا في وقت انتظار الإقامة لإحدى الصلوات الحالية
       for (var i = 0; i < PRAYERS.length; i++) {
         var p = PRAYERS[i];
         if (!timings[p.key]) continue;
@@ -296,7 +295,6 @@
         }
       }
 
-      // إذا لم نكن في وقت إقامة، نبحث عن موعد الصلاة القادمة
       if (!isIqamaWait) {
         for (var i = 0; i < PRAYERS.length; i++) {
           var p = PRAYERS[i];
@@ -369,15 +367,17 @@
               var tEl = document.getElementById('topMasjidTitle');
               if (tEl) tEl.innerText = data.masjidTitle;
             }
-            if (data.announcement !== undefined) {
+            if (data.announcement !== undefined && data.announcement.trim() !== "") {
               remoteAnnouncement = data.announcement;
-              if (remoteAnnouncement.trim() !== "") {
-                var el = document.getElementById('dhikrText');
-                if (el) el.innerText = remoteAnnouncement;
-              }
+              var el = document.getElementById('dhikrText');
+              if (el) el.innerText = remoteAnnouncement;
+            } else {
+              remoteAnnouncement = "";
             }
             if (data.hijriDate) {
               customHijriText = data.hijriDate;
+            } else {
+              customHijriText = "";
             }
             if (data.footerText !== undefined) {
               var botEl = document.getElementById('bottomContainer');
