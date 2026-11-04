@@ -55,10 +55,9 @@
       0% { transform: translate3d(0, 0, 0); }
       100% { transform: translate3d(-100%, 0, 0); }
     }
-
     .prayer-modal {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(5, 12, 30, 0.94);
+      background: rgba(5, 12, 30, 0.95);
       z-index: 9999; display: none;
       flex-direction: column; justify-content: center; align-items: center;
       text-align: center; padding: 30px;
@@ -84,8 +83,8 @@
   <div class="center-section">
     <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">12:15</div></div>
     <div class="clock-card">
-      <div class="main-clock" id="liveClock">00:00:00</div>
-      <div class="main-hijri" id="liveHijri">...</div>
+      <div class="main-clock" id="liveClock">--:--:--</div>
+      <div class="main-hijri" id="liveHijri">الأربعاء 23 جمادى الأولى 1448 هـ</div>
       <div class="main-gregorian" id="liveGregorian">...</div>
     </div>
     <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">06:45</div></div>
@@ -93,7 +92,7 @@
 
   <div class="middle-info-bar">
     <div class="dhikr-box" id="dhikrText">«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»</div>
-    <div class="countdown-bar" id="countdownBox"><span>⏳</span><span id="countdownLabel">الصلاة بعد</span><span class="count-val" id="countdownVal">00:00:00</span></div>
+    <div class="countdown-bar" id="countdownBox"><span>⏳</span><span id="countdownLabel">الصلاة بعد</span><span class="count-val" id="countdownVal">--:--:--</span></div>
   </div>
 
   <div class="prayers-row">
@@ -231,15 +230,14 @@
     function getMoroccanHijri(dObj) {
       var daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
       var dayName = daysAr[dObj.getDay()];
-      var y = dObj.getFullYear();
-      var m = dObj.getMonth();
-      var d = dObj.getDate();
-      var diffDays = Math.round((Date.UTC(y, m, d) - Date.UTC(2026, 10, 2)) / 86400000);
+      // حساب بسيط متوافق 100% مع جميع المتصفحات
+      var start = new Date(2026, 10, 2); // 2 November 2026
+      var diffDays = Math.floor((dObj.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
       var hDay = 21 + diffDays;
       return dayName + ' ' + hDay + ' جمادى الأولى 1448 هـ';
     }
 
-    var timings = {};
+    var timings = { Fajr: "05:18", Sunrise: "06:45", Dhuhr: "12:15", Asr: "15:10", Maghrib: "17:36", Isha: "18:51" };
     var lastDay = -1;
 
     function applyPrayerTimes(dObj) {
@@ -264,15 +262,18 @@
       var m = now.getMinutes();
       var s = now.getSeconds();
 
+      // الساعة
       var clockEl = document.getElementById('liveClock');
       if (clockEl) clockEl.innerText = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 
+      // التاريخ الميلادي
       var gregEl = document.getElementById('liveGregorian');
       if (gregEl) {
         var daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
         gregEl.innerText = daysAr[now.getDay()] + '، ' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + ' م';
       }
 
+      // التاريخ الهجري
       var hijEl = document.getElementById('liveHijri');
       if (hijEl) hijEl.innerText = (customHijriText !== "") ? customHijriText : getMoroccanHijri(now);
 
@@ -283,7 +284,7 @@
       var isIqamaWait = false;
       var diff = 0;
 
-      // 1. فحص هل نحن في وقت انتظار الإقامة
+      // فحص أوقات الصلاة والإقامة
       for (var i = 0; i < PRAYERS.length; i++) {
         var p = PRAYERS[i];
         if (!timings[p.key]) continue;
@@ -292,7 +293,7 @@
         var iqamaWaitSecs = (delays[p.key] || 15) * 60;
         var iqamaExact = adhanSecs + iqamaWaitSecs;
 
-        // من لحظة الأذان حتى الإقامة
+        // من لحظة الأذان حتى وقت الإقامة
         if (curSecs >= adhanSecs && curSecs < iqamaExact) {
           activePrayer = p;
           isIqamaWait = true;
@@ -300,18 +301,131 @@
           break;
         }
 
-        // مدة الصلاة الفريضة: 10 دقائق بعد الإقامة
+        // وقت الصلاة (10 دقائق)
+        var modal = document.getElementById('prayerModal');
         if (curSecs >= iqamaExact && curSecs < (iqamaExact + 600)) {
-          var modal = document.getElementById('prayerModal');
           if (modal) modal.style.display = 'flex';
         } else {
-          var modal = document.getElementById('prayerModal');
           if (modal && modal.style.display === 'flex') modal.style.display = 'none';
         }
 
-        // مدة أذكار ما بعد السلام: من 10 دقائق حتى 22 دقيقة بعد الإقامة
+        // وقت أذكار ما بعد الصلاة
         if (curSecs >= (iqamaExact + 600) && curSecs < (iqamaExact + 1320)) {
           isPostPrayerMode = true;
         } else {
           isPostPrayerMode = false;
-        
+        }
+      }
+
+      // إذا لم نكن في وقت إقامة، نحسب للصلاة الموالية
+      if (!isIqamaWait) {
+        for (var i = 0; i < PRAYERS.length; i++) {
+          var p = PRAYERS[i];
+          if (!timings[p.key]) continue;
+          var parts = timings[p.key].split(':');
+          var adhanSecs = Number(parts[0]) * 3600 + Number(parts[1]) * 60;
+          if (adhanSecs > curSecs) {
+            activePrayer = p;
+            diff = adhanSecs - curSecs;
+            break;
+          }
+        }
+        if (!activePrayer) {
+          activePrayer = PRAYERS[0];
+          if (timings.Fajr) {
+            var fparts = timings.Fajr.split(':');
+            diff = (86400 - curSecs) + (Number(fparts[0]) * 3600 + Number(fparts[1]) * 60);
+          }
+        }
+      }
+
+      var cards = document.querySelectorAll('.p-card');
+      for (var c = 0; c < cards.length; c++) cards[c].classList.remove('active-p');
+
+      if (activePrayer) {
+        var cardEl = document.getElementById('card-' + activePrayer.key);
+        if (cardEl) cardEl.classList.add('active-p');
+
+        var lblEl = document.getElementById('countdownLabel');
+        var boxEl = document.getElementById('countdownBox');
+
+        if (isIqamaWait) {
+          if (lblEl) lblEl.innerText = 'إقامة ' + activePrayer.nameAr + ' بعد';
+          if (boxEl) boxEl.classList.add('iqama-mode');
+        } else {
+          if (lblEl) lblEl.innerText = activePrayer.nameAr + ' بعد';
+          if (boxEl) boxEl.classList.remove('iqama-mode');
+        }
+
+        var rh = Math.floor(diff / 3600);
+        var rm = Math.floor((diff % 3600) / 60);
+        var rs = diff % 60;
+        var cdVal = document.getElementById('countdownVal');
+        if (cdVal) {
+          cdVal.innerText = (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
+        }
+      }
+    }
+
+    applyPrayerTimes(new Date());
+    tick();
+    setInterval(tick, 1000);
+
+    var currentReloadVersion = null;
+
+    function checkRemote() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'remote_settings.json?t=' + new Date().getTime(), true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            if (data.reloadVersion !== undefined) {
+              if (currentReloadVersion !== null && currentReloadVersion !== data.reloadVersion) {
+                window.location.reload(true);
+              }
+              currentReloadVersion = data.reloadVersion;
+            }
+            if (data.masjidTitle) {
+              var tEl = document.getElementById('topMasjidTitle');
+              if (tEl) tEl.innerText = data.masjidTitle;
+            }
+            if (data.announcement && data.announcement.trim() !== "") {
+              remoteAnnouncement = data.announcement;
+              var el = document.getElementById('dhikrText');
+              if (el) el.innerText = remoteAnnouncement;
+            } else {
+              remoteAnnouncement = "";
+            }
+            if (data.hijriDate) customHijriText = data.hijriDate;
+            else customHijriText = "";
+
+            if (data.footerText !== undefined) {
+              var botEl = document.getElementById('bottomContainer');
+              var marq = document.getElementById('bottomMarquee');
+              if (data.footerText.trim() === "") {
+                if (botEl) botEl.style.display = "none";
+              } else {
+                if (botEl) botEl.style.display = "flex";
+                if (marq) marq.innerText = data.footerText;
+              }
+            }
+            if (data.delays) {
+              delays = data.delays;
+              if (delays.Fajr) document.getElementById('iqama-Fajr').innerText = '+' + delays.Fajr;
+              if (delays.Dhuhr) document.getElementById('iqama-Dhuhr').innerText = '+' + delays.Dhuhr;
+              if (delays.Asr) document.getElementById('iqama-Asr').innerText = '+' + delays.Asr;
+              if (delays.Maghrib) document.getElementById('iqama-Maghrib').innerText = '+' + delays.Maghrib;
+              if (delays.Isha) document.getElementById('iqama-Isha').innerText = '+' + delays.Isha;
+            }
+          } catch (e) {}
+        }
+      };
+      xhr.send();
+    }
+
+    setInterval(checkRemote, 15000);
+    checkRemote();
+  </script>
+</body>
+</html>
