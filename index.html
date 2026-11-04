@@ -7,8 +7,8 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; }
     body {
-      background: #000 url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background: url('IMG-20260930-WA0025.jpg') no-repeat center center fixed;
+      background-size: 100% 100%;
       color: #fff;
       font-family: system-ui, -apple-system, sans-serif;
       display: flex;
@@ -17,7 +17,7 @@
       padding: 12px 25px;
     }
     .top-bar { 
-      background: rgba(10, 25, 55, 0.85); 
+      background: rgba(10, 25, 55, 0.75); 
       padding: 6px 20px; 
       border-radius: 12px;
       display: flex; 
@@ -26,7 +26,7 @@
       font-size: 1.2rem; 
       font-weight: 700; 
     }
-    .temp-badge { font-size: 1.3rem; font-weight: 900; color: #facc15; background: rgba(255,255,255,0.1); padding: 3px 12px; border-radius: 18px; }
+    .temp-badge { font-size: 1.3rem; font-weight: 900; color: #facc15; background: rgba(255,255,255,0.15); padding: 3px 12px; border-radius: 18px; }
     .status-badge { display: flex; align-items: center; gap: 8px; font-size: 1rem; color: #93c5fd; }
     .status-dot { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; }
     
@@ -37,12 +37,12 @@
       padding: 0 10px; 
       width: 100%; 
     }
-    .side-box { text-align: center; min-width: 130px; }
+    .side-box { text-align: center; min-width: 130px; background: rgba(15,23,42,0.65); padding: 5px 15px; border-radius: 14px; }
     .side-title { font-size: 1.5rem; font-weight: 800; color: #e2e8f0; }
     .side-time { font-size: 2.5rem; font-weight: 900; font-family: monospace; }
     
     .clock-card { 
-      background: #1d4ed8; 
+      background: rgba(29, 78, 216, 0.85); 
       border-radius: 18px; 
       padding: 6px 35px; 
       text-align: center; 
@@ -62,7 +62,7 @@
     }
     .dhikr-box { 
       flex: 1.8; 
-      background: rgba(15,23,42,0.85); 
+      background: rgba(15,23,42,0.70); 
       border-radius: 20px; 
       padding: 6px 20px; 
       font-size: 1.25rem; 
@@ -74,7 +74,7 @@
     }
     .countdown-bar { 
       flex: 1.2; 
-      background: rgba(15,23,42,0.90); 
+      background: rgba(15,23,42,0.75); 
       border-radius: 20px; 
       padding: 6px 20px; 
       display: flex; 
@@ -95,19 +95,19 @@
     }
     .p-card { 
       flex: 1; 
-      background: rgba(15,23,42,0.85); 
+      background: rgba(15,23,42,0.70); 
       border-radius: 15px; 
       padding: 8px 4px; 
       text-align: center; 
       border: 2px solid rgba(255,255,255,0.2); 
     }
-    .p-card.active-p { background: #1e40af; border: 2px solid #60a5fa; transform: translateY(-2px); }
+    .p-card.active-p { background: rgba(30,64,175,0.90); border: 2px solid #60a5fa; transform: translateY(-2px); }
     .p-name { font-size: 1.6rem; font-weight: 900; }
     .p-time { font-size: 2.4rem; font-weight: 900; font-family: monospace; }
     .p-iqama { font-size: 1.4rem; font-weight: 900; color: #93c5fd; direction: ltr; }
     
     .bottom-bar { 
-      background: rgba(10, 25, 55, 0.92); 
+      background: rgba(10, 25, 55, 0.80); 
       padding: 4px 15px; 
       border-radius: 10px; 
       overflow: hidden; 
@@ -130,22 +130,22 @@
       100% { transform: translate3d(-100%, 0, 0); }
     }
 
-    /* الشاشة الكبرى المستقلة للإقامة والصلاة والدعاء */
+    /* الشاشة الكبرى للإقامة والصلاة */
     .fullscreen-modal {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(5, 12, 30, 0.96);
+      background: rgba(5, 12, 30, 0.95);
       z-index: 99999; display: none;
       flex-direction: column; justify-content: center; align-items: center;
       text-align: center; padding: 25px;
     }
-    .modal-head { font-size: 3.2rem; font-weight: 900; color: #facc15; margin-bottom: 20px; }
-    .modal-timer { font-size: 8.5rem; font-weight: 900; font-family: monospace; color: #facc15; text-shadow: 0 0 25px rgba(250,204,21,0.5); direction: ltr; margin: 15px 0; }
-    .modal-body { font-size: 2.4rem; font-weight: 800; color: #ffffff; line-height: 1.6; max-width: 90%; }
-    .modal-sub { font-size: 1.7rem; font-weight: 700; color: #93c5fd; margin-top: 25px; }
+    .modal-head { font-size: 3.5rem; font-weight: 900; color: #facc15; margin-bottom: 20px; }
+    .modal-timer { font-size: 9rem; font-weight: 900; font-family: monospace; color: #facc15; text-shadow: 0 0 25px rgba(250,204,21,0.6); direction: ltr; margin: 15px 0; }
+    .modal-body { font-size: 2.5rem; font-weight: 800; color: #ffffff; line-height: 1.6; max-width: 90%; }
+    .modal-sub { font-size: 1.8rem; font-weight: 700; color: #93c5fd; margin-top: 25px; }
   </style>
 </head>
 <body>
-  <!-- الشاشة الكبرى الشاملة -->
+  <!-- نافذة الإقامة والعد التنازلي الضخم والصلاة -->
   <div class="fullscreen-modal" id="fsModal">
     <div class="modal-head" id="fsHead">إِقَامَةُ الصَّلَاةِ</div>
     <div class="modal-timer" id="fsTimer" style="display:none;">00:00</div>
@@ -206,4 +206,206 @@
     ];
 
     var postPrayerDhikr = [
-      "«أَسْت
+      "«أَسْتَغْفِرُ اللهَ (3 مرات) • اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الجَلَالِ وَالإِكْرَامِ»",
+      "«لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ»",
+      "«اللَّهُمَّ لَا مَانِعَ لِمَا أَعْطَيْتَ، وَلَا مُعْطِيَ لِمَا مَنَعْتَ، وَلَا يَنْفَعُ ذَا الجَدِّ مِنْكَ الجَدُّ»",
+      "«سُبْحَانَ اللهِ (33) • الحَمْدُ للهِ (33) • اللهُ أَكْبَرُ (33)»",
+      "«اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ... (آية الكرسي)»"
+    ];
+
+    var dhikrIdx = 0;
+    var postIdx = 0;
+    var remoteAnnouncement = "";
+
+    function doRotateDhikr() {
+      var el = document.getElementById('dhikrText');
+      if (!el) return;
+      if (remoteAnnouncement && remoteAnnouncement != "") {
+        el.innerText = remoteAnnouncement;
+        return;
+      }
+      dhikrIdx = (dhikrIdx + 1) % defaultAdhkar.length;
+      el.innerText = defaultAdhkar[dhikrIdx];
+    }
+    setInterval(doRotateDhikr, 7000);
+
+    function updateTime() {
+      var d = new Date();
+      var h = d.getHours();
+      var m = d.getMinutes();
+      var s = d.getSeconds();
+
+      var cEl = document.getElementById('liveClock');
+      if (cEl) {
+        cEl.innerText = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+      }
+
+      var gEl = document.getElementById('liveGregorian');
+      if (gEl) {
+        var days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        gEl.innerText = days[d.getDay()] + '، ' + d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear() + ' م';
+      }
+
+      var nowSecs = h * 3600 + m * 60 + s;
+      var activeItem = null;
+      var isIqamaWait = false;
+      var isPraying = false;
+      var isPostPrayer = false;
+      var remainSecs = 0;
+
+      for (var i = 0; i < PRAYER_DATA.length; i++) {
+        var itm = PRAYER_DATA[i];
+        var iqamaEnd = itm.adhanSecs + itm.iqamaWait;
+
+        if (nowSecs >= itm.adhanSecs && nowSecs < iqamaEnd) {
+          activeItem = itm;
+          isIqamaWait = true;
+          remainSecs = iqamaEnd - nowSecs;
+          break;
+        }
+
+        if (nowSecs >= iqamaEnd && nowSecs < (iqamaEnd + 600)) {
+          activeItem = itm;
+          isPraying = true;
+          break;
+        }
+
+        if (nowSecs >= (iqamaEnd + 600) && nowSecs < (iqamaEnd + 1320)) {
+          activeItem = itm;
+          isPostPrayer = true;
+          break;
+        }
+      }
+
+      var modal = document.getElementById('fsModal');
+      var mHead = document.getElementById('fsHead');
+      var mTimer = document.getElementById('fsTimer');
+      var mBody = document.getElementById('fsBody');
+      var mSub = document.getElementById('fsSub');
+
+      if (isIqamaWait) {
+        modal.style.display = 'flex';
+        mHead.innerText = 'إِقَامَةُ صَلَاةِ ' + activeItem.name;
+        mTimer.style.display = 'block';
+        var mm = Math.floor(remainSecs / 60);
+        var ss = remainSecs % 60;
+        mTimer.innerText = (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
+        mBody.innerText = '«اسْتَوُوا وَاعْتَدِلُوا، وَتَرَاصُّوا فِي الصُّفُوفِ»';
+        mSub.innerText = 'يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا';
+      } else if (isPraying) {
+        modal.style.display = 'flex';
+        mHead.innerText = 'أَقِيمُوا الصَّفَّ';
+        mTimer.style.display = 'none';
+        mBody.innerHTML = '«اسْتَوُوا وَاعْتَدِلُوا، وَأَقِيمُوا صُفُوفَكُمْ»<br><br>صلاة ' + activeItem.name + ' جارية الآن...';
+        mSub.innerText = 'يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ تَمَامًا';
+      } else if (isPostPrayer) {
+        modal.style.display = 'flex';
+        mHead.innerText = 'أَذْكَارُ مَا بَعْدَ الصَّلَاةِ';
+        mTimer.style.display = 'none';
+        if (s % 8 === 0) {
+          postIdx = (postIdx + 1) % postPrayerDhikr.length;
+        }
+        mBody.innerText = postPrayerDhikr[postIdx];
+        mSub.innerText = 'تقبل الله صلاتكم ودعاءكم صالح الأعمال';
+      } else {
+        modal.style.display = 'none';
+      }
+
+      if (!isIqamaWait && !isPraying && !isPostPrayer) {
+        for (var j = 0; j < PRAYER_DATA.length; j++) {
+          var nextItm = PRAYER_DATA[j];
+          if (nextItm.adhanSecs > nowSecs) {
+            activeItem = nextItm;
+            remainSecs = nextItm.adhanSecs - nowSecs;
+            break;
+          }
+        }
+        if (!activeItem) {
+          activeItem = PRAYER_DATA[0];
+          remainSecs = (86400 - nowSecs) + PRAYER_DATA[0].adhanSecs;
+        }
+      }
+
+      for (var k = 0; k < PRAYER_DATA.length; k++) {
+        var card = document.getElementById('card-' + PRAYER_DATA[k].id);
+        if (card) card.className = 'p-card';
+      }
+
+      if (activeItem) {
+        var aCard = document.getElementById('card-' + activeItem.id);
+        if (aCard) aCard.className = 'p-card active-p';
+
+        var lbl = document.getElementById('countdownLabel');
+        var box = document.getElementById('countdownBox');
+
+        if (lbl) lbl.innerText = activeItem.name + ' بعد';
+        if (remainSecs <= 60 && !isIqamaWait) {
+          if (box) box.className = 'countdown-bar green-mode';
+        } else {
+          if (box) box.className = 'countdown-bar';
+        }
+
+        var rh = Math.floor(remainSecs / 3600);
+        var rm = Math.floor((remainSecs % 3600) / 60);
+        var rs = remainSecs % 60;
+
+        var str = (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
+        var cd = document.getElementById('countdownVal');
+        if (cd) cd.innerText = str;
+      }
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    var curRelVer = null;
+
+    function fetchRemote() {
+      try {
+        var x = new XMLHttpRequest();
+        x.open('GET', 'remote_settings.json?t=' + (new Date()).getTime(), true);
+        x.onreadystatechange = function() {
+          if (x.readyState === 4 && x.status === 200) {
+            try {
+              var res = JSON.parse(x.responseText);
+              if (res.reloadVersion !== undefined) {
+                if (curRelVer !== null && curRelVer !== res.reloadVersion) {
+                  window.location.reload(true);
+                }
+                curRelVer = res.reloadVersion;
+              }
+              if (res.masjidTitle) {
+                var t = document.getElementById('topMasjidTitle');
+                if (t) t.innerText = res.masjidTitle;
+              }
+              if (res.announcement !== undefined) {
+                remoteAnnouncement = res.announcement;
+                var dt = document.getElementById('dhikrText');
+                if (remoteAnnouncement != "" && dt) dt.innerText = remoteAnnouncement;
+              }
+              if (res.hijriDate) {
+                var h = document.getElementById('liveHijri');
+                if (h) h.innerText = res.hijriDate;
+              }
+              if (res.footerText !== undefined) {
+                var b = document.getElementById('bottomContainer');
+                var m = document.getElementById('bottomMarquee');
+                if (res.footerText == "") {
+                  if (b) b.style.display = 'none';
+                } else {
+                  if (b) b.style.display = 'flex';
+                  if (m) m.innerText = res.footerText;
+                }
+              }
+            } catch (e1) {}
+          }
+        };
+        x.send();
+      } catch (e2) {}
+    }
+
+    fetchRemote();
+    setInterval(fetchRemote, 15000);
+  </script>
+</body>
+</html>
