@@ -85,7 +85,7 @@
       font-weight: 800; 
     }
     .countdown-bar .count-val { font-family: monospace; font-size: 1.7rem; color: #38bdf8; direction: ltr; }
-    .countdown-bar.iqama-mode .count-val { color: #facc15; }
+    .countdown-bar.green-mode .count-val { color: #22c55e; font-weight: 900; text-shadow: 0 0 10px #22c55e; }
     
     .prayers-row { 
       display: flex; 
@@ -107,9 +107,9 @@
     .p-iqama { font-size: 1.4rem; font-weight: 900; color: #93c5fd; direction: ltr; }
     
     .bottom-bar { 
-      background: rgba(10,25,55,0.92); 
+      background: rgba(10, 25, 55, 0.92); 
       padding: 4px 15px; 
-      border-radius: 10px;
+      border-radius: 10px; 
       overflow: hidden; 
       white-space: nowrap; 
       position: relative; 
@@ -130,21 +130,27 @@
       100% { transform: translate3d(-100%, 0, 0); }
     }
 
-    .prayer-modal {
+    /* الشاشة الكبرى المستقلة للإقامة والصلاة والدعاء */
+    .fullscreen-modal {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(5, 12, 30, 0.95);
-      z-index: 9999; display: none;
+      background: rgba(5, 12, 30, 0.96);
+      z-index: 99999; display: none;
       flex-direction: column; justify-content: center; align-items: center;
       text-align: center; padding: 25px;
     }
-    .prayer-modal h1 { font-size: 3.2rem; font-weight: 900; color: #facc15; margin-bottom: 15px; }
-    .prayer-modal p { font-size: 2.1rem; font-weight: 800; color: #ffffff; line-height: 1.5; }
+    .modal-head { font-size: 3.2rem; font-weight: 900; color: #facc15; margin-bottom: 20px; }
+    .modal-timer { font-size: 8.5rem; font-weight: 900; font-family: monospace; color: #facc15; text-shadow: 0 0 25px rgba(250,204,21,0.5); direction: ltr; margin: 15px 0; }
+    .modal-body { font-size: 2.4rem; font-weight: 800; color: #ffffff; line-height: 1.6; max-width: 90%; }
+    .modal-sub { font-size: 1.7rem; font-weight: 700; color: #93c5fd; margin-top: 25px; }
   </style>
 </head>
 <body>
-  <div class="prayer-modal" id="prayerModal">
-    <h1>أَقِيمُوا الصَّفَّ</h1>
-    <p>«اسْتَوُوا وَاعْتَدِلُوا، وَأَقِيمُوا صُفُوفَكُمْ»<br><br>يُرْجَى إِغْلاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا</p>
+  <!-- الشاشة الكبرى الشاملة -->
+  <div class="fullscreen-modal" id="fsModal">
+    <div class="modal-head" id="fsHead">إِقَامَةُ الصَّلَاةِ</div>
+    <div class="modal-timer" id="fsTimer" style="display:none;">00:00</div>
+    <div class="modal-body" id="fsBody">اسْتَوُوا وَاعْتَدِلُوا، وَأَقِيمُوا صُفُوفَكُمْ</div>
+    <div class="modal-sub" id="fsSub">يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا</div>
   </div>
 
   <div class="top-bar">
@@ -158,16 +164,16 @@
   <div class="center-section">
     <div class="side-box"><div class="side-title">الجمعة</div><div class="side-time" id="dispJumua">12:15</div></div>
     <div class="clock-card">
-      <div class="main-clock" id="liveClock">--:--:--</div>
+      <div class="main-clock" id="liveClock">12:00:00</div>
       <div class="main-hijri" id="liveHijri">الأربعاء 23 جمادى الأولى 1448 هـ</div>
-      <div class="main-gregorian" id="liveGregorian">...</div>
+      <div class="main-gregorian" id="liveGregorian">الأربعاء، 4-11-2026 م</div>
     </div>
     <div class="side-box"><div class="side-title">الشروق</div><div class="side-time" id="dispSunrise">06:45</div></div>
   </div>
 
   <div class="middle-info-bar">
     <div class="dhikr-box" id="dhikrText">«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»</div>
-    <div class="countdown-bar" id="countdownBox"><span>⏳</span><span id="countdownLabel">الصلاة بعد</span><span class="count-val" id="countdownVal">--:--:--</span></div>
+    <div class="countdown-bar" id="countdownBox"><span>⏳</span><span id="countdownLabel">الصلاة بعد</span><span class="count-val" id="countdownVal">00:00:00</span></div>
   </div>
 
   <div class="prayers-row">
@@ -179,4 +185,25 @@
   </div>
 
   <div class="bottom-bar" id="bottomContainer">
-    <div class="marquee-content" id="
+    <div class="marquee-content" id="bottomMarquee">تقبل الله منا ومنكم صالح الأعمال • نرجو من المصلين الكرام تسوية الصفوف وإغلاق الهواتف</div>
+  </div>
+
+  <script>
+    var PRAYER_DATA = [
+      { id: "Fajr", name: "الفجر", adhanSecs: 19080, iqamaWait: 1200 },
+      { id: "Dhuhr", name: "الظهر", adhanSecs: 44100, iqamaWait: 900 },
+      { id: "Asr", name: "العصر", adhanSecs: 54480, iqamaWait: 900 },
+      { id: "Maghrib", name: "المغرب", adhanSecs: 63300, iqamaWait: 600 },
+      { id: "Isha", name: "العشاء", adhanSecs: 67860, iqamaWait: 900 }
+    ];
+
+    var defaultAdhkar = [
+      "«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»",
+      "«لا إِلَهَ إِلا اللَّهُ وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ»",
+      "«أَسْتَغْفِرُ اللهَ الَّذِي لا إِلَهَ إِلا هُوَ الحَيَّ القَيُّومَ وَأَتُوبُ إِلَيْهِ»",
+      "«اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",
+      "«لا حَوْلَ وَلا قُوَّةَ إِلا بِاللهِ الْعَلِيِّ الْعَظِيمِ»"
+    ];
+
+    var postPrayerDhikr = [
+      "«أَسْت
