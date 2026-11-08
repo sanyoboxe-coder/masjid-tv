@@ -19,7 +19,7 @@
       background-color: #0b1329;
     }
 
-    /* خلفية المسجد ملء الشاشة */
+    /* صورة المسجد كخلفية كاملة قابلة للتعديل والتحريك */
     .bg-fullscreen {
       position: absolute;
       top: 0;
@@ -29,6 +29,7 @@
       object-fit: cover;
       z-index: 1;
       filter: brightness(0.85) contrast(1.05);
+      transform-origin: center center;
     }
 
     .app-content {
@@ -128,33 +129,41 @@
     /* نافذة الإعدادات */
     .setup-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(2, 6, 23, 0.95); z-index: 100000;
+      background: rgba(2, 6, 23, 0.96); z-index: 100000;
       display: none; justify-content: center; align-items: center; padding: 15px;
     }
     .setup-box {
       background: #0f172a; border: 2px solid #38bdf8; border-radius: 20px;
-      padding: 20px 25px; width: 100%; max-width: 620px; text-align: right;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-height: 92vh; overflow-y: auto;
+      padding: 18px 22px; width: 100%; max-width: 640px; text-align: right;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.85); max-height: 94vh; overflow-y: auto;
     }
     .setup-title { font-size: 1.3rem; font-weight: 900; color: #38bdf8; text-align: center; margin-bottom: 10px; }
-    .timing-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    .timing-table th, .timing-table td { padding: 6px; text-align: center; border-bottom: 1px solid #334155; }
+    .timing-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+    .timing-table th, .timing-table td { padding: 5px; text-align: center; border-bottom: 1px solid #334155; }
     .timing-table th { color: #94a3b8; font-size: 0.9rem; }
     .btn-step { background: #1e293b; border: 1px solid #475569; color: #fff; width: 32px; height: 32px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
     .input-val { width: 50px; text-align: center; background: #020617; border: 1px solid #38bdf8; color: #facc15; font-size: 1.1rem; font-weight: bold; padding: 4px; border-radius: 6px; }
     
-    .field-group { margin-top: 10px; }
-    .field-label { display: block; font-size: 0.9rem; color: #94a3b8; margin-bottom: 4px; font-weight: bold; }
-    .field-input { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 0.95rem; }
-    .field-select { width: 100%; background: #020617; border: 1px solid #38bdf8; color: #facc15; padding: 8px 12px; border-radius: 8px; font-size: 1rem; font-weight: bold; }
+    .field-group { margin-top: 8px; }
+    .field-label { display: block; font-size: 0.88rem; color: #94a3b8; margin-bottom: 4px; font-weight: bold; }
+    .field-input { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.95rem; }
+    .field-select { width: 100%; background: #020617; border: 1px solid #38bdf8; color: #facc15; padding: 7px 12px; border-radius: 8px; font-size: 0.95rem; font-weight: bold; }
 
-    .btn-save { background: #16a34a; color: #fff; width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 900; cursor: pointer; margin-top: 15px; }
-    .btn-close { background: #475569; color: #fff; width: 100%; padding: 8px; border: none; border-radius: 10px; font-size: 0.95rem; cursor: pointer; margin-top: 6px; }
+    /* لوحة التحكم وضبط صورة الخلفية */
+    .img-controls-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px;
+      background: #020617; padding: 8px; border-radius: 8px; border: 1px solid #334155;
+    }
+    .btn-ctrl { background: #1e293b; border: 1px solid #38bdf8; color: #fff; padding: 6px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.88rem; }
+    .btn-ctrl:active { background: #38bdf8; color: #000; }
+
+    .btn-save { background: #16a34a; color: #fff; width: 100%; padding: 11px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 900; cursor: pointer; margin-top: 12px; }
+    .btn-close { background: #475569; color: #fff; width: 100%; padding: 7px; border: none; border-radius: 10px; font-size: 0.95rem; cursor: pointer; margin-top: 6px; }
   </style>
 </head>
 <body>
 
-  <!-- صورة المسجد المحفوظة في GitHub -->
+  <!-- صورة المسجد الأصلية -->
   <img id="bgMasjid" class="bg-fullscreen" src="1000208998.jpg" alt="خلفية المسجد">
 
   <div class="app-content">
@@ -167,11 +176,18 @@
       <div class="modal-sub">📴 يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا</div>
     </div>
 
-    <!-- لوحة الإعدادات -->
+    <!-- لوحة الإعدادات والتحكم الكامل -->
     <div class="setup-overlay" id="setupModal">
       <div class="setup-box">
-        <div class="setup-title">⚙️ لوحة تحكم مسجد أبي هريرة</div>
+        <div class="setup-title">⚙️ لوحة تحكم وإعدادات المسجد</div>
+
+        <!-- تعديل اسم المسجد -->
+        <div class="field-group">
+          <label class="field-label">اسم المسجد الظاهر في الأعلى:</label>
+          <input type="text" id="cfg_title" class="field-input" placeholder="مسجد أبي هريرة - القنيطرة">
+        </div>
         
+        <!-- ضبط الساعة والتوقيت الصيفي -->
         <div class="field-group">
           <label class="field-label">نظام التوقيت (حل مشكل الساعة الزائدة):</label>
           <select id="cfg_tz" class="field-select">
@@ -180,6 +196,7 @@
           </select>
         </div>
 
+        <!-- جدول ضبط دقائق الاحتياط (+ / -) -->
         <table class="timing-table">
           <thead>
             <tr>
@@ -222,17 +239,33 @@
           </tbody>
         </table>
 
+        <!-- التحكم في إزاحة وتكبير وتصغير صورة الخلفية -->
+        <div class="field-group">
+          <label class="field-label">📐 ضبط موضع وحجم صورة المسجد (يمين/يسار/فوق/تحت/زوم):</label>
+          <div class="img-controls-grid">
+            <button class="btn-ctrl" onclick="adjustBg('y', -3)">⬆️ فوق</button>
+            <button class="btn-ctrl" onclick="adjustBg('scale', 0.05)">🔍 تكبير (+)</button>
+            <button class="btn-ctrl" onclick="adjustBg('y', 3)">⬇️ تحت</button>
+            <button class="btn-ctrl" onclick="adjustBg('x', 3)">➡️ يمين</button>
+            <button class="btn-ctrl" onclick="resetBgTransform()">🔄 وسط (Reset)</button>
+            <button class="btn-ctrl" onclick="adjustBg('x', -3)">⬅️ يسار</button>
+            <button class="btn-ctrl" style="grid-column: span 3;" onclick="adjustBg('scale', -0.05)">🔎 تصغير وتجميع (-)</button>
+          </div>
+        </div>
+
+        <!-- تعديل نص الشريط المتحرك -->
         <div class="field-group">
           <label class="field-label">نص الشريط السفلي المتحرك:</label>
           <input type="text" id="cfg_marquee" class="field-input">
         </div>
 
+        <!-- اسم ملف صورة المسجد -->
         <div class="field-group">
-          <label class="field-label">اسم ملف صورة المسجد:</label>
-          <input type="text" id="cfg_bg" class="field-input" placeholder="1000208998.jpg أو masjid.jpg">
+          <label class="field-label">اسم ملف صورة المسجد في GitHub:</label>
+          <input type="text" id="cfg_bg" class="field-input" placeholder="1000208998.jpg أو اسم الصورة الجديدة">
         </div>
 
-        <button type="button" class="btn-save" onclick="saveSettings()">💾 حفظ الإعدادات الآن</button>
+        <button type="button" class="btn-save" onclick="saveSettings()">💾 حفظ التعديلات الآن</button>
         <button type="button" class="btn-close" onclick="document.getElementById('setupModal').style.display='none'">إلغاء</button>
       </div>
     </div>
@@ -307,14 +340,46 @@
       if (smq) savedMarquee = smq;
     } catch(e) {}
 
+    var savedTitle = "🕌 مسجد أبي هريرة - القنيطرة";
+    try {
+      var st = localStorage.getItem('sm_masjid_title');
+      if (st) savedTitle = st;
+    } catch(e) {}
+
     var savedBg = '1000208998.jpg';
     try {
       var sbg = localStorage.getItem('sm_bg_url');
       if (sbg) savedBg = sbg;
     } catch(e) {}
 
-    // التعامل التلقائي مع مسار الصورة
+    // إعدادات إزاحة وزوم الصورة
+    var bgTransform = { x: 0, y: 0, scale: 1 };
+    try {
+      var strans = localStorage.getItem('sm_bg_transform');
+      if (strans) bgTransform = JSON.parse(strans);
+    } catch(e) {}
+
     var bgEl = document.getElementById('bgMasjid');
+    function applyBgTransform() {
+      bgEl.style.transform = "translate(" + bgTransform.x + "%, " + bgTransform.y + "%) scale(" + bgTransform.scale + ")";
+    }
+    applyBgTransform();
+
+    function adjustBg(prop, delta) {
+      if (prop === 'scale') {
+        bgTransform.scale = Math.max(0.7, Math.min(2.5, +(bgTransform.scale + delta).toFixed(2)));
+      } else {
+        bgTransform[prop] = +(bgTransform[prop] + delta).toFixed(1);
+      }
+      applyBgTransform();
+    }
+
+    function resetBgTransform() {
+      bgTransform = { x: 0, y: 0, scale: 1 };
+      applyBgTransform();
+    }
+
+    // التعامل التلقائي مع مسار الصورة
     var possibleImages = [savedBg, '1000208998.jpg', './1000208998.jpg', 'masjid.jpg', './masjid.jpg'];
     var imgIdx = 0;
 
@@ -326,7 +391,7 @@
     };
     bgEl.src = possibleImages[0];
 
-    // إحداثيات القنيطرة
+    // إحداثيات القنيطرة وحساب Salat First
     var LAT = 34.2610;
     var LNG = -6.5802;
     var computedPrayerSecs = {};
@@ -406,6 +471,7 @@
       document.getElementById('time-Isha').innerText = formatTime(getAdjustedAdhan('Isha'));
 
       document.getElementById('bottomMarquee').innerText = savedMarquee;
+      document.getElementById('dispMasjidTitle').innerText = savedTitle;
     }
 
     function openSetupModal() {
@@ -413,6 +479,7 @@
         document.getElementById('disp_base_' + p).innerText = formatTime(getAdjustedAdhan(p));
         document.getElementById('adj_' + p).value = (adhanOffsets[p] >= 0 ? '+' : '') + (adhanOffsets[p] || 0);
       });
+      document.getElementById('cfg_title').value = savedTitle;
       document.getElementById('cfg_tz').value = tzOffset;
       document.getElementById('cfg_marquee').value = savedMarquee;
       document.getElementById('cfg_bg').value = savedBg;
@@ -426,16 +493,21 @@
     }
 
     function saveSettings() {
+      var inpTitle = document.getElementById('cfg_title').value.trim();
+      savedTitle = inpTitle !== '' ? inpTitle : "🕌 مسجد أبي هريرة - القنيطرة";
+
       tzOffset = parseInt(document.getElementById('cfg_tz').value);
       savedMarquee = document.getElementById('cfg_marquee').value;
       var inputBg = document.getElementById('cfg_bg').value.trim();
       savedBg = (inputBg !== '' ? inputBg : '1000208998.jpg');
 
       try {
+        localStorage.setItem('sm_masjid_title', savedTitle);
         localStorage.setItem('sm_adhan_offsets', JSON.stringify(adhanOffsets));
         localStorage.setItem('sm_tz_offset', tzOffset);
         localStorage.setItem('sm_marquee_text', savedMarquee);
         localStorage.setItem('sm_bg_url', savedBg);
+        localStorage.setItem('sm_bg_transform', JSON.stringify(bgTransform));
       } catch(e) {}
 
       bgEl.src = savedBg;
@@ -469,7 +541,6 @@
         document.getElementById('liveGregDate').innerText = d.toDateString();
       }
 
-      // حساب التاريخ الهجري الآمن لجميع الشاشات
       try {
         var hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' });
         document.getElementById('liveHijriDate').innerText = hijriFormatter.format(d) + ' هـ';
