@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>مسجد أبي هريرة - القنيطرة</title>
   <style>
+    :root {
+      --box-bg: rgba(0, 0, 0, 0.55);
+      --box-border: rgba(255, 255, 255, 0.28);
+      --active-card-bg: rgba(14, 116, 144, 0.85);
+      --accent-color: #38bdf8;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; }
     
@@ -19,7 +26,7 @@
       background-color: #0b1329;
     }
 
-    /* صورة المسجد كخلفية كاملة قابلة للتعديل والتحريك */
+    /* صورة المسجد كخلفية كاملة */
     .bg-fullscreen {
       position: absolute;
       top: 0;
@@ -44,29 +51,30 @@
 
     /* الشريط العلوي */
     .top-bar { 
-      background: rgba(0, 0, 0, 0.55); padding: 8px 25px; border-radius: 14px;
+      background: var(--box-bg); padding: 8px 25px; border-radius: 14px;
       display: flex; justify-content: space-between; align-items: center; 
-      border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px);
+      border: 1px solid var(--box-border); backdrop-filter: blur(4px);
     }
     .masjid-title { font-size: 1.6rem; font-weight: 900; color: #ffffff; text-shadow: 0 2px 6px #000; }
-    .top-tools { display: flex; align-items: center; gap: 15px; }
-    .settings-trigger { cursor: pointer; opacity: 0.9; font-size: 1.5rem; }
+    .top-tools { display: flex; align-items: center; gap: 18px; }
+    .icon-btn { cursor: pointer; font-size: 1.5rem; transition: transform 0.2s; background: none; border: none; color: inherit; }
+    .icon-btn:focus, .icon-btn:hover { transform: scale(1.15); outline: none; }
 
     /* القسم الأوسط */
     .center-section { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 10px; }
     .side-box { 
-      text-align: center; min-width: 155px; background: rgba(0, 0, 0, 0.55); 
-      padding: 10px 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.25);
+      text-align: center; min-width: 155px; background: var(--box-bg); 
+      padding: 10px 20px; border-radius: 16px; border: 1px solid var(--box-border);
       backdrop-filter: blur(4px); box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
     .side-title { font-size: 1.3rem; font-weight: 800; color: #e2e8f0; text-shadow: 0 2px 4px #000; }
     .side-time { font-size: 2.6rem; font-weight: 900; font-family: monospace; color: #ffffff; text-shadow: 0 2px 6px #000; }
 
     .clock-card { 
-      background: rgba(0, 0, 0, 0.60); 
+      background: var(--box-bg); 
       border-radius: 24px; padding: 12px 45px; text-align: center; min-width: 520px; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 2px solid rgba(255, 255, 255, 0.35);
-      backdrop-filter: blur(4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 2px solid var(--box-border);
+      backdrop-filter: blur(5px);
     }
     .main-clock { font-size: 5rem; font-weight: 900; font-family: monospace; line-height: 1; letter-spacing: 2px; text-shadow: 0 3px 10px #000; }
     .hijri-date { font-size: 1.5rem; font-weight: 900; color: #facc15; margin-top: 6px; text-shadow: 0 2px 5px #000; }
@@ -74,29 +82,29 @@
 
     .middle-info-bar { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 0 10px; }
     .dhikr-box { 
-      flex: 1.8; background: rgba(0, 0, 0, 0.55); border-radius: 18px; 
+      flex: 1.8; background: var(--box-bg); border-radius: 18px; 
       padding: 10px 25px; font-size: 1.35rem; text-align: center; white-space: nowrap; 
-      overflow: hidden; text-overflow: ellipsis; border: 1px solid rgba(255,255,255,0.25);
+      overflow: hidden; text-overflow: ellipsis; border: 1px solid var(--box-border);
       backdrop-filter: blur(4px); text-shadow: 0 2px 6px #000; font-weight: bold;
     }
     .countdown-bar { 
-      flex: 1.2; background: rgba(0, 0, 0, 0.60); border-radius: 18px; 
+      flex: 1.2; background: var(--box-bg); border-radius: 18px; 
       padding: 10px 25px; display: flex; align-items: center; justify-content: center; 
-      gap: 10px; font-size: 1.35rem; font-weight: 800; border: 1px solid rgba(255,255,255,0.3);
+      gap: 10px; font-size: 1.35rem; font-weight: 800; border: 1px solid var(--box-border);
       backdrop-filter: blur(4px); text-shadow: 0 2px 5px #000;
     }
-    .countdown-bar .count-val { font-family: monospace; font-size: 1.9rem; color: #38bdf8; direction: ltr; font-weight: 900; text-shadow: 0 2px 6px #000; }
+    .countdown-bar .count-val { font-family: monospace; font-size: 1.9rem; color: var(--accent-color); direction: ltr; font-weight: 900; text-shadow: 0 2px 6px #000; }
 
     /* بطاقات أوقات الصلاة */
     .prayers-row { display: flex; justify-content: space-between; gap: 12px; padding: 0 10px; }
     .p-card { 
-      flex: 1; background: rgba(0, 0, 0, 0.55); border-radius: 18px; 
-      padding: 10px 6px; text-align: center; border: 1.5px solid rgba(255,255,255,0.25);
+      flex: 1; background: var(--box-bg); border-radius: 18px; 
+      padding: 10px 6px; text-align: center; border: 1.5px solid var(--box-border);
       backdrop-filter: blur(4px); box-shadow: 0 6px 20px rgba(0,0,0,0.6);
     }
     .p-card.active-p { 
-      background: rgba(14, 116, 144, 0.85); 
-      border-color: #38bdf8; transform: translateY(-4px); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+      background: var(--active-card-bg); 
+      border-color: var(--accent-color); transform: translateY(-4px); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
     }
     .p-name { font-size: 1.55rem; font-weight: 900; text-shadow: 0 2px 6px #000; }
     .p-subname { font-size: 0.85rem; font-weight: 700; color: #e2e8f0; text-transform: uppercase; margin-bottom: 2px; }
@@ -105,15 +113,34 @@
 
     /* الشريط السفلي */
     .bottom-bar { 
-      background: rgba(0, 0, 0, 0.60); padding: 6px 20px; border-radius: 12px; 
+      background: var(--box-bg); padding: 6px 20px; border-radius: 12px; 
       overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 44px;
-      border: 1px solid rgba(255,255,255,0.25); backdrop-filter: blur(4px);
+      border: 1px solid var(--box-border); backdrop-filter: blur(4px);
     }
     .marquee-content {
       display: inline-block; padding-left: 100%; animation: marquee 30s linear infinite;
       font-size: 1.3rem; font-weight: 800; color: #facc15; text-shadow: 0 2px 6px #000;
     }
     @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
+
+    /* نافذة اختيار الألوان (Palette) مخصصة للريموت */
+    .color-modal {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(2, 6, 23, 0.94); z-index: 100001;
+      display: none; justify-content: center; align-items: center; padding: 20px;
+    }
+    .color-box {
+      background: #0f172a; border: 2px solid #38bdf8; border-radius: 20px;
+      padding: 22px 25px; width: 100%; max-width: 520px; text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.85);
+    }
+    .theme-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
+    .btn-theme {
+      padding: 12px; border-radius: 10px; border: 2px solid #334155;
+      color: #fff; font-size: 1rem; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-theme:focus, .btn-theme:hover { border-color: #38bdf8; transform: scale(1.03); outline: none; }
 
     /* شاشة الإقامة */
     .fullscreen-modal {
@@ -149,13 +176,12 @@
     .field-input { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.95rem; }
     .field-select { width: 100%; background: #020617; border: 1px solid #38bdf8; color: #facc15; padding: 7px 12px; border-radius: 8px; font-size: 0.95rem; font-weight: bold; }
 
-    /* لوحة التحكم وضبط صورة الخلفية */
     .img-controls-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px;
       background: #020617; padding: 8px; border-radius: 8px; border: 1px solid #334155;
     }
     .btn-ctrl { background: #1e293b; border: 1px solid #38bdf8; color: #fff; padding: 6px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.88rem; }
-    .btn-ctrl:active { background: #38bdf8; color: #000; }
+    .btn-ctrl:focus, .btn-ctrl:active { background: #38bdf8; color: #000; outline: none; }
 
     .btn-save { background: #16a34a; color: #fff; width: 100%; padding: 11px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 900; cursor: pointer; margin-top: 12px; }
     .btn-close { background: #475569; color: #fff; width: 100%; padding: 7px; border: none; border-radius: 10px; font-size: 0.95rem; cursor: pointer; margin-top: 6px; }
@@ -168,6 +194,25 @@
 
   <div class="app-content">
 
+    <!-- نافذة اختيار وتغيير الألوان عبر الريموت -->
+    <div class="color-modal" id="colorModal">
+      <div class="color-box">
+        <h3 style="color: #38bdf8; font-size: 1.3rem; margin-bottom: 5px;">🎨 مظهر وألوان الصناديق (مريحة للعين)</h3>
+        <p style="color: #94a3b8; font-size: 0.9rem;">اختر المظهر المناسب بالريموت لتخفيف الإجهاد البصري:</p>
+        
+        <div class="theme-list">
+          <button class="btn-theme" style="background: rgba(0,0,0,0.65);" onclick="applyTheme('dark')">⬛ داكن كلاسيكي</button>
+          <button class="btn-theme" style="background: rgba(6,78,59,0.75);" onclick="applyTheme('green')">🟩 أخضر مسجدي</button>
+          <button class="btn-theme" style="background: rgba(30,58,138,0.75);" onclick="applyTheme('blue')">🟦 أزرق ليلي</button>
+          <button class="btn-theme" style="background: rgba(120,53,15,0.75);" onclick="applyTheme('amber')">🟫 عنبري ذهبي</button>
+          <button class="btn-theme" style="background: rgba(15,23,42,0.85);" onclick="applyTheme('slate')">🌌 كحلي رمادي</button>
+          <button class="btn-theme" style="background: rgba(0,0,0,0.88); border-color:#facc15;" onclick="applyTheme('contrast')">⚡ تباين عالي</button>
+        </div>
+
+        <button class="btn-close" style="width: 100%; margin-top: 8px;" onclick="closeColorModal()">إغلاق</button>
+      </div>
+    </div>
+
     <!-- شاشة الإقامة الكبرى -->
     <div class="fullscreen-modal" id="fsModal">
       <div class="modal-head" id="fsHead">إِقَامَةُ الصَّلَاةِ</div>
@@ -176,7 +221,7 @@
       <div class="modal-sub">📴 يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا</div>
     </div>
 
-    <!-- لوحة الإعدادات والتحكم الكامل -->
+    <!-- لوحة الإعدادات والتحكم -->
     <div class="setup-overlay" id="setupModal">
       <div class="setup-box">
         <div class="setup-title">⚙️ لوحة تحكم وإعدادات المسجد</div>
@@ -239,7 +284,7 @@
           </tbody>
         </table>
 
-        <!-- التحكم في إزاحة وتكبير وتصغير صورة الخلفية -->
+        <!-- التحكم في موضع وحجم صورة المسجد -->
         <div class="field-group">
           <label class="field-label">📐 ضبط موضع وحجم صورة المسجد (يمين/يسار/فوق/تحت/زوم):</label>
           <div class="img-controls-grid">
@@ -270,12 +315,13 @@
       </div>
     </div>
 
-    <!-- الشريط العلوي -->
+    <!-- الشريط العلوي مع أيقونة الألوان والإعدادات -->
     <div class="top-bar">
       <div class="masjid-title" id="dispMasjidTitle">🕌 مسجد أبي هريرة - القنيطرة</div>
       <div class="top-tools">
-        <div id="dispCityBadge" style="color: #38bdf8; font-size: 1.1rem; font-weight: 900; text-shadow: 0 2px 4px #000;">📍 القنيطرة</div>
-        <div class="settings-trigger" onclick="openSetupModal()" title="الإعدادات">⚙️</div>
+        <div id="dispCityBadge" style="color: var(--accent-color); font-size: 1.1rem; font-weight: 900; text-shadow: 0 2px 4px #000;">📍 القنيطرة</div>
+        <button class="icon-btn" onclick="openColorModal()" title="ألوان وخلفيات مريحة للعين">🎨</button>
+        <button class="icon-btn" onclick="openSetupModal()" title="الإعدادات">⚙️</button>
       </div>
     </div>
 
@@ -318,6 +364,38 @@
   </div>
 
   <script>
+    // نظام الثيمات والألوان المريحة للعين
+    var themes = {
+      dark: { bg: 'rgba(0, 0, 0, 0.55)', border: 'rgba(255, 255, 255, 0.28)', active: 'rgba(14, 116, 144, 0.85)', accent: '#38bdf8' },
+      green: { bg: 'rgba(6, 78, 59, 0.70)', border: 'rgba(52, 211, 153, 0.35)', active: 'rgba(4, 120, 87, 0.90)', accent: '#34d399' },
+      blue: { bg: 'rgba(30, 58, 138, 0.70)', border: 'rgba(96, 165, 250, 0.35)', active: 'rgba(29, 78, 216, 0.90)', accent: '#60a5fa' },
+      amber: { bg: 'rgba(120, 53, 15, 0.70)', border: 'rgba(251, 191, 36, 0.35)', active: 'rgba(180, 83, 9, 0.90)', accent: '#fbbf24' },
+      slate: { bg: 'rgba(15, 23, 42, 0.80)', border: 'rgba(148, 163, 184, 0.35)', active: 'rgba(30, 41, 59, 0.95)', accent: '#38bdf8' },
+      contrast: { bg: 'rgba(0, 0, 0, 0.88)', border: 'rgba(250, 204, 21, 0.60)', active: 'rgba(202, 138, 4, 0.95)', accent: '#facc15' }
+    };
+
+    var currentTheme = localStorage.getItem('sm_theme_id') || 'dark';
+
+    function applyTheme(themeKey) {
+      if (!themes[themeKey]) themeKey = 'dark';
+      currentTheme = themeKey;
+      var t = themes[themeKey];
+      var r = document.documentElement.style;
+      r.setProperty('--box-bg', t.bg);
+      r.setProperty('--box-border', t.border);
+      r.setProperty('--active-card-bg', t.active);
+      r.setProperty('--accent-color', t.accent);
+      try { localStorage.setItem('sm_theme_id', themeKey); } catch(e) {}
+      closeColorModal();
+    }
+
+    function openColorModal() {
+      document.getElementById('colorModal').style.display = 'flex';
+    }
+    function closeColorModal() {
+      document.getElementById('colorModal').style.display = 'none';
+    }
+
     // مدد الإقامة الأصلية
     var fixedIqamaDelays = { Fajr: 20, Dhuhr: 15, Asr: 15, Maghrib: 10, Isha: 15 };
 
@@ -352,7 +430,6 @@
       if (sbg) savedBg = sbg;
     } catch(e) {}
 
-    // إعدادات إزاحة وزوم الصورة
     var bgTransform = { x: 0, y: 0, scale: 1 };
     try {
       var strans = localStorage.getItem('sm_bg_transform');
@@ -379,7 +456,6 @@
       applyBgTransform();
     }
 
-    // التعامل التلقائي مع مسار الصورة
     var possibleImages = [savedBg, '1000208998.jpg', './1000208998.jpg', 'masjid.jpg', './masjid.jpg'];
     var imgIdx = 0;
 
@@ -621,6 +697,7 @@
       document.getElementById('dhikrText').innerText = adhkar[dhikrIdx];
     }, 7000);
 
+    applyTheme(currentTheme);
     computeSalatFirst(new Date());
     renderUI();
     tick();
