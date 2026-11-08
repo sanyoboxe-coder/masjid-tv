@@ -165,7 +165,7 @@
 </head>
 <body>
 
-  <!-- صورة المسجد كخلفية مباشرة -->
+  <!-- صورة المسجد -->
   <img id="bgMasjid" class="bg-img" src="1000208998.jpg" alt="خلفية المسجد">
 
   <div class="app-content">
@@ -347,9 +347,10 @@
     };
     bgImgEl.src = fallbackList[0];
 
-    // كشف حالة الاتصال
-    function updateConnectionStatus() {
+    // التحقق الدقيق من الاتصال بدون أخطاء
+    function checkConnection() {
       var badge = document.getElementById('dispStatus');
+      if (!badge) return;
       if (navigator.onLine) {
         badge.className = 'status-badge status-online';
         badge.innerText = '🟢 متصل';
@@ -358,9 +359,10 @@
         badge.innerText = '🔴 غير متصل';
       }
     }
-    window.addEventListener('online', updateConnectionStatus);
-    window.addEventListener('offline', updateConnectionStatus);
+    window.addEventListener('online', checkConnection);
+    window.addEventListener('offline', checkConnection);
 
+    // إحداثيات القنيطرة وحساب Salat First
     var LAT = 34.2610;
     var LNG = -6.5802;
     var computedPrayerSecs = {};
@@ -405,4 +407,215 @@
         var H_isha = hourAngle(-17.0);
 
         var asrAlt = r2d(Math.atan(1.0 / (1.0 + Math.tan(d2r(Math.abs(LAT - Dec))))));
-        var H_asr = hourAngle(asr
+        var H_asr = hourAngle(asrAlt);
+
+        var shift = tzOffset * 3600;
+
+        computedPrayerSecs = {
+          Fajr: Math.round((noon - H_fajr) * 3600 + shift),
+          Sunrise: Math.round((noon - H_sun) * 3600 + shift),
+          Dhuhr: Math.round(noon * 3600 + shift + (5 * 60)),
+          Asr: Math.round((noon + H_asr) * 3600 + shift),
+          Maghrib: Math.round((noon + H_sun) * 3600 + shift),
+          Isha: Math.round((noon + H_isha) * 3600 + shift)
+        };
+      } catch(e) {}
+    }
+
+    function getAdjustedAdhan(id) {
+      return (computedPrayerSecs[id] || 0) + ((adhanOffsets[id] || 0) * 60);
+    }
+
+    function formatTime(s) {
+      if (!s && s !== 0) return "--:--";
+      var h = Math.floor(s / 3600) % 24;
+      var m = Math.floor((s % 3600) / 60);
+      return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+    }
+
+    function renderUI() {
+      document.getElementById('time-Fajr').innerText = formatTime(getAdjustedAdhan('Fajr'));
+      document.getElementById('dispSunrise').innerText = formatTime(getAdjustedAdhan('Sunrise'));
+      document.getElementById('time-Dhuhr').innerText = formatTime(getAdjustedAdhan('Dhuhr'));
+      document.getElementById('time-Asr').innerText = formatTime(getAdjustedAdhan('Asr'));
+      document.getElementById('time-Maghrib').innerText = formatTime(getAdjustedAdhan('Maghrib'));
+      document.getElementById('time-Isha').innerText = formatTime(getAdjustedAdhan('Isha'));
+
+      document.getElementById('bottomMarquee').innerText = savedMarquee;
+      document.getElementById('dispTemp').innerText = '🌡️ ' + savedTemp + '°C';
+    }
+
+    function openSetupModal() {
+      var prayers = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+      for (var i = 0; i < prayers.length; i++) {
+        var p = prayers[i];
+        document.getElementById('disp_base_' + p).innerText = formatTime(getAdjustedAdhan(p));
+        document.getElementById('adj_' + p).value = (adhanOffsets[p] >= 0 ? '+' : '') + (adhanOffsets[p] || 0);
+      }
+      document.getElementById('cfg_tz').value = tzOffset;
+      document.getElementById('cfg_temp').value = savedTemp;
+      document.getElementById('cfg_marquee').value = savedMarquee;
+      document.getElementById('cfg_bg').value = savedBg;
+      document.getElementById('setupModal').style.display = 'flex';
+    }
+
+    function adjAdhan(p, delta) {
+      adhanOffsets[p] = (adhanOffsets[p] || 0) + delta;
+      document.getElementById('adj_' + p).value = (adhanOffsets[p] >= 0 ? '+' : '') + adhanOffsets[p];
+      document.getElementById('disp_base_' + p).innerText = formatTime(getAdjustedAdhan(p));
+    }
+
+    function saveSettings() {
+      tzOffset = parseInt(document.getElementById('cfg_tz').value, 10);
+      savedTemp = document.getElementById('cfg_temp').value || '21';
+      savedMarquee = document.getElementById('cfg_marquee').value;
+      var inputBg = document.getElementById('cfg_bg').value;
+      if (inputBg && inputBg.trim() !== '') {
+        savedBg = inputBg.trim();
+      }
+
+      try {
+        localStorage.setItem('sm_adhan_offsets', JSON.stringify(adhanOffsets));
+        localStorage.setItem('sm_tz_offset', tzOffset);
+        localStorage.setItem('sm_temp', savedTemp);
+        localStorage.setItem('sm_marquee_text', savedMarquee);
+        localStorage.setItem('sm_bg_url', savedBg);
+      } catch(e) {}
+
+      bgImgEl.src = savedBg;
+
+      computeSalatFirst(new Date());
+      renderUI();
+      document.getElementById('setupModal').style.display = 'none';
+    }
+
+    var adhkar = [
+      "«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»",
+      "«لا إِلَهَ إِلا اللَّهُ وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ»",
+      "«أَسْتَغْفِرُ اللهَ الَّذِي لا إِلَهَ إِلا هُوَ الحَيَّ القَيُّومَ وَأَتُوبُ إِلَيْهِ»",
+      "«اللَّهُمَّ أَعِّنِي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",
+      "«لا حَوْلَ وَلا قُوَّةَ إِلا بِاللهِ الْعَلِيِّ الْعَظِيمِ»"
+    ];
+    var dhikrIdx = 0;
+
+    // حساب التاريخ الهجري بدقة وبدون أخطاء
+    function getSafeHijriDate(d) {
+      try {
+        var day = d.getDate(), month = d.getMonth() + 1, year = d.getFullYear();
+        if (month < 3) { year -= 1; month += 12; }
+        var a = Math.floor(year / 100);
+        var b = 2 - a + Math.floor(a / 4);
+        var jd = Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + b - 1524;
+        var l = jd - 1948440 + 10632;
+        var n = Math.floor((l - 1) / 10631);
+        l = l - 10631 * n + 354;
+        var j = (Math.floor((10985 - l) / 5316)) * (Math.floor((50 * l) / 17719)) + (Math.floor(l / 5670)) * (Math.floor((43 * l) / 15238));
+        l = l - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50)) - (Math.floor(j / 16)) * (Math.floor((15238 * j) / 43)) + 29;
+        var m = Math.floor((24 * l) / 709);
+        var dH = l - Math.floor((709 * m) / 24);
+        var yH = 30 * n + j - 30;
+        var hijriMonths = ["محرم", "صفر", "ربيع الأول", "ربيع الآخر", "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة"];
+        return dH + " " + hijriMonths[m - 1] + " " + yH + " هـ";
+      } catch(e) {
+        return "1448 هـ";
+      }
+    }
+
+    function tick() {
+      var d = new Date();
+      var h = d.getHours();
+      var m = d.getMinutes();
+      var s = d.getSeconds();
+
+      document.getElementById('liveClock').innerText = 
+        (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+
+      var days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+      var months = ["يناير", "فبراير", "مارس", "أبريل", "ماي", "يونيو", "يوليوز", "غشت", "شتنبر", "أكتوبر", "نونبر", "دجنبر"];
+      document.getElementById('liveGregDate').innerText = days[d.getDay()] + " " + d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+
+      document.getElementById('liveHijriDate').innerText = getSafeHijriDate(d);
+
+      var nowSec = h * 3600 + m * 60 + s;
+      var pList = [
+        { id: "Fajr", name: "الفجر", adhan: getAdjustedAdhan('Fajr'), iq: fixedIqamaDelays.Fajr * 60 },
+        { id: "Dhuhr", name: "الظهر", adhan: getAdjustedAdhan('Dhuhr'), iq: fixedIqamaDelays.Dhuhr * 60 },
+        { id: "Asr", name: "العصر", adhan: getAdjustedAdhan('Asr'), iq: fixedIqamaDelays.Asr * 60 },
+        { id: "Maghrib", name: "المغرب", adhan: getAdjustedAdhan('Maghrib'), iq: fixedIqamaDelays.Maghrib * 60 },
+        { id: "Isha", name: "العشاء", adhan: getAdjustedAdhan('Isha'), iq: fixedIqamaDelays.Isha * 60 }
+      ];
+
+      var modal = document.getElementById('fsModal');
+      var isIq = false, isPray = false, activeP = null, rem = 0;
+
+      for (var i = 0; i < pList.length; i++) {
+        var p = pList[i];
+        var iqEnd = p.adhan + p.iq;
+        if (nowSec >= p.adhan && nowSec < iqEnd) {
+          isIq = true; activeP = p; rem = iqEnd - nowSec; break;
+        }
+        if (nowSec >= iqEnd && nowSec < (iqEnd + 480)) {
+          isPray = true; activeP = p; break;
+        }
+      }
+
+      if (isIq) {
+        modal.style.display = 'flex';
+        document.getElementById('fsHead').innerText = 'إِقَامَةُ صَلَاةِ ' + activeP.name;
+        document.getElementById('fsTimer').style.display = 'block';
+        var mm = Math.floor(rem / 60);
+        var ss = rem % 60;
+        document.getElementById('fsTimer').innerText = (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
+      } else if (isPray) {
+        modal.style.display = 'flex';
+        document.getElementById('fsHead').innerText = 'أَقِيمُوا الصَّفَّ';
+        document.getElementById('fsTimer').style.display = 'none';
+      } else {
+        modal.style.display = 'none';
+      }
+
+      if (!isIq && !isPray) {
+        var nextP = null;
+        for (var j = 0; j < pList.length; j++) {
+          if (pList[j].adhan > nowSec) {
+            nextP = pList[j];
+            rem = nextP.adhan - nowSec;
+            break;
+          }
+        }
+        if (!nextP) {
+          nextP = pList[0];
+          rem = (86400 - nowSec) + pList[0].adhan;
+        }
+
+        for (var k = 0; k < pList.length; k++) {
+          var card = document.getElementById('card-' + pList[k].id);
+          if (card) card.className = 'p-card box-style';
+        }
+        var actCard = document.getElementById('card-' + nextP.id);
+        if (actCard) actCard.className = 'p-card box-style active-p';
+
+        document.getElementById('countdownLabel').innerText = nextP.name + ' بعد';
+        var rh = Math.floor(rem / 3600);
+        var rm = Math.floor((rem % 3600) / 60);
+        var rs = rem % 60;
+        document.getElementById('countdownVal').innerText = 
+          (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
+      }
+    }
+
+    setInterval(function() {
+      dhikrIdx = (dhikrIdx + 1) % adhkar.length;
+      document.getElementById('dhikrText').innerText = adhkar[dhikrIdx];
+    }, 7000);
+
+    checkConnection();
+    setInterval(checkConnection, 5000);
+
+    computeSalatFirst(new Date());
+    renderUI();
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
