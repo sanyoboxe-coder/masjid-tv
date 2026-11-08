@@ -23,7 +23,7 @@
       font-size: 1.25rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.1);
     }
     .top-tools { display: flex; align-items: center; gap: 12px; }
-    .settings-trigger { cursor: pointer; opacity: 0.8; font-size: 1.3rem; }
+    .settings-trigger { cursor: pointer; opacity: 0.8; font-size: 1.4rem; }
 
     .center-section { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 10px; }
     .side-box { 
@@ -90,7 +90,6 @@
     .modal-body { font-size: 2.4rem; font-weight: 800; color: #ffffff; line-height: 1.5; max-width: 90%; }
     .modal-sub { font-size: 2rem; font-weight: 900; color: #ef4444; margin-top: 25px; background: rgba(239,68,68,0.15); padding: 8px 25px; border-radius: 14px; border: 1px solid #ef4444; }
 
-    /* نافذة احتياط الأذان فقط */
     .setup-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(2, 6, 23, 0.95); z-index: 100000;
@@ -98,12 +97,12 @@
     }
     .setup-box {
       background: #0f172a; border: 2px solid #38bdf8; border-radius: 20px;
-      padding: 25px; width: 100%; max-width: 520px; text-align: right;
+      padding: 25px; width: 100%; max-width: 550px; text-align: right;
       box-shadow: 0 10px 40px rgba(0,0,0,0.8);
     }
     .setup-title { font-size: 1.3rem; font-weight: 900; color: #38bdf8; text-align: center; margin-bottom: 12px; }
     .timing-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    .timing-table th, .timing-table td { padding: 10px; text-align: center; border-bottom: 1px solid #334155; }
+    .timing-table th, .timing-table td { padding: 8px; text-align: center; border-bottom: 1px solid #334155; }
     .timing-table th { color: #94a3b8; font-size: 0.95rem; }
     .btn-step { background: #1e293b; border: 1px solid #475569; color: #fff; width: 34px; height: 34px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1.2rem; }
     .input-val { width: 55px; text-align: center; background: #020617; border: 1px solid #38bdf8; color: #facc15; font-size: 1.15rem; font-weight: bold; padding: 4px; border-radius: 6px; }
@@ -113,7 +112,7 @@
 </head>
 <body>
 
-  <!-- شاشة الإقامة والصف -->
+  <!-- شاشة إقامة الصلاة الكبرى -->
   <div class="fullscreen-modal" id="fsModal">
     <div class="modal-head" id="fsHead">إِقَامَةُ الصَّلَاةِ</div>
     <div class="modal-timer" id="fsTimer" style="display:none;">00:00</div>
@@ -121,52 +120,52 @@
     <div class="modal-sub">📴 يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا</div>
   </div>
 
-  <!-- نافذة احتياط الأذان الدائم -->
+  <!-- نافذة الضبط والاحتياط -->
   <div class="setup-overlay" id="setupModal">
     <div class="setup-box">
-      <div class="setup-title">⚙️ احتياط توقيت الأذان (مسجد أبي هريرة)</div>
+      <div class="setup-title">⚙️ ضبط احتياط الأذان (توقيت Salat First)</div>
       <p style="color: #94a3b8; font-size: 0.9rem; text-align: center; margin-bottom: 12px;">
-        القيم تضبط مرة واحدة فقط وتبقى ثابتة مع التوقيت اليومي لـ Salat First:
+        الحساب مطابق لوزارة الأوقاف، يمكنك إضافة أو إنقاص دقيقة (+ / -) للاحتياط:
       </p>
 
       <table class="timing-table">
         <thead>
           <tr>
             <th>الصلاة</th>
-            <th>احتياط الأذان (+/- دقيقة)</th>
-            <th>وقت الإقامة الثابت</th>
+            <th>الوقت المحسوب</th>
+            <th>احتياط (+ / - دقيقة)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td style="font-weight: bold; color: #38bdf8;">الفجر</td>
+            <td id="disp_base_Fajr" style="direction:ltr; font-family:monospace;">--:--</td>
             <td><button class="btn-step" onclick="adjAdhan('Fajr', -1)">-</button> <input type="text" id="adj_Fajr" class="input-val" readonly> <button class="btn-step" onclick="adjAdhan('Fajr', 1)">+</button></td>
-            <td style="color:#93c5fd;">25 دقيقة</td>
           </tr>
           <tr>
             <td style="font-weight: bold; color: #38bdf8;">الظهر</td>
+            <td id="disp_base_Dhuhr" style="direction:ltr; font-family:monospace;">--:--</td>
             <td><button class="btn-step" onclick="adjAdhan('Dhuhr', -1)">-</button> <input type="text" id="adj_Dhuhr" class="input-val" readonly> <button class="btn-step" onclick="adjAdhan('Dhuhr', 1)">+</button></td>
-            <td style="color:#93c5fd;">20 دقيقة</td>
           </tr>
           <tr>
             <td style="font-weight: bold; color: #38bdf8;">العصر</td>
+            <td id="disp_base_Asr" style="direction:ltr; font-family:monospace;">--:--</td>
             <td><button class="btn-step" onclick="adjAdhan('Asr', -1)">-</button> <input type="text" id="adj_Asr" class="input-val" readonly> <button class="btn-step" onclick="adjAdhan('Asr', 1)">+</button></td>
-            <td style="color:#93c5fd;">20 دقيقة</td>
           </tr>
           <tr>
             <td style="font-weight: bold; color: #38bdf8;">المغرب</td>
+            <td id="disp_base_Maghrib" style="direction:ltr; font-family:monospace;">--:--</td>
             <td><button class="btn-step" onclick="adjAdhan('Maghrib', -1)">-</button> <input type="text" id="adj_Maghrib" class="input-val" readonly> <button class="btn-step" onclick="adjAdhan('Maghrib', 1)">+</button></td>
-            <td style="color:#93c5fd;">10 دقائق</td>
           </tr>
           <tr>
             <td style="font-weight: bold; color: #38bdf8;">العشاء</td>
+            <td id="disp_base_Isha" style="direction:ltr; font-family:monospace;">--:--</td>
             <td><button class="btn-step" onclick="adjAdhan('Isha', -1)">-</button> <input type="text" id="adj_Isha" class="input-val" readonly> <button class="btn-step" onclick="adjAdhan('Isha', 1)">+</button></td>
-            <td style="color:#93c5fd;">20 دقيقة</td>
           </tr>
         </tbody>
       </table>
 
-      <button type="button" class="btn-save" onclick="saveSettings()">💾 حفظ الاحتياط</button>
+      <button type="button" class="btn-save" onclick="saveSettings()">💾 حفظ التعديل</button>
       <button type="button" class="btn-close" onclick="document.getElementById('setupModal').style.display='none'">إغلاق</button>
     </div>
   </div>
@@ -175,8 +174,8 @@
   <div class="top-bar">
     <div id="dispMasjidTitle">🕌 مسجد أبي هريرة - القنيطرة</div>
     <div class="top-tools">
-      <div id="dispCityBadge" style="color: #38bdf8;">📍 القنيطرة (توقيت وزارة الأوقاف المغربية)</div>
-      <div class="settings-trigger" onclick="openSetupModal()" title="ضبط احتياط الأذان">⚙️</div>
+      <div id="dispCityBadge" style="color: #38bdf8; font-size: 1rem;">📍 القنيطرة (توقيت الأوقاف المغربية)</div>
+      <div class="settings-trigger" onclick="openSetupModal()" title="ضبط الأوقات">⚙️</div>
     </div>
   </div>
 
@@ -184,8 +183,255 @@
   <div class="center-section">
     <div class="side-box">
       <div class="side-title">الجمعة</div>
-      <div class="side-time" id="dispJumua">12:30</div>
+      <div class="side-time" id="dispJumua">13:15</div>
     </div>
     <div class="clock-card">
       <div class="main-clock" id="liveClock">00:00:00</div>
       <div class="hijri-date" id="liveHijriDate">-- هـ</div>
+      <div class="greg-date" id="liveGregDate">--</div>
+    </div>
+    <div class="side-box">
+      <div class="side-title">الشروق</div>
+      <div class="side-time" id="dispSunrise">--:--</div>
+    </div>
+  </div>
+
+  <div class="middle-info-bar">
+    <div class="dhikr-box" id="dhikrText">«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»</div>
+    <div class="countdown-bar" id="countdownBox"><span>⏳</span><span id="countdownLabel">الصلاة القادمة</span><span class="count-val" id="countdownVal">00:00:00</span></div>
+  </div>
+
+  <!-- الصلوات الخمس -->
+  <div class="prayers-row">
+    <div class="p-card" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-subname">Fajr</div><div class="p-time" id="time-Fajr">--:--</div><div class="p-iqama">+25</div></div>
+    <div class="p-card" id="card-Dhuhr"><div class="p-name">الظهر</div><div class="p-subname">Dhuhr</div><div class="p-time" id="time-Dhuhr">--:--</div><div class="p-iqama">+20</div></div>
+    <div class="p-card" id="card-Asr"><div class="p-name">العصر</div><div class="p-subname">Asr</div><div class="p-time" id="time-Asr">--:--</div><div class="p-iqama">+20</div></div>
+    <div class="p-card" id="card-Maghrib"><div class="p-name">المغرب</div><div class="p-subname">Maghrib</div><div class="p-time" id="time-Maghrib">--:--</div><div class="p-iqama">+10</div></div>
+    <div class="p-card" id="card-Isha"><div class="p-name">العشاء</div><div class="p-subname">Isha</div><div class="p-time" id="time-Isha">--:--</div><div class="p-iqama">+20</div></div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="marquee-content" id="bottomMarquee">«وَأَنَّ الْمَسَاجِدَ لِلَّهِ فَلَا تَدْعُوا مَعَ اللَّهِ أَحَدًا» • اللَّهُمَّ افْتَحْ لَنَا أَبْوَابَ رَحْمَتِكَ • تَقَبَّلَ اللَّهُ مِنَّا وَمِنْكُمُ الصَّلَاةَ وَصَالِحَ الأَعْمَالِ</div>
+  </div>
+
+  <script>
+    var fixedIqamaDelays = { Fajr: 25, Dhuhr: 20, Asr: 20, Maghrib: 10, Isha: 20 };
+    var defaultOffsets = { Fajr: 0, Dhuhr: 0, Asr: 0, Maghrib: 0, Isha: 0 };
+    var adhanOffsets = JSON.parse(localStorage.getItem('sm_adhan_offsets')) || defaultOffsets;
+
+    // إحداثيات القنيطرة الرسمية
+    var LAT = 34.2610;
+    var LNG = -6.5802;
+
+    var computedPrayerSecs = {};
+
+    function d2r(d) { return d * Math.PI / 180.0; }
+    function r2d(r) { return r * 180.0 / Math.PI; }
+
+    // خوارزمية Salat First المعتمدة فلكياً لوزارة الأوقاف المغربية
+    function computeSalatFirstMorocco(date) {
+      var d = new Date(date);
+      // حساب اليوم اليولياني والزمني
+      var year = d.getFullYear(), month = d.getMonth() + 1, day = d.getDate();
+      if (month <= 2) { year -= 1; month += 12; }
+      var A = Math.floor(year / 100);
+      var B = 2 - A + Math.floor(A / 4);
+      var JD = Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + B - 1524.5;
+      var D = JD - 2451545.0;
+
+      var g = 357.529 + 0.98560028 * D;
+      var q = 280.459 + 0.98564736 * D;
+      var L = q + 1.915 * Math.sin(d2r(g)) + 0.020 * Math.sin(d2r(2 * g));
+      L = (L % 360 + 360) % 360;
+
+      var e = 23.439 - 0.00000036 * D;
+      var RA = r2d(Math.atan2(Math.cos(d2r(e)) * Math.sin(d2r(L)), Math.cos(d2r(L)))) / 15.0;
+      RA = (RA % 24 + 24) % 24;
+
+      var Dec = r2d(Math.asin(Math.sin(d2r(e)) * Math.sin(d2r(L))));
+      var EqT = q / 15.0 - RA;
+      EqT = (EqT % 24 + 24) % 24;
+      if (EqT > 12) EqT -= 24;
+
+      // منتصف النهار الفلكي (الزوال) للقنيطرة
+      var noon = 12.0 - LNG / 15.0 - EqT;
+
+      function hourAngle(alpha) {
+        var cosH = (Math.sin(d2r(alpha)) - Math.sin(d2r(LAT)) * Math.sin(d2r(Dec))) / (Math.cos(d2r(LAT)) * Math.cos(d2r(Dec)));
+        if (cosH > 1 || cosH < -1) return 0;
+        return r2d(Math.acos(cosH)) / 15.0;
+      }
+
+      // زوايا المغرب المعتمدة: الفجر 19°، الشروق -0.833°، العشاء 17°
+      var H_fajr = hourAngle(-19.0);
+      var H_sun = hourAngle(-0.833);
+      var H_isha = hourAngle(-17.0);
+
+      // العصر في المذهب المالكي (ظل القامة + ظل الزوال)
+      var asrAlt = r2d(Math.atan(1.0 / (1.0 + Math.tan(d2r(Math.abs(LAT - Dec))))));
+      var H_asr = hourAngle(asrAlt);
+
+      // تطبيق التوقيت الصيفي للمغرب UTC+1 وزيادة 5 دقائق الاحتياط للظهر
+      var fajrTime = (noon - H_fajr + 1.0) * 3600;
+      var sunriseTime = (noon - H_sun + 1.0) * 3600;
+      var dhuhrTime = (noon + 1.0) * 3600 + (5 * 60); // +5 دقائق احتياط الزوال
+      var asrTime = (noon + H_asr + 1.0) * 3600;
+      var maghribTime = (noon + H_sun + 1.0) * 3600;
+      var ishaTime = (noon + H_isha + 1.0) * 3600;
+
+      computedPrayerSecs = {
+        Fajr: Math.round(fajrTime),
+        Sunrise: Math.round(sunriseTime),
+        Dhuhr: Math.round(dhuhrTime),
+        Asr: Math.round(asrTime),
+        Maghrib: Math.round(maghribTime),
+        Isha: Math.round(ishaTime)
+      };
+    }
+
+    function getAdjustedAdhan(id) {
+      return (computedPrayerSecs[id] || 0) + ((adhanOffsets[id] || 0) * 60);
+    }
+
+    function formatTime(s) {
+      if (!s && s !== 0) return "--:--";
+      var h = Math.floor(s / 3600) % 24;
+      var m = Math.floor((s % 3600) / 60);
+      return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+    }
+
+    function renderCards() {
+      document.getElementById('time-Fajr').innerText = formatTime(getAdjustedAdhan('Fajr'));
+      document.getElementById('dispSunrise').innerText = formatTime(computedPrayerSecs.Sunrise);
+      document.getElementById('time-Dhuhr').innerText = formatTime(getAdjustedAdhan('Dhuhr'));
+      document.getElementById('time-Asr').innerText = formatTime(getAdjustedAdhan('Asr'));
+      document.getElementById('time-Maghrib').innerText = formatTime(getAdjustedAdhan('Maghrib'));
+      document.getElementById('time-Isha').innerText = formatTime(getAdjustedAdhan('Isha'));
+    }
+
+    function openSetupModal() {
+      ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(function(p) {
+        document.getElementById('disp_base_' + p).innerText = formatTime(getAdjustedAdhan(p));
+        document.getElementById('adj_' + p).value = (adhanOffsets[p] >= 0 ? '+' : '') + adhanOffsets[p];
+      });
+      document.getElementById('setupModal').style.display = 'flex';
+    }
+
+    function adjAdhan(p, delta) {
+      adhanOffsets[p] = (adhanOffsets[p] || 0) + delta;
+      document.getElementById('adj_' + p).value = (adhanOffsets[p] >= 0 ? '+' : '') + adhanOffsets[p];
+      document.getElementById('disp_base_' + p).innerText = formatTime(getAdjustedAdhan(p));
+    }
+
+    function saveSettings() {
+      localStorage.setItem('sm_adhan_offsets', JSON.stringify(adhanOffsets));
+      document.getElementById('setupModal').style.display = 'none';
+      renderCards();
+    }
+
+    var adhkar = [
+      "«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»",
+      "«لا إِلَهَ إِلا اللَّهُ وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ»",
+      "«أَسْتَغْفِرُ اللهَ الَّذِي لا إِلَهَ إِلا هُوَ الحَيَّ القَيُّومَ وَأَتُوبُ إِلَيْهِ»",
+      "«اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",
+      "«لا حَوْلَ وَلا قُوَّةَ إِلا بِاللهِ الْعَلِيِّ الْعَظِيمِ»"
+    ];
+    var dhikrIdx = 0;
+
+    function tick() {
+      var d = new Date();
+      var h = d.getHours();
+      var m = d.getMinutes();
+      var s = d.getSeconds();
+
+      document.getElementById('liveClock').innerText = 
+        (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+
+      document.getElementById('liveGregDate').innerText = d.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+      try {
+        var hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('liveHijriDate').innerText = hijriFormatter.format(d) + ' هـ';
+      } catch(e) {}
+
+      var nowSec = h * 3600 + m * 60 + s;
+      var pList = [
+        { id: "Fajr", name: "الفجر", adhan: getAdjustedAdhan('Fajr'), iq: fixedIqamaDelays.Fajr * 60 },
+        { id: "Dhuhr", name: "الظهر", adhan: getAdjustedAdhan('Dhuhr'), iq: fixedIqamaDelays.Dhuhr * 60 },
+        { id: "Asr", name: "العصر", adhan: getAdjustedAdhan('Asr'), iq: fixedIqamaDelays.Asr * 60 },
+        { id: "Maghrib", name: "المغرب", adhan: getAdjustedAdhan('Maghrib'), iq: fixedIqamaDelays.Maghrib * 60 },
+        { id: "Isha", name: "العشاء", adhan: getAdjustedAdhan('Isha'), iq: fixedIqamaDelays.Isha * 60 }
+      ];
+
+      var modal = document.getElementById('fsModal');
+      var isIq = false, isPray = false, activeP = null, rem = 0;
+
+      for (var i = 0; i < pList.length; i++) {
+        var p = pList[i];
+        var iqEnd = p.adhan + p.iq;
+        if (nowSec >= p.adhan && nowSec < iqEnd) {
+          isIq = true; activeP = p; rem = iqEnd - nowSec; break;
+        }
+        if (nowSec >= iqEnd && nowSec < (iqEnd + 480)) {
+          isPray = true; activeP = p; break;
+        }
+      }
+
+      if (isIq) {
+        modal.style.display = 'flex';
+        document.getElementById('fsHead').innerText = 'إِقَامَةُ صَلَاةِ ' + activeP.name;
+        document.getElementById('fsTimer').style.display = 'block';
+        var mm = Math.floor(rem / 60);
+        var ss = rem % 60;
+        document.getElementById('fsTimer').innerText = (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
+      } else if (isPray) {
+        modal.style.display = 'flex';
+        document.getElementById('fsHead').innerText = 'أَقِيمُوا الصَّفَّ';
+        document.getElementById('fsTimer').style.display = 'none';
+      } else {
+        modal.style.display = 'none';
+      }
+
+      if (!isIq && !isPray) {
+        var nextP = null;
+        for (var j = 0; j < pList.length; j++) {
+          if (pList[j].adhan > nowSec) {
+            nextP = pList[j];
+            rem = nextP.adhan - nowSec;
+            break;
+          }
+        }
+        if (!nextP) {
+          nextP = pList[0];
+          rem = (86400 - nowSec) + pList[0].adhan;
+        }
+
+        for (var k = 0; k < pList.length; k++) {
+          var card = document.getElementById('card-' + pList[k].id);
+          if (card) card.className = 'p-card';
+        }
+        var actCard = document.getElementById('card-' + nextP.id);
+        if (actCard) actCard.className = 'p-card active-p';
+
+        document.getElementById('countdownLabel').innerText = nextP.name + ' بعد';
+        var rh = Math.floor(rem / 3600);
+        var rm = Math.floor((rem % 3600) / 60);
+        var rs = rem % 60;
+        document.getElementById('countdownVal').innerText = 
+          (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
+      }
+    }
+
+    setInterval(function() {
+      dhikrIdx = (dhikrIdx + 1) % adhkar.length;
+      document.getElementById('dhikrText').innerText = adhkar[dhikrIdx];
+    }, 7000);
+
+    // حساب مواقيت اليوم فور فتح الصفحة
+    computeSalatFirstMorocco(new Date());
+    renderCards();
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
