@@ -16,9 +16,10 @@
       justify-content: space-between;
       padding: 15px 25px;
       position: relative;
-      background-color: #020617;
+      background: radial-gradient(circle at center, #1e3a8a 0%, #0a1128 70%, #020617 100%);
     }
 
+    /* صورة المسجد المرفوعة عندك في GitHub كخلفية كاملة */
     .bg-fullscreen {
       position: absolute;
       top: 0;
@@ -40,6 +41,7 @@
       justify-content: space-between;
     }
 
+    /* الشريط العلوي */
     .top-bar { 
       background: rgba(15, 23, 42, 0.78); padding: 8px 25px; border-radius: 14px;
       display: flex; justify-content: space-between; align-items: center; 
@@ -50,6 +52,7 @@
     .settings-trigger { cursor: pointer; opacity: 0.85; font-size: 1.5rem; transition: transform 0.2s; }
     .settings-trigger:hover { transform: scale(1.1); }
 
+    /* القسم الأوسط */
     .center-section { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 10px; }
     .side-box { 
       text-align: center; min-width: 155px; background: rgba(15, 23, 42, 0.78); 
@@ -84,6 +87,7 @@
     }
     .countdown-bar .count-val { font-family: monospace; font-size: 1.8rem; color: #38bdf8; direction: ltr; text-shadow: 0 2px 6px rgba(0,0,0,0.9); }
 
+    /* بطاقات أوقات الصلاة بالمدد الأصلية */
     .prayers-row { display: flex; justify-content: space-between; gap: 12px; padding: 0 10px; }
     .p-card { 
       flex: 1; background: rgba(15, 23, 42, 0.78); border-radius: 18px; 
@@ -99,6 +103,7 @@
     .p-time { font-size: 2.4rem; font-weight: 900; font-family: monospace; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
     .p-iqama { font-size: 1.2rem; font-weight: 800; color: #93c5fd; direction: ltr; }
 
+    /* الشريط السفلي المتحرك */
     .bottom-bar { 
       background: rgba(15, 23, 42, 0.85); padding: 6px 20px; border-radius: 12px; 
       overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 44px;
@@ -110,5 +115,13 @@
     }
     @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
 
+    /* شاشة الإقامة */
     .fullscreen-modal {
-      position: fixed; top: 0; left: 0; width: 
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(2, 6, 23, 0.98); z-index: 99999; display: none;
+      flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px;
+    }
+    .modal-head { font-size: 3.4rem; font-weight: 900; color: #facc15; margin-bottom: 10px; }
+    .modal-timer { font-size: 9.5rem; font-weight: 900; font-family: monospace; color: #facc15; text-shadow: 0 0 30px rgba(250,204,21,0.6); direction: ltr; }
+    .modal-body { font-size: 2.4rem; font-weight: 800; color: #ffffff; line-height: 1.5; max-width: 90%; }
+    .modal-sub { font-size: 2rem; font-weight: 900; color: #ef4444; margin-top: 2
