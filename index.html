@@ -7,29 +7,39 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; }
     
-    /* خلفية المسجد الأصلية كما كانت شغالة تماماً */
     body {
-      color: #fff;
-      font-family: system-ui, -apple-system, sans-serif;
+      color: #ffffff;
+      font-family: Arial, Tahoma, sans-serif;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 15px 25px;
-      background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40)), url('1000208998.jpg') no-repeat center center fixed;
+      background-color: #0b1329;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.45)), url('1000208998.jpg');
+      background-position: center center;
+      background-repeat: no-repeat;
       background-size: cover;
     }
 
-    /* الشريط العلوي */
-    .top-bar { 
-      background: rgba(0, 0, 0, 0.45); padding: 8px 25px; border-radius: 14px;
-      display: flex; justify-content: space-between; align-items: center; 
-      border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(3px);
+    /* الصناديق الشفافة */
+    .box-style {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.30);
+      border-radius: 14px;
     }
-    .masjid-title { font-size: 1.6rem; font-weight: 900; color: #ffffff; text-shadow: 0 2px 5px #000; }
-    .top-tools { display: flex; align-items: center; gap: 14px; }
+
+    /* الشريط الفوقاني */
+    .top-bar { 
+      padding: 8px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center; 
+    }
+    .masjid-title { font-size: 1.6rem; font-weight: bold; color: #ffffff; text-shadow: 0 2px 5px #000; }
+    .top-tools { display: flex; align-items: center; gap: 12px; }
     
     .status-badge {
-      font-size: 0.95rem; font-weight: bold; padding: 3px 10px; border-radius: 8px;
+      font-size: 0.95rem; font-weight: bold; padding: 4px 10px; border-radius: 8px;
       background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.25);
     }
     .status-online { color: #4ade80; border-color: #4ade80; }
@@ -37,18 +47,95 @@
 
     .temp-badge {
       font-size: 1.1rem; font-weight: bold; color: #facc15;
-      background: rgba(0,0,0,0.5); padding: 3px 10px; border-radius: 8px;
+      background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 8px;
       border: 1px solid rgba(250,204,21,0.4); text-shadow: 0 2px 4px #000;
     }
 
     .settings-trigger { cursor: pointer; opacity: 0.9; font-size: 1.5rem; }
 
-    /* القسم الأوسط */
+    /* القسم الوسطاني */
     .center-section { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 10px; }
     .side-box { 
-      text-align: center; min-width: 155px; background: rgba(0, 0, 0, 0.45); 
-      padding: 10px 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.25);
-      backdrop-filter: blur(3px); box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      text-align: center; min-width: 155px; padding: 10px 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    .side-title { font-size: 1.3rem; font-weight: 800; color: #e2e8f0; text-shadow: 0 2px 4px #000; }
-    .side-time { font-size: 2.6rem; font-weight: 900; font-family: monospace; color: #ffffff; text-shadow:
+    .side-title { font-size: 1.3rem; font-weight: bold; color: #e2e8f0; text-shadow: 0 2px 4px #000; }
+    .side-time { font-size: 2.6rem; font-weight: bold; font-family: monospace; color: #ffffff; text-shadow: 0 2px 6px #000; }
+
+    .clock-card { 
+      padding: 12px 45px; text-align: center; min-width: 520px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+    .main-clock { font-size: 5rem; font-weight: bold; font-family: monospace; line-height: 1; letter-spacing: 2px; text-shadow: 0 3px 10px #000; }
+    .hijri-date { font-size: 1.5rem; font-weight: bold; color: #facc15; margin-top: 6px; text-shadow: 0 2px 5px #000; }
+    .greg-date { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-top: 2px; text-shadow: 0 2px 4px #000; }
+
+    .middle-info-bar { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 0 10px; }
+    .dhikr-box { 
+      flex: 1.8; padding: 10px 25px; font-size: 1.35rem; text-align: center;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      text-shadow: 0 2px 6px #000; font-weight: bold;
+    }
+    .countdown-bar { 
+      flex: 1.2; padding: 10px 25px; display: flex; align-items: center; justify-content: center; 
+      gap: 10px; font-size: 1.35rem; font-weight: bold; text-shadow: 0 2px 5px #000;
+    }
+    .countdown-bar .count-val { font-family: monospace; font-size: 1.9rem; color: #38bdf8; direction: ltr; font-weight: bold; text-shadow: 0 2px 6px #000; }
+
+    /* بطاقات الصلاة */
+    .prayers-row { display: flex; justify-content: space-between; gap: 12px; padding: 0 10px; }
+    .p-card { 
+      flex: 1; padding: 10px 6px; text-align: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    }
+    .p-card.active-p { 
+      background: rgba(14, 116, 144, 0.85) !important; 
+      border-color: #38bdf8 !important; transform: translateY(-4px); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+    }
+    .p-name { font-size: 1.55rem; font-weight: bold; text-shadow: 0 2px 6px #000; }
+    .p-subname { font-size: 0.85rem; font-weight: bold; color: #e2e8f0; text-transform: uppercase; margin-bottom: 2px; }
+    .p-time { font-size: 2.5rem; font-weight: bold; font-family: monospace; text-shadow: 0 2px 6px #000; }
+    .p-iqama { font-size: 1.25rem; font-weight: bold; color: #facc15; direction: ltr; text-shadow: 0 2px 5px #000; }
+
+    /* السطر التحتاني */
+    .bottom-bar { 
+      padding: 6px 20px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 44px;
+    }
+    .marquee-content {
+      display: inline-block; padding-left: 100%; animation: marquee 30s linear infinite;
+      font-size: 1.3rem; font-weight: bold; color: #facc15; text-shadow: 0 2px 6px #000;
+    }
+    @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
+
+    /* شاشة الإقامة */
+    .fullscreen-modal {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.96); z-index: 99999; display: none;
+      flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px;
+    }
+    .modal-head { font-size: 3.4rem; font-weight: bold; color: #facc15; margin-bottom: 10px; }
+    .modal-timer { font-size: 9.5rem; font-weight: bold; font-family: monospace; color: #facc15; text-shadow: 0 0 30px rgba(250,204,21,0.6); direction: ltr; }
+    .modal-body { font-size: 2.4rem; font-weight: bold; color: #ffffff; line-height: 1.5; max-width: 90%; }
+    .modal-sub { font-size: 2rem; font-weight: bold; color: #ef4444; margin-top: 25px; background: rgba(239,68,68,0.2); padding: 8px 25px; border-radius: 14px; border: 1px solid #ef4444; }
+
+    /* نافذة الإعدادات */
+    .setup-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(2, 6, 23, 0.95); z-index: 100000;
+      display: none; justify-content: center; align-items: center; padding: 15px;
+    }
+    .setup-box {
+      background: #0f172a; border: 2px solid #38bdf8; border-radius: 20px;
+      padding: 20px 25px; width: 100%; max-width: 620px; text-align: right;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-height: 92vh; overflow-y: auto;
+    }
+    .setup-title { font-size: 1.3rem; font-weight: bold; color: #38bdf8; text-align: center; margin-bottom: 10px; }
+    .timing-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .timing-table th, .timing-table td { padding: 6px; text-align: center; border-bottom: 1px solid #334155; }
+    .timing-table th { color: #94a3b8; font-size: 0.9rem; }
+    .btn-step { background: #1e293b; border: 1px solid #475569; color: #fff; width: 32px; height: 32px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+    .input-val { width: 50px; text-align: center; background: #020617; border: 1px solid #38bdf8; color: #facc15; font-size: 1.1rem; font-weight: bold; padding: 4px; border-radius: 6px; }
+    
+    .field-group { margin-top: 10px; }
+    .field-label { display: block; font-size: 0.9rem; color: #94a3b8; margin-bottom: 4px; font-weight: bold; }
+    .field-input { width: 100%; background: #020617; border: 1px solid
