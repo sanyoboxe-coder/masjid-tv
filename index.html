@@ -5,13 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>مسجد أبي هريرة - القنيطرة</title>
   <style>
-    :root {
-      --box-bg: rgba(0, 0, 0, 0.55);
-      --box-border: rgba(255, 255, 255, 0.28);
-      --active-card-bg: rgba(14, 116, 144, 0.85);
-      --accent-color: #38bdf8;
-    }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; }
     
@@ -26,7 +19,7 @@
       background-color: #0b1329;
     }
 
-    /* صورة المسجد كخلفية كاملة */
+    /* صورة المسجد ملء الشاشة مع إمكانية التحريك */
     .bg-fullscreen {
       position: absolute;
       top: 0;
@@ -49,25 +42,37 @@
       justify-content: space-between;
     }
 
+    /* الصناديق الشفافة الافتراضية */
+    .glass-box {
+      background: rgba(0, 0, 0, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(4px);
+    }
+
+    /* أنماط الألوان المريحة للعين */
+    body.theme-green .glass-box { background: rgba(6, 78, 59, 0.75); border-color: rgba(52, 211, 153, 0.4); }
+    body.theme-blue .glass-box { background: rgba(30, 58, 138, 0.75); border-color: rgba(96, 165, 250, 0.4); }
+    body.theme-amber .glass-box { background: rgba(120, 53, 15, 0.75); border-color: rgba(251, 191, 36, 0.4); }
+    body.theme-contrast .glass-box { background: rgba(0, 0, 0, 0.92); border-color: rgba(250, 204, 21, 0.7); }
+
     /* الشريط العلوي */
     .top-bar { 
-      background: var(--box-bg); padding: 8px 25px; border-radius: 14px;
+      padding: 8px 25px; border-radius: 14px;
       display: flex; justify-content: space-between; align-items: center; 
-      border: 1px solid var(--box-border); backdrop-filter: blur(4px);
     }
     .masjid-title { font-size: 1.6rem; font-weight: 900; color: #ffffff; text-shadow: 0 2px 6px #000; }
     .top-tools { display: flex; align-items: center; gap: 14px; }
     
     .status-badge {
       font-size: 0.95rem; font-weight: 800; padding: 4px 10px; border-radius: 8px;
-      background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.25);
     }
     .status-online { color: #4ade80; border-color: #4ade80; }
     .status-offline { color: #f87171; border-color: #f87171; }
 
     .temp-badge {
       font-size: 1.1rem; font-weight: 900; color: #facc15;
-      background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 8px;
+      background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 8px;
       border: 1px solid rgba(250,204,21,0.4); text-shadow: 0 2px 4px #000;
     }
 
@@ -77,18 +82,16 @@
     /* القسم الأوسط */
     .center-section { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 10px; }
     .side-box { 
-      text-align: center; min-width: 155px; background: var(--box-bg); 
-      padding: 10px 20px; border-radius: 16px; border: 1px solid var(--box-border);
-      backdrop-filter: blur(4px); box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      text-align: center; min-width: 155px;
+      padding: 10px 20px; border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
     .side-title { font-size: 1.3rem; font-weight: 800; color: #e2e8f0; text-shadow: 0 2px 4px #000; }
     .side-time { font-size: 2.6rem; font-weight: 900; font-family: monospace; color: #ffffff; text-shadow: 0 2px 6px #000; }
 
     .clock-card { 
-      background: var(--box-bg); 
       border-radius: 24px; padding: 12px 45px; text-align: center; min-width: 520px; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 2px solid var(--box-border);
-      backdrop-filter: blur(5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
     }
     .main-clock { font-size: 5rem; font-weight: 900; font-family: monospace; line-height: 1; letter-spacing: 2px; text-shadow: 0 3px 10px #000; }
     .hijri-date { font-size: 1.5rem; font-weight: 900; color: #facc15; margin-top: 6px; text-shadow: 0 2px 5px #000; }
@@ -96,29 +99,28 @@
 
     .middle-info-bar { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 0 10px; }
     .dhikr-box { 
-      flex: 1.8; background: var(--box-bg); border-radius: 18px; 
+      flex: 1.8; border-radius: 18px; 
       padding: 10px 25px; font-size: 1.35rem; text-align: center; white-space: nowrap; 
-      overflow: hidden; text-overflow: ellipsis; border: 1px solid var(--box-border);
-      backdrop-filter: blur(4px); text-shadow: 0 2px 6px #000; font-weight: bold;
+      overflow: hidden; text-overflow: ellipsis;
+      text-shadow: 0 2px 6px #000; font-weight: bold;
     }
     .countdown-bar { 
-      flex: 1.2; background: var(--box-bg); border-radius: 18px; 
+      flex: 1.2; border-radius: 18px; 
       padding: 10px 25px; display: flex; align-items: center; justify-content: center; 
-      gap: 10px; font-size: 1.35rem; font-weight: 800; border: 1px solid var(--box-border);
-      backdrop-filter: blur(4px); text-shadow: 0 2px 5px #000;
+      gap: 10px; font-size: 1.35rem; font-weight: 800; text-shadow: 0 2px 5px #000;
     }
-    .countdown-bar .count-val { font-family: monospace; font-size: 1.9rem; color: var(--accent-color); direction: ltr; font-weight: 900; text-shadow: 0 2px 6px #000; }
+    .countdown-bar .count-val { font-family: monospace; font-size: 1.9rem; color: #38bdf8; direction: ltr; font-weight: 900; text-shadow: 0 2px 6px #000; }
 
     /* بطاقات أوقات الصلاة */
     .prayers-row { display: flex; justify-content: space-between; gap: 12px; padding: 0 10px; }
     .p-card { 
-      flex: 1; background: var(--box-bg); border-radius: 18px; 
-      padding: 10px 6px; text-align: center; border: 1.5px solid var(--box-border);
-      backdrop-filter: blur(4px); box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      flex: 1; border-radius: 18px; 
+      padding: 10px 6px; text-align: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
     }
     .p-card.active-p { 
-      background: var(--active-card-bg); 
-      border-color: var(--accent-color); transform: translateY(-4px); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+      background: rgba(14, 116, 144, 0.88) !important; 
+      border-color: #38bdf8 !important; transform: translateY(-4px); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
     }
     .p-name { font-size: 1.55rem; font-weight: 900; text-shadow: 0 2px 6px #000; }
     .p-subname { font-size: 0.85rem; font-weight: 700; color: #e2e8f0; text-transform: uppercase; margin-bottom: 2px; }
@@ -127,9 +129,8 @@
 
     /* الشريط السفلي */
     .bottom-bar { 
-      background: var(--box-bg); padding: 6px 20px; border-radius: 12px; 
+      padding: 6px 20px; border-radius: 12px; 
       overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 44px;
-      border: 1px solid var(--box-border); backdrop-filter: blur(4px);
     }
     .marquee-content {
       display: inline-block; padding-left: 100%; animation: marquee 30s linear infinite;
@@ -137,7 +138,7 @@
     }
     @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
 
-    /* نافذة اختيار الألوان الموسعة */
+    /* نافذة الألوان عبر الريموت */
     .color-modal {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(2, 6, 23, 0.94); z-index: 100001;
@@ -145,13 +146,137 @@
     }
     .color-box {
       background: #0f172a; border: 2px solid #38bdf8; border-radius: 20px;
-      padding: 22px 25px; width: 100%; max-width: 580px; text-align: center;
+      padding: 22px 25px; width: 100%; max-width: 540px; text-align: center;
       box-shadow: 0 10px 40px rgba(0,0,0,0.85);
     }
     .theme-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
     .btn-theme {
       padding: 12px; border-radius: 10px; border: 2px solid #334155;
-      color: #fff; font-size: 0.95rem; font-weight: 800; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      color: #fff; font-size: 1rem; font-weight: 800; cursor: pointer;
     }
-    .btn-theme:focus, .btn-theme:hover { border-color: #38bdf
+    .btn-theme:focus, .btn-theme:hover { border-color: #38bdf8; outline: none; }
+
+    /* شاشة الإقامة */
+    .fullscreen-modal {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.96); z-index: 99999; display: none;
+      flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px;
+    }
+    .modal-head { font-size: 3.4rem; font-weight: 900; color: #facc15; margin-bottom: 10px; }
+    .modal-timer { font-size: 9.5rem; font-weight: 900; font-family: monospace; color: #facc15; text-shadow: 0 0 30px rgba(250,204,21,0.6); direction: ltr; }
+    .modal-body { font-size: 2.4rem; font-weight: 800; color: #ffffff; line-height: 1.5; max-width: 90%; }
+    .modal-sub { font-size: 2rem; font-weight: 900; color: #ef4444; margin-top: 25px; background: rgba(239,68,68,0.2); padding: 8px 25px; border-radius: 14px; border: 1px solid #ef4444; }
+
+    /* نافذة الإعدادات */
+    .setup-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(2, 6, 23, 0.96); z-index: 100000;
+      display: none; justify-content: center; align-items: center; padding: 15px;
+    }
+    .setup-box {
+      background: #0f172a; border: 2px solid #38bdf8; border-radius: 20px;
+      padding: 18px 22px; width: 100%; max-width: 640px; text-align: right;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.85); max-height: 94vh; overflow-y: auto;
+    }
+    .setup-title { font-size: 1.3rem; font-weight: 900; color: #38bdf8; text-align: center; margin-bottom: 10px; }
+    .timing-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+    .timing-table th, .timing-table td { padding: 5px; text-align: center; border-bottom: 1px solid #334155; }
+    .timing-table th { color: #94a3b8; font-size: 0.9rem; }
+    .btn-step { background: #1e293b; border: 1px solid #475569; color: #fff; width: 32px; height: 32px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+    .input-val { width: 50px; text-align: center; background: #020617; border: 1px solid #38bdf8; color: #facc15; font-size: 1.1rem; font-weight: bold; padding: 4px; border-radius: 6px; }
+    
+    .field-group { margin-top: 8px; }
+    .field-label { display: block; font-size: 0.88rem; color: #94a3b8; margin-bottom: 4px; font-weight: bold; }
+    .field-input { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.95rem; }
+    .field-select { width: 100%; background: #020617; border: 1px solid #38bdf8; color: #facc15; padding: 7px 12px; border-radius: 8px; font-size: 0.95rem; font-weight: bold; }
+
+    .img-controls-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px;
+      background: #020617; padding: 8px; border-radius: 8px; border: 1px solid #334155;
+    }
+    .btn-ctrl { background: #1e293b; border: 1px solid #38bdf8; color: #fff; padding: 6px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.88rem; }
+    .btn-ctrl:focus, .btn-ctrl:active { background: #38bdf8; color: #000; outline: none; }
+
+    .btn-save { background: #16a34a; color: #fff; width: 100%; padding: 11px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 900; cursor: pointer; margin-top: 12px; }
+    .btn-close { background: #475569; color: #fff; width: 100%; padding: 7px; border: none; border-radius: 10px; font-size: 0.95rem; cursor: pointer; margin-top: 6px; }
+  </style>
+</head>
+<body id="mainBody">
+
+  <!-- صورة المسجد الأصلية -->
+  <img id="bgMasjid" class="bg-fullscreen" src="1000208998.jpg" alt="خلفية المسجد">
+
+  <div class="app-content">
+
+    <!-- نافذة الألوان -->
+    <div class="color-modal" id="colorModal">
+      <div class="color-box">
+        <h3 style="color: #38bdf8; font-size: 1.3rem; margin-bottom: 5px;">🎨 مظهر وألوان الصناديق (مريحة للعين)</h3>
+        <p style="color: #94a3b8; font-size: 0.9rem;">اختر المظهر المناسب بالريموت:</p>
+        
+        <div class="theme-list">
+          <button class="btn-theme" style="background: rgba(0,0,0,0.65);" onclick="applyTheme('dark')">⬛ داكن شفاف</button>
+          <button class="btn-theme" style="background: rgba(6,78,59,0.75);" onclick="applyTheme('green')">🟩 أخضر مسجدي</button>
+          <button class="btn-theme" style="background: rgba(30,58,138,0.75);" onclick="applyTheme('blue')">🟦 أزرق ليلي</button>
+          <button class="btn-theme" style="background: rgba(120,53,15,0.75);" onclick="applyTheme('amber')">🟫 عنبري ذهبي</button>
+          <button class="btn-theme" style="background: rgba(0,0,0,0.92); border-color:#facc15; grid-column: span 2;" onclick="applyTheme('contrast')">⚡ تباين عالي للأرقام</button>
+        </div>
+
+        <button class="btn-close" style="width: 100%; margin-top: 8px;" onclick="closeColorModal()">إغلاق</button>
+      </div>
+    </div>
+
+    <!-- شاشة الإقامة الكبرى -->
+    <div class="fullscreen-modal" id="fsModal">
+      <div class="modal-head" id="fsHead">إِقَامَةُ الصَّلَاةِ</div>
+      <div class="modal-timer" id="fsTimer" style="display:none;">00:00</div>
+      <div class="modal-body">اسْتَوُوا وَاعْتَدِلُوا، وَأَقِيمُوا صُفُوفَكُمْ</div>
+      <div class="modal-sub">📴 يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا</div>
+    </div>
+
+    <!-- لوحة الإعدادات والتحكم -->
+    <div class="setup-overlay" id="setupModal">
+      <div class="setup-box">
+        <div class="setup-title">⚙️ لوحة تحكم وإعدادات المسجد</div>
+
+        <div class="field-group">
+          <label class="field-label">اسم المسجد الظاهر في الأعلى:</label>
+          <input type="text" id="cfg_title" class="field-input" placeholder="مسجد أبي هريرة - القنيطرة">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">درجة الحرارة (°C):</label>
+          <input type="number" id="cfg_temp" class="field-input" placeholder="21">
+        </div>
+        
+        <div class="field-group">
+          <label class="field-label">نظام التوقيت (حل مشكل الساعة الزائدة):</label>
+          <select id="cfg_tz" class="field-select">
+            <option value="1">توقيت المغرب الحالي (GMT+1)</option>
+            <option value="0">توقيت غرينتش (GMT / رمضان)</option>
+          </select>
+        </div>
+
+        <table class="timing-table">
+          <thead>
+            <tr>
+              <th>الصلاة</th>
+              <th>الوقت الحالي</th>
+              <th>تعديل الدقائق (+ / -)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: bold; color: #38bdf8;">الفجر</td>
+              <td id="disp_base_Fajr" style="direction:ltr; font-family:monospace;">--:--</td>
+              <td><button class="btn-step" onclick="adjAdhan('Fajr', -1)">-</button> <input type="text" id="adj_Fajr" class="input-val" readonly> <button class="btn-step" onclick="adjAdhan('Fajr', 1)">+</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: #38bdf8;">الشروق</td>
+              <td id="disp_base_Sunrise" style="direction:ltr; font-family:monospace;">--:--</td>
+              <td><button class="btn-step" onclick="adjAdhan('Sunrise', -1)">-</button> <input type="text" id="adj_Sunrise" class="input-val" readonly> <button class="btn-step" onclick="adjAdhan('Sunrise', 1)">+</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: #38bdf8;">الظهر</td>
+              <td id="disp_base_Dhuhr" style="direction:ltr; font-family:monospace;">--:--</td>
+              <td><button class="btn-step" onclick="adjAdhan('Dhuhr', -1)">-</button> <input type="text" id="adj_Dhuhr" class="input-val" readonly> <button class="btn-step" onclick="adjAdhan('Dhuhr', 1
