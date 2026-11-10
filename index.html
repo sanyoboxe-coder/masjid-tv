@@ -42,7 +42,7 @@
     }
 
     .box-style {
-      background-color: rgba(0, 0, 0, 0.60);
+      background-color: rgba(0, 0, 0, 0.65);
       border: 1px solid rgba(255, 255, 255, 0.30);
       border-radius: 12px;
     }
@@ -116,7 +116,7 @@
     .p-time { font-size: 2.2rem; font-weight: bold; font-family: monospace; text-shadow: 0 2px 6px #000; }
     .p-iqama { font-size: 1.15rem; font-weight: bold; color: #facc15; direction: ltr; text-shadow: 0 2px 5px #000; }
 
-    /* الشريط السفلي والتحكم في حركته */
+    /* الشريط السفلي */
     .bottom-bar { 
       padding: 4px 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 38px;
     }
@@ -142,7 +142,7 @@
     .modal-body { font-size: 2.4rem; font-weight: bold; color: #ffffff; line-height: 1.5; max-width: 90%; }
     .modal-sub { font-size: 2rem; font-weight: bold; color: #ef4444; margin-top: 25px; background: rgba(239,68,68,0.2); padding: 8px 25px; border-radius: 14px; border: 1px solid #ef4444; }
 
-    /* نافذة الإعدادات */
+    /* لوحة الإعدادات */
     .setup-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(2, 6, 23, 0.96); z-index: 100000;
@@ -190,7 +190,7 @@
       <div class="modal-sub">📴 يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا</div>
     </div>
 
-    <!-- لوحة الإعدادات -->
+    <!-- نافذة الإعدادات -->
     <div class="setup-overlay" id="setupModal">
       <div class="setup-box">
         <div class="setup-title">⚙️ لوحة تحكم وإعدادات المسجد</div>
@@ -267,4 +267,266 @@
               <td><button type="button" class="btn-step" onclick="adjAdhan('Maghrib', -1)">-</button> <input type="text" id="adj_Maghrib" class="input-val" readonly> <button type="button" class="btn-step" onclick="adjAdhan('Maghrib', 1)">+</button></td>
             </tr>
             <tr>
-              <td style="font-weight: bold; color: #
+              <td style="font-weight: bold; color: #38bdf8;">العشاء</td>
+              <td id="disp_base_Isha" style="direction:ltr; font-family:monospace;">--:--</td>
+              <td><button type="button" class="btn-step" onclick="adjAdhan('Isha', -1)">-</button> <input type="text" id="adj_Isha" class="input-val" readonly> <button type="button" class="btn-step" onclick="adjAdhan('Isha', 1)">+</button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 7. ضبط موضع وحجم صورة المسجد -->
+        <div class="field-group">
+          <label class="field-label">📐 ضبط موضع وحجم صورة المسجد (يمين/يسار/فوق/تحت/زوم):</label>
+          <div class="img-controls-grid">
+            <button type="button" class="btn-ctrl" onclick="adjustBg('y', -3)">⬆️ فوق</button>
+            <button type="button" class="btn-ctrl" onclick="adjustBg('scale', 0.05)">🔍 تكبير (+)</button>
+            <button type="button" class="btn-ctrl" onclick="adjustBg('y', 3)">⬇️ تحت</button>
+            <button type="button" class="btn-ctrl" onclick="adjustBg('x', 3)">➡️ يمين</button>
+            <button type="button" class="btn-ctrl" onclick="resetBgTransform()">🔄 وسط (Reset)</button>
+            <button type="button" class="btn-ctrl" onclick="adjustBg('x', -3)">⬅️ يسار</button>
+            <button type="button" class="btn-ctrl" style="grid-column: span 3;" onclick="adjustBg('scale', -0.05)">🔎 تصغير وتجميع (-)</button>
+          </div>
+        </div>
+
+        <!-- 8. رفع صورة المسجد مباشرة من الهاتف أو الحاسوب -->
+        <div class="field-group" style="background: rgba(56, 189, 248, 0.1); padding: 8px; border-radius: 8px; border: 1px dashed #38bdf8;">
+          <label class="field-label" style="color: #38bdf8;">📁 رفع صورة المسجد مباشرة من جهازك (مضمونة 100%):</label>
+          <input type="file" id="local_file_input" accept="image/*" class="field-input" onchange="loadLocalImage(this)">
+        </div>
+
+        <!-- 9. نص الشريط المتحرك -->
+        <div class="field-group">
+          <label class="field-label">نص الشريط السفلي:</label>
+          <input type="text" id="cfg_marquee" class="field-input">
+        </div>
+
+        <!-- 10. اسم صورة المسجد البديل -->
+        <div class="field-group">
+          <label class="field-label">اسم ملف صورة المسجد في GitHub:</label>
+          <input type="text" id="cfg_bg" class="field-input">
+        </div>
+
+        <button type="button" class="btn-save" onclick="saveSettings()">💾 حفظ التعديلات الآن</button>
+        <button type="button" class="btn-close" onclick="document.getElementById('setupModal').style.display='none'">إلغاء</button>
+      </div>
+    </div>
+
+    <!-- الشريط العلوي -->
+    <div class="top-bar box-style">
+      <div class="masjid-title" id="dispMasjidTitle">🕌 مسجد أبي هريرة - القنيطرة</div>
+      <div class="top-tools">
+        <div class="temp-badge" id="dispTemp">🌡️ 21°C</div>
+        <div class="status-badge status-offline" id="dispStatus">🔴 غير متصل</div>
+        <div id="dispCityBadge" style="color: #38bdf8; font-size: 1.05rem; font-weight: bold; text-shadow: 0 2px 4px #000;">📍 القنيطرة</div>
+        <div class="settings-trigger" onclick="openSetupModal()" title="الإعدادات">⚙️</div>
+      </div>
+    </div>
+
+    <!-- القسم الأوسط -->
+    <div class="center-section">
+      <div class="side-box box-style">
+        <div class="side-title">الجمعة</div>
+        <div class="side-time" id="dispJumua">13:15</div>
+      </div>
+      <div class="clock-card box-style">
+        <div class="main-clock" id="liveClock">00:00:00</div>
+        <div class="hijri-date" id="liveHijriDate">-- هـ</div>
+        <div class="greg-date" id="liveGregDate">--</div>
+      </div>
+      <div class="side-box box-style">
+        <div class="side-title">الشروق</div>
+        <div class="side-time" id="dispSunrise">--:--</div>
+      </div>
+    </div>
+
+    <div class="middle-info-bar">
+      <div class="dhikr-box box-style" id="dhikrText">«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»</div>
+      <div class="countdown-bar box-style" id="countdownBox"><span>⏳</span><span id="countdownLabel">الصلاة القادمة</span><span class="count-val" id="countdownVal">00:00:00</span></div>
+    </div>
+
+    <!-- الصلوات الخمس بمدد الإقامة الأصلية -->
+    <div class="prayers-row">
+      <div class="p-card box-style" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-subname">Fajr</div><div class="p-time" id="time-Fajr">--:--</div><div class="p-iqama">+20</div></div>
+      <div class="p-card box-style" id="card-Dhuhr"><div class="p-name">الظهر</div><div class="p-subname">Dhuhr</div><div class="p-time" id="time-Dhuhr">--:--</div><div class="p-iqama">+15</div></div>
+      <div class="p-card box-style" id="card-Asr"><div class="p-name">العصر</div><div class="p-subname">Asr</div><div class="p-time" id="time-Asr">--:--</div><div class="p-iqama">+15</div></div>
+      <div class="p-card box-style" id="card-Maghrib"><div class="p-name">المغرب</div><div class="p-subname">Maghrib</div><div class="p-time" id="time-Maghrib">--:--</div><div class="p-iqama">+10</div></div>
+      <div class="p-card box-style" id="card-Isha"><div class="p-name">العشاء</div><div class="p-subname">Isha</div><div class="p-time" id="time-Isha">--:--</div><div class="p-iqama">+15</div></div>
+    </div>
+
+    <!-- الشريط السفلي -->
+    <div class="bottom-bar box-style">
+      <div id="bottomMarquee" class="marquee-moving">«وَأَنَّ الْمَسَاجِدَ لِلَّهِ فَلَا تَدْعُوا مَعَ اللَّهِ أَحَدًا» • اللَّهُمَّ افْتَحْ لَنَا أَبْوَابَ رَحْمَتِكَ • تَقَبَّلَ اللَّهُ مِنَّا وَمِنْكُمُ الصَّلَاةَ وَصَالِحَ الأَعْمَالِ</div>
+    </div>
+
+  </div>
+
+  <script>
+    var fixedIqamaDelays = { Fajr: 20, Dhuhr: 15, Asr: 15, Maghrib: 10, Isha: 15 };
+
+    var defaultOffsets = { Fajr: 0, Sunrise: 0, Dhuhr: 0, Asr: 0, Maghrib: 0, Isha: 0 };
+    var adhanOffsets = defaultOffsets;
+    try {
+      var saved = localStorage.getItem('sm_adhan_offsets');
+      if (saved) adhanOffsets = JSON.parse(saved);
+    } catch(e) {}
+
+    var tzOffset = 1;
+    try {
+      var stz = localStorage.getItem('sm_tz_offset');
+      if (stz !== null) tzOffset = parseInt(stz, 10);
+    } catch(e) {}
+
+    var savedMarquee = "«وَأَنَّ الْمَسَاجِدَ لِلَّهِ فَلَا تَدْعُوا مَعَ اللَّهِ أَحَدًا» • اللَّهُمَّ افْتَحْ لَنَا أَبْوَابَ رَحْمَتِكَ • تَقَبَّلَ اللَّهُ مِنَّا وَمِنْكُمُ الصَّلَاةَ وَصَالِحَ الأَعْمَالِ";
+    try {
+      var smq = localStorage.getItem('sm_marquee_text');
+      if (smq) savedMarquee = smq;
+    } catch(e) {}
+
+    var savedMarqueeMode = "moving";
+    try {
+      var smm = localStorage.getItem('sm_marquee_mode');
+      if (smm) savedMarqueeMode = smm;
+    } catch(e) {}
+
+    var savedJumua = "13:15";
+    try {
+      var sj = localStorage.getItem('sm_jumua_time');
+      if (sj) savedJumua = sj;
+    } catch(e) {}
+
+    var savedTitle = "🕌 مسجد أبي هريرة - القنيطرة";
+    try {
+      var stitle = localStorage.getItem('sm_masjid_title');
+      if (stitle) savedTitle = stitle;
+    } catch(e) {}
+
+    var savedBg = 'image2026.jpg';
+    try {
+      var sbg = localStorage.getItem('sm_bg_url');
+      if (sbg) savedBg = sbg;
+    } catch(e) {}
+
+    var savedTemp = '21';
+    try {
+      var st = localStorage.getItem('sm_temp');
+      if (st) savedTemp = st;
+    } catch(e) {}
+
+    var bgTransform = { x: 0, y: 0, scale: 1 };
+    try {
+      var strans = localStorage.getItem('sm_bg_transform');
+      if (strans) bgTransform = JSON.parse(strans);
+    } catch(e) {}
+
+    var bgEl = document.getElementById('bgMasjid');
+    function applyBgTransform() {
+      bgEl.style.transform = "translate(" + bgTransform.x + "%, " + bgTransform.y + "%) scale(" + bgTransform.scale + ")";
+    }
+    applyBgTransform();
+
+    function adjustBg(prop, delta) {
+      if (prop === 'scale') {
+        bgTransform.scale = Math.max(0.7, Math.min(2.5, +(bgTransform.scale + delta).toFixed(2)));
+      } else {
+        bgTransform[prop] = +(bgTransform[prop] + delta).toFixed(1);
+      }
+      applyBgTransform();
+    }
+
+    function resetBgTransform() {
+      bgTransform = { x: 0, y: 0, scale: 1 };
+      applyBgTransform();
+    }
+
+    // رفع صورة محلية من الحاسوب أو الهاتف وحفظها فـ الجهاز
+    function loadLocalImage(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          bgEl.src = e.target.result;
+          try {
+            localStorage.setItem('sm_bg_url', e.target.result);
+          } catch(err) {}
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // قائمة المسارات والروابط المحتملة
+    var possibleImages = [
+      savedBg,
+      'image2026.jpg',
+      'image2026.png',
+      'https://raw.githubusercontent.com/sanyoboxe-coder/masjid-tv/main/image2026.jpg',
+      'https://raw.githubusercontent.com/sanyoboxe-coder/masjid-tv/main/image2026.png',
+      './image2026.jpg',
+      '1000208998.jpg'
+    ];
+    var imgIdx = 0;
+    bgEl.onerror = function() {
+      imgIdx++;
+      if (imgIdx < possibleImages.length) {
+        bgEl.src = possibleImages[imgIdx];
+      }
+    };
+    bgEl.src = possibleImages[0];
+
+    function checkConnection() {
+      var badge = document.getElementById('dispStatus');
+      if (!badge) return;
+      if (navigator.onLine) {
+        badge.className = 'status-badge status-online';
+        badge.innerText = '🟢 متصل';
+      } else {
+        badge.className = 'status-badge status-offline';
+        badge.innerText = '🔴 غير متصل';
+      }
+    }
+    window.addEventListener('online', checkConnection);
+    window.addEventListener('offline', checkConnection);
+
+    // حساب مواقيت الصلاة (Salat First) لمدينة القنيطرة
+    var LAT = 34.2610;
+    var LNG = -6.5802;
+    var computedPrayerSecs = {};
+
+    function d2r(d) { return d * Math.PI / 180.0; }
+    function r2d(r) { return r * 180.0 / Math.PI; }
+
+    function computeSalatFirst(date) {
+      try {
+        var d = new Date(date);
+        var year = d.getFullYear(), month = d.getMonth() + 1, day = d.getDate();
+        if (month <= 2) { year -= 1; month += 12; }
+        var A = Math.floor(year / 100);
+        var B = 2 - A + Math.floor(A / 4);
+        var JD = Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + B - 1524.5;
+        var D = JD - 2451545.0;
+
+        var g = 357.529 + 0.98560028 * D;
+        var q = 280.459 + 0.98564736 * D;
+        var L = q + 1.915 * Math.sin(d2r(g)) + 0.020 * Math.sin(d2r(2 * g));
+        L = (L % 360 + 360) % 360;
+
+        var e = 23.439 - 0.00000036 * D;
+        var RA = r2d(Math.atan2(Math.cos(d2r(e)) * Math.sin(d2r(L)), Math.cos(d2r(L)))) / 15.0;
+        RA = (RA % 24 + 24) % 24;
+
+        var Dec = r2d(Math.asin(Math.sin(d2r(e)) * Math.sin(d2r(L))));
+        var EqT = q / 15.0 - RA;
+        EqT = (EqT % 24 + 24) % 24;
+        if (EqT > 12) EqT -= 24;
+
+        var noon = 12.0 - LNG / 15.0 - EqT;
+
+        function hourAngle(alpha) {
+          var cosH = (Math.sin(d2r(alpha)) - Math.sin(d2r(LAT)) * Math.sin(d2r(Dec))) / (Math.cos(d2r(LAT)) * Math.cos(d2r(Dec)));
+          if (cosH > 1 || cosH < -1) return 0;
+          return r2d(Math.acos(cosH)) / 15.0;
+        }
+
+        var H_fajr = hourAngle(-19.0);
+        var H_sun = hourAngle(-0.833);
+        var H_isha = hourAngle(-17.0);
+
+        var asrAlt = r2d(Math.atan(1.0 / (1.0 + Math.tan(d2r(Math.abs(LAT - Dec))))));
