@@ -2,10 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>مسجد أبي هريرة - القنيطرة</title>
+  <title>لوحة مواقيت الصلاة - مسجد أبي هريرة</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background-color: #0b1329; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
     
     body {
       color: #ffffff;
@@ -17,7 +17,7 @@
       position: relative;
     }
 
-    /* خلفية صورة المسجد */
+    /* صورة المسجد في الخلفية */
     #bgMasjid {
       position: absolute;
       top: 0;
@@ -26,7 +26,7 @@
       height: 100vh;
       object-fit: cover;
       z-index: 1;
-      filter: brightness(0.80) contrast(1.05);
+      filter: brightness(0.85) contrast(1.05);
       transform-origin: center center;
     }
 
@@ -158,4 +158,113 @@
     .timing-table th, .timing-table td { padding: 4px; text-align: center; border-bottom: 1px solid #334155; }
     .timing-table th { color: #94a3b8; font-size: 0.85rem; }
     .btn-step { background: #1e293b; border: 1px solid #475569; color: #fff; width: 28px; height: 28px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-    .input-val { width: 45px; text-align: center; background: #020617; border: 
+    .input-val { width: 45px; text-align: center; background: #020617; border: 1px solid #38bdf8; color: #facc15; font-size: 1rem; font-weight: bold; padding: 2px; border-radius: 6px; }
+    
+    .field-group { margin-top: 6px; }
+    .field-label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 3px; font-weight: bold; }
+    .field-input { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 0.9rem; }
+    .field-select { width: 100%; background: #020617; border: 1px solid #38bdf8; color: #facc15; padding: 6px 10px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; }
+
+    .img-controls-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 4px;
+      background: #020617; padding: 6px; border-radius: 8px; border: 1px solid #334155;
+    }
+    .btn-ctrl { background: #1e293b; border: 1px solid #38bdf8; color: #fff; padding: 5px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+    .btn-ctrl:focus, .btn-ctrl:active { background: #38bdf8; color: #000; outline: none; }
+
+    .btn-save { background: #16a34a; color: #fff; width: 100%; padding: 10px; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .btn-close { background: #475569; color: #fff; width: 100%; padding: 6px; border: none; border-radius: 10px; font-size: 0.9rem; cursor: pointer; margin-top: 5px; }
+  </style>
+</head>
+<body>
+
+  <!-- صورة المسجد -->
+  <img id="bgMasjid" src="image2026.jpg" alt="">
+
+  <div class="app-content">
+
+    <div class="fullscreen-modal" id="fsModal">
+      <div class="modal-head" id="fsHead">إِقَامَةُ الصَّلَاةِ</div>
+      <div class="modal-timer" id="fsTimer" style="display:none;">00:00</div>
+      <div class="modal-body">اسْتَوُوا وَاعْتَدِلُوا، وَأَقِيمُوا صُفُوفَكُمْ</div>
+      <div class="modal-sub">📴 يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا</div>
+    </div>
+
+    <!-- لوحة الإعدادات -->
+    <div class="setup-overlay" id="setupModal">
+      <div class="setup-box">
+        <div class="setup-title">⚙️ لوحة تحكم وإعدادات المسجد</div>
+
+        <!-- 1. تعديل اسم المسجد -->
+        <div class="field-group">
+          <label class="field-label">اسم المسجد الظاهر في الأعلى:</label>
+          <input type="text" id="cfg_title" class="field-input">
+        </div>
+
+        <!-- 2. تعديل وقت صلاة الجمعة -->
+        <div class="field-group">
+          <label class="field-label">وقت صلاة الجمعة (مثلاً 13:15 أو 13:00):</label>
+          <input type="text" id="cfg_jumua" class="field-input" placeholder="13:15">
+        </div>
+
+        <!-- 3. التحكم في الشريط السفلي -->
+        <div class="field-group">
+          <label class="field-label">حالة الشريط السفلي:</label>
+          <select id="cfg_marquee_mode" class="field-select">
+            <option value="moving">شريط متحرك (يدوز)</option>
+            <option value="static">شريط ثابت (واقف)</option>
+          </select>
+        </div>
+
+        <!-- 4. درجة الحرارة -->
+        <div class="field-group">
+          <label class="field-label">درجة الحرارة (°C):</label>
+          <input type="number" id="cfg_temp" class="field-input">
+        </div>
+        
+        <!-- 5. نظام التوقيت الصيفي -->
+        <div class="field-group">
+          <label class="field-label">نظام التوقيت (حل مشكل الساعة الزائدة):</label>
+          <select id="cfg_tz" class="field-select">
+            <option value="1">توقيت المغرب الحالي (GMT+1)</option>
+            <option value="0">توقيت غرينتش (GMT / رمضان)</option>
+          </select>
+        </div>
+
+        <!-- 6. جدول ضبط دقائق الصلوات -->
+        <table class="timing-table">
+          <thead>
+            <tr>
+              <th>الصلاة</th>
+              <th>الوقت الحالي</th>
+              <th>تعديل الدقائق (+ / -)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: bold; color: #38bdf8;">الفجر</td>
+              <td id="disp_base_Fajr" style="direction:ltr; font-family:monospace;">--:--</td>
+              <td><button type="button" class="btn-step" onclick="adjAdhan('Fajr', -1)">-</button> <input type="text" id="adj_Fajr" class="input-val" readonly> <button type="button" class="btn-step" onclick="adjAdhan('Fajr', 1)">+</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: #38bdf8;">الشروق</td>
+              <td id="disp_base_Sunrise" style="direction:ltr; font-family:monospace;">--:--</td>
+              <td><button type="button" class="btn-step" onclick="adjAdhan('Sunrise', -1)">-</button> <input type="text" id="adj_Sunrise" class="input-val" readonly> <button type="button" class="btn-step" onclick="adjAdhan('Sunrise', 1)">+</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: #38bdf8;">الظهر</td>
+              <td id="disp_base_Dhuhr" style="direction:ltr; font-family:monospace;">--:--</td>
+              <td><button type="button" class="btn-step" onclick="adjAdhan('Dhuhr', -1)">-</button> <input type="text" id="adj_Dhuhr" class="input-val" readonly> <button type="button" class="btn-step" onclick="adjAdhan('Dhuhr', 1)">+</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: #38bdf8;">العصر</td>
+              <td id="disp_base_Asr" style="direction:ltr; font-family:monospace;">--:--</td>
+              <td><button type="button" class="btn-step" onclick="adjAdhan('Asr', -1)">-</button> <input type="text" id="adj_Asr" class="input-val" readonly> <button type="button" class="btn-step" onclick="adjAdhan('Asr', 1)">+</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: #38bdf8;">المغرب</td>
+              <td id="disp_base_Maghrib" style="direction:ltr; font-family:monospace;">--:--</td>
+              <td><button type="button" class="btn-step" onclick="adjAdhan('Maghrib', -1)">-</button> <input type="text" id="adj_Maghrib" class="input-val" readonly> <button type="button" class="btn-step" onclick="adjAdhan('Maghrib', 1)">+</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight: bold; color: #
