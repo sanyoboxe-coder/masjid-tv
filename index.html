@@ -13,11 +13,11 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 15px 25px;
+      padding: 10px 18px;
       position: relative;
     }
 
-    /* صورة المسجد في الخلفية مع خاصية التحريك */
+    /* خلفية صورة المسجد */
     #bgMasjid {
       position: absolute;
       top: 0;
@@ -26,7 +26,7 @@
       height: 100vh;
       object-fit: cover;
       z-index: 1;
-      filter: brightness(0.82) contrast(1.05);
+      filter: brightness(0.80) contrast(1.05);
       transform-origin: center center;
     }
 
@@ -38,91 +38,96 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      gap: 6px;
     }
 
-    /* الصناديق الشفافة */
     .box-style {
       background-color: rgba(0, 0, 0, 0.60);
       border: 1px solid rgba(255, 255, 255, 0.30);
-      border-radius: 14px;
+      border-radius: 12px;
     }
 
     /* الشريط العلوي */
     .top-bar { 
-      padding: 8px 25px;
+      padding: 6px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center; 
     }
-    .masjid-title { font-size: 1.6rem; font-weight: bold; color: #ffffff; text-shadow: 0 2px 5px #000; }
-    .top-tools { display: flex; align-items: center; gap: 12px; }
+    .masjid-title { font-size: 1.45rem; font-weight: bold; color: #ffffff; text-shadow: 0 2px 5px #000; }
+    .top-tools { display: flex; align-items: center; gap: 10px; }
     
     .status-badge {
-      font-size: 0.95rem; font-weight: bold; padding: 4px 10px; border-radius: 8px;
+      font-size: 0.9rem; font-weight: bold; padding: 3px 8px; border-radius: 8px;
       background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.25);
     }
     .status-online { color: #4ade80; border-color: #4ade80; }
     .status-offline { color: #f87171; border-color: #f87171; }
 
     .temp-badge {
-      font-size: 1.1rem; font-weight: bold; color: #facc15;
-      background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 8px;
+      font-size: 1rem; font-weight: bold; color: #facc15;
+      background: rgba(0,0,0,0.5); padding: 3px 8px; border-radius: 8px;
       border: 1px solid rgba(250,204,21,0.4); text-shadow: 0 2px 4px #000;
     }
 
-    .settings-trigger { cursor: pointer; opacity: 0.9; font-size: 1.5rem; }
+    .settings-trigger { cursor: pointer; opacity: 0.9; font-size: 1.4rem; }
 
     /* القسم الأوسط */
-    .center-section { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 10px; }
+    .center-section { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 5px; }
     .side-box { 
-      text-align: center; min-width: 155px; padding: 10px 20px;
+      text-align: center; min-width: 140px; padding: 6px 14px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    .side-title { font-size: 1.3rem; font-weight: bold; color: #e2e8f0; text-shadow: 0 2px 4px #000; }
-    .side-time { font-size: 2.6rem; font-weight: bold; font-family: monospace; color: #ffffff; text-shadow: 0 2px 6px #000; }
+    .side-title { font-size: 1.15rem; font-weight: bold; color: #e2e8f0; text-shadow: 0 2px 4px #000; }
+    .side-time { font-size: 2.2rem; font-weight: bold; font-family: monospace; color: #ffffff; text-shadow: 0 2px 6px #000; }
 
     .clock-card { 
-      padding: 12px 45px; text-align: center; min-width: 520px; 
+      padding: 8px 35px; text-align: center; min-width: 460px; 
       box-shadow: 0 10px 30px rgba(0,0,0,0.7);
     }
-    .main-clock { font-size: 5rem; font-weight: bold; font-family: monospace; line-height: 1; letter-spacing: 2px; text-shadow: 0 3px 10px #000; }
-    .hijri-date { font-size: 1.5rem; font-weight: bold; color: #facc15; margin-top: 6px; text-shadow: 0 2px 5px #000; }
-    .greg-date { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-top: 2px; text-shadow: 0 2px 4px #000; }
+    .main-clock { font-size: 4.4rem; font-weight: bold; font-family: monospace; line-height: 1; letter-spacing: 2px; text-shadow: 0 3px 10px #000; }
+    .hijri-date { font-size: 1.35rem; font-weight: bold; color: #facc15; margin-top: 4px; text-shadow: 0 2px 5px #000; }
+    .greg-date { font-size: 1.1rem; font-weight: bold; color: #ffffff; margin-top: 2px; text-shadow: 0 2px 4px #000; }
 
-    .middle-info-bar { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 0 10px; }
+    .middle-info-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 5px; }
     .dhikr-box { 
-      flex: 1.8; padding: 10px 25px; font-size: 1.35rem; text-align: center;
+      flex: 1.8; padding: 8px 18px; font-size: 1.25rem; text-align: center;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       text-shadow: 0 2px 6px #000; font-weight: bold;
     }
     .countdown-bar { 
-      flex: 1.2; padding: 10px 25px; display: flex; align-items: center; justify-content: center; 
-      gap: 10px; font-size: 1.35rem; font-weight: bold; text-shadow: 0 2px 5px #000;
+      flex: 1.2; padding: 8px 18px; display: flex; align-items: center; justify-content: center; 
+      gap: 8px; font-size: 1.25rem; font-weight: bold; text-shadow: 0 2px 5px #000;
     }
-    .countdown-bar .count-val { font-family: monospace; font-size: 1.9rem; color: #38bdf8; direction: ltr; font-weight: bold; text-shadow: 0 2px 6px #000; }
+    .countdown-bar .count-val { font-family: monospace; font-size: 1.7rem; color: #38bdf8; direction: ltr; font-weight: bold; text-shadow: 0 2px 6px #000; }
 
     /* بطاقات أوقات الصلاة */
-    .prayers-row { display: flex; justify-content: space-between; gap: 12px; padding: 0 10px; }
+    .prayers-row { display: flex; justify-content: space-between; gap: 10px; padding: 0 5px; }
     .p-card { 
-      flex: 1; padding: 10px 6px; text-align: center;
+      flex: 1; padding: 8px 4px; text-align: center;
       box-shadow: 0 6px 20px rgba(0,0,0,0.6);
     }
     .p-card.active-p { 
       background-color: rgba(14, 116, 144, 0.88) !important; 
-      border-color: #38bdf8 !important; transform: translateY(-4px); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+      border-color: #38bdf8 !important; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
     }
-    .p-name { font-size: 1.55rem; font-weight: bold; text-shadow: 0 2px 6px #000; }
-    .p-subname { font-size: 0.85rem; font-weight: bold; color: #e2e8f0; text-transform: uppercase; margin-bottom: 2px; }
-    .p-time { font-size: 2.5rem; font-weight: bold; font-family: monospace; text-shadow: 0 2px 6px #000; }
-    .p-iqama { font-size: 1.25rem; font-weight: bold; color: #facc15; direction: ltr; text-shadow: 0 2px 5px #000; }
+    .p-name { font-size: 1.4rem; font-weight: bold; text-shadow: 0 2px 6px #000; }
+    .p-subname { font-size: 0.8rem; font-weight: bold; color: #e2e8f0; text-transform: uppercase; margin-bottom: 2px; }
+    .p-time { font-size: 2.2rem; font-weight: bold; font-family: monospace; text-shadow: 0 2px 6px #000; }
+    .p-iqama { font-size: 1.15rem; font-weight: bold; color: #facc15; direction: ltr; text-shadow: 0 2px 5px #000; }
 
-    /* الشريط السفلي المتحرك */
+    /* الشريط السفلي والتحكم في حركته */
     .bottom-bar { 
-      padding: 6px 20px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 44px;
+      padding: 4px 15px; overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 38px;
     }
-    .marquee-content {
+    .marquee-moving {
       display: inline-block; padding-left: 100%; animation: marquee 30s linear infinite;
-      font-size: 1.3rem; font-weight: bold; color: #facc15; text-shadow: 0 2px 6px #000;
+      font-size: 1.15rem; font-weight: bold; color: #facc15; text-shadow: 0 2px 6px #000;
+    }
+    .marquee-static {
+      width: 100%; text-align: center; display: block;
+      font-size: 1.15rem; font-weight: bold; color: #facc15; text-shadow: 0 2px 6px #000;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     @keyframes marquee { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
 
@@ -137,7 +142,7 @@
     .modal-body { font-size: 2.4rem; font-weight: bold; color: #ffffff; line-height: 1.5; max-width: 90%; }
     .modal-sub { font-size: 2rem; font-weight: bold; color: #ef4444; margin-top: 25px; background: rgba(239,68,68,0.2); padding: 8px 25px; border-radius: 14px; border: 1px solid #ef4444; }
 
-    /* نافذة الإعدادات الشاملة */
+    /* لوحة الإعدادات */
     .setup-overlay {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(2, 6, 23, 0.96); z-index: 100000;
@@ -145,40 +150,39 @@
     }
     .setup-box {
       background: #0f172a; border: 2px solid #38bdf8; border-radius: 20px;
-      padding: 18px 22px; width: 100%; max-width: 640px; text-align: right;
+      padding: 16px 20px; width: 100%; max-width: 630px; text-align: right;
       box-shadow: 0 10px 40px rgba(0,0,0,0.85); max-height: 94vh; overflow-y: auto;
     }
-    .setup-title { font-size: 1.3rem; font-weight: bold; color: #38bdf8; text-align: center; margin-bottom: 10px; }
-    .timing-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
-    .timing-table th, .timing-table td { padding: 5px; text-align: center; border-bottom: 1px solid #334155; }
-    .timing-table th { color: #94a3b8; font-size: 0.9rem; }
-    .btn-step { background: #1e293b; border: 1px solid #475569; color: #fff; width: 32px; height: 32px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-    .input-val { width: 50px; text-align: center; background: #020617; border: 1px solid #38bdf8; color: #facc15; font-size: 1.1rem; font-weight: bold; padding: 4px; border-radius: 6px; }
+    .setup-title { font-size: 1.25rem; font-weight: bold; color: #38bdf8; text-align: center; margin-bottom: 8px; }
+    .timing-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+    .timing-table th, .timing-table td { padding: 4px; text-align: center; border-bottom: 1px solid #334155; }
+    .timing-table th { color: #94a3b8; font-size: 0.85rem; }
+    .btn-step { background: #1e293b; border: 1px solid #475569; color: #fff; width: 28px; height: 28px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+    .input-val { width: 45px; text-align: center; background: #020617; border: 1px solid #38bdf8; color: #facc15; font-size: 1rem; font-weight: bold; padding: 2px; border-radius: 6px; }
     
-    .field-group { margin-top: 8px; }
-    .field-label { display: block; font-size: 0.88rem; color: #94a3b8; margin-bottom: 4px; font-weight: bold; }
-    .field-input { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.95rem; }
-    .field-select { width: 100%; background: #020617; border: 1px solid #38bdf8; color: #facc15; padding: 7px 12px; border-radius: 8px; font-size: 0.95rem; font-weight: bold; }
+    .field-group { margin-top: 6px; }
+    .field-label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 3px; font-weight: bold; }
+    .field-input { width: 100%; background: #020617; border: 1px solid #334155; color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 0.9rem; }
+    .field-select { width: 100%; background: #020617; border: 1px solid #38bdf8; color: #facc15; padding: 6px 10px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; }
 
     .img-controls-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px;
-      background: #020617; padding: 8px; border-radius: 8px; border: 1px solid #334155;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 4px;
+      background: #020617; padding: 6px; border-radius: 8px; border: 1px solid #334155;
     }
-    .btn-ctrl { background: #1e293b; border: 1px solid #38bdf8; color: #fff; padding: 6px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.88rem; }
+    .btn-ctrl { background: #1e293b; border: 1px solid #38bdf8; color: #fff; padding: 5px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
     .btn-ctrl:focus, .btn-ctrl:active { background: #38bdf8; color: #000; outline: none; }
 
-    .btn-save { background: #16a34a; color: #fff; width: 100%; padding: 11px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 12px; }
-    .btn-close { background: #475569; color: #fff; width: 100%; padding: 7px; border: none; border-radius: 10px; font-size: 0.95rem; cursor: pointer; margin-top: 6px; }
+    .btn-save { background: #16a34a; color: #fff; width: 100%; padding: 10px; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .btn-close { background: #475569; color: #fff; width: 100%; padding: 6px; border: none; border-radius: 10px; font-size: 0.9rem; cursor: pointer; margin-top: 5px; }
   </style>
 </head>
 <body>
 
-  <!-- صورة المسجد الأصلية في الخلفية مع خاصية التحريك -->
-  <img id="bgMasjid" src="1000208998.jpg" alt="خلفية المسجد">
+  <!-- صورة المسجد -->
+  <img id="bgMasjid" src="1000208998.jpg" alt="">
 
   <div class="app-content">
 
-    <!-- شاشة الإقامة الكبرى -->
     <div class="fullscreen-modal" id="fsModal">
       <div class="modal-head" id="fsHead">إِقَامَةُ الصَّلَاةِ</div>
       <div class="modal-timer" id="fsTimer" style="display:none;">00:00</div>
@@ -186,7 +190,7 @@
       <div class="modal-sub">📴 يُرْجَى إِغْلَاقُ الْهَوَاتِفِ النَّقَّالَةِ جَزَاكُمُ اللهُ خَيْرًا</div>
     </div>
 
-    <!-- لوحة الإعدادات والتحكم -->
+    <!-- نافذة الإعدادات -->
     <div class="setup-overlay" id="setupModal">
       <div class="setup-box">
         <div class="setup-title">⚙️ لوحة تحكم وإعدادات المسجد</div>
@@ -194,16 +198,31 @@
         <!-- 1. تعديل اسم المسجد -->
         <div class="field-group">
           <label class="field-label">اسم المسجد الظاهر في الأعلى:</label>
-          <input type="text" id="cfg_title" class="field-input" placeholder="مسجد أبي هريرة - القنيطرة">
+          <input type="text" id="cfg_title" class="field-input">
         </div>
 
-        <!-- 2. درجة الحرارة -->
+        <!-- 2. تعديل وقت صلاة الجمعة -->
+        <div class="field-group">
+          <label class="field-label">وقت صلاة الجمعة (مثلاً 13:15 أو 13:00):</label>
+          <input type="text" id="cfg_jumua" class="field-input" placeholder="13:15">
+        </div>
+
+        <!-- 3. التحكم في الشريط السفلي (متحرك أو واقف) -->
+        <div class="field-group">
+          <label class="field-label">حالة الشريط السفلي:</label>
+          <select id="cfg_marquee_mode" class="field-select">
+            <option value="moving">شريط متحرك (يدوز)</option>
+            <option value="static">شريط ثابت (واقف)</option>
+          </select>
+        </div>
+
+        <!-- 4. درجة الحرارة -->
         <div class="field-group">
           <label class="field-label">درجة الحرارة (°C):</label>
-          <input type="number" id="cfg_temp" class="field-input" placeholder="21">
+          <input type="number" id="cfg_temp" class="field-input">
         </div>
         
-        <!-- 3. ضبط الساعة والتوقيت الصيفي -->
+        <!-- 5. نظام التوقيت الصيفي -->
         <div class="field-group">
           <label class="field-label">نظام التوقيت (حل مشكل الساعة الزائدة):</label>
           <select id="cfg_tz" class="field-select">
@@ -212,7 +231,7 @@
           </select>
         </div>
 
-        <!-- 4. جدول ضبط دقائق الاحتياط (+ / -) -->
+        <!-- 6. جدول ضبط دقائق الصلوات -->
         <table class="timing-table">
           <thead>
             <tr>
@@ -255,7 +274,7 @@
           </tbody>
         </table>
 
-        <!-- 5. التحكم في موضع وحجم صورة المسجد -->
+        <!-- 7. ضبط موضع وحجم صورة المسجد -->
         <div class="field-group">
           <label class="field-label">📐 ضبط موضع وحجم صورة المسجد (يمين/يسار/فوق/تحت/زوم):</label>
           <div class="img-controls-grid">
@@ -269,16 +288,16 @@
           </div>
         </div>
 
-        <!-- 6. تعديل نص الشريط المتحرك -->
+        <!-- 8. نص الشريط المتحرك -->
         <div class="field-group">
-          <label class="field-label">نص الشريط السفلي المتحرك:</label>
+          <label class="field-label">نص الشريط السفلي:</label>
           <input type="text" id="cfg_marquee" class="field-input">
         </div>
 
-        <!-- 7. اسم ملف صورة المسجد -->
+        <!-- 9. اسم صورة المسجد -->
         <div class="field-group">
           <label class="field-label">اسم ملف صورة المسجد في GitHub:</label>
-          <input type="text" id="cfg_bg" class="field-input" placeholder="1000208998.jpg أو اسم الصورة الجديدة">
+          <input type="text" id="cfg_bg" class="field-input">
         </div>
 
         <button type="button" class="btn-save" onclick="saveSettings()">💾 حفظ التعديلات الآن</button>
@@ -292,7 +311,7 @@
       <div class="top-tools">
         <div class="temp-badge" id="dispTemp">🌡️ 21°C</div>
         <div class="status-badge status-offline" id="dispStatus">🔴 غير متصل</div>
-        <div id="dispCityBadge" style="color: #38bdf8; font-size: 1.1rem; font-weight: bold; text-shadow: 0 2px 4px #000;">📍 القنيطرة</div>
+        <div id="dispCityBadge" style="color: #38bdf8; font-size: 1.05rem; font-weight: bold; text-shadow: 0 2px 4px #000;">📍 القنيطرة</div>
         <div class="settings-trigger" onclick="openSetupModal()" title="الإعدادات">⚙️</div>
       </div>
     </div>
@@ -330,7 +349,7 @@
 
     <!-- الشريط السفلي -->
     <div class="bottom-bar box-style">
-      <div class="marquee-content" id="bottomMarquee">«وَأَنَّ الْمَسَاجِدَ لِلَّهِ فَلَا تَدْعُوا مَعَ اللَّهِ أَحَدًا» • اللَّهُمَّ افْتَحْ لَنَا أَبْوَابَ رَحْمَتِكَ • تَقَبَّلَ اللَّهُ مِنَّا وَمِنْكُمُ الصَّلَاةَ وَصَالِحَ الأَعْمَالِ</div>
+      <div id="bottomMarquee" class="marquee-moving">«وَأَنَّ الْمَسَاجِدَ لِلَّهِ فَلَا تَدْعُوا مَعَ اللَّهِ أَحَدًا» • اللَّهُمَّ افْتَحْ لَنَا أَبْوَابَ رَحْمَتِكَ • تَقَبَّلَ اللَّهُ مِنَّا وَمِنْكُمُ الصَّلَاةَ وَصَالِحَ الأَعْمَالِ</div>
     </div>
 
   </div>
@@ -355,6 +374,18 @@
     try {
       var smq = localStorage.getItem('sm_marquee_text');
       if (smq) savedMarquee = smq;
+    } catch(e) {}
+
+    var savedMarqueeMode = "moving";
+    try {
+      var smm = localStorage.getItem('sm_marquee_mode');
+      if (smm) savedMarqueeMode = smm;
+    } catch(e) {}
+
+    var savedJumua = "13:15";
+    try {
+      var sj = localStorage.getItem('sm_jumua_time');
+      if (sj) savedJumua = sj;
     } catch(e) {}
 
     var savedTitle = "🕌 مسجد أبي هريرة - القنيطرة";
@@ -401,17 +432,18 @@
       applyBgTransform();
     }
 
-    var possibleImages = [savedBg, '1000208998.jpg', './1000208998.jpg', 'masjid.jpg'];
+    var possibleImages = [savedBg, '1000208998.jpg', '1000208998.JPG', '1000208998.jpeg', './1000208998.jpg', 'masjid.jpg'];
     var imgIdx = 0;
     bgEl.onerror = function() {
       imgIdx++;
       if (imgIdx < possibleImages.length) {
         bgEl.src = possibleImages[imgIdx];
+      } else {
+        bgEl.style.display = 'none';
       }
     };
     bgEl.src = possibleImages[0];
 
-    // كشف الاتصال بالإنترنت
     function checkConnection() {
       var badge = document.getElementById('dispStatus');
       if (!badge) return;
@@ -426,7 +458,7 @@
     window.addEventListener('online', checkConnection);
     window.addEventListener('offline', checkConnection);
 
-    // إحداثيات القنيطرة وحساب مواقيت الصلاة (Salat First)
+    // حساب Salat First لمدينة القنيطرة
     var LAT = 34.2610;
     var LNG = -6.5802;
     var computedPrayerSecs = {};
@@ -505,9 +537,13 @@
       document.getElementById('time-Maghrib').innerText = formatTime(getAdjustedAdhan('Maghrib'));
       document.getElementById('time-Isha').innerText = formatTime(getAdjustedAdhan('Isha'));
 
-      document.getElementById('bottomMarquee').innerText = savedMarquee;
+      document.getElementById('dispJumua').innerText = savedJumua;
       document.getElementById('dispMasjidTitle').innerText = savedTitle;
       document.getElementById('dispTemp').innerText = '🌡️ ' + savedTemp + '°C';
+
+      var bMarquee = document.getElementById('bottomMarquee');
+      bMarquee.innerText = savedMarquee;
+      bMarquee.className = (savedMarqueeMode === 'static' ? 'marquee-static' : 'marquee-moving');
     }
 
     function openSetupModal() {
@@ -515,182 +551,4 @@
       for (var i = 0; i < prayers.length; i++) {
         var p = prayers[i];
         document.getElementById('disp_base_' + p).innerText = formatTime(getAdjustedAdhan(p));
-        document.getElementById('adj_' + p).value = (adhanOffsets[p] >= 0 ? '+' : '') + (adhanOffsets[p] || 0);
-      }
-      document.getElementById('cfg_title').value = savedTitle;
-      document.getElementById('cfg_temp').value = savedTemp;
-      document.getElementById('cfg_tz').value = tzOffset;
-      document.getElementById('cfg_marquee').value = savedMarquee;
-      document.getElementById('cfg_bg').value = savedBg;
-      document.getElementById('setupModal').style.display = 'flex';
-    }
-
-    function adjAdhan(p, delta) {
-      adhanOffsets[p] = (adhanOffsets[p] || 0) + delta;
-      document.getElementById('adj_' + p).value = (adhanOffsets[p] >= 0 ? '+' : '') + adhanOffsets[p];
-      document.getElementById('disp_base_' + p).innerText = formatTime(getAdjustedAdhan(p));
-    }
-
-    function saveSettings() {
-      var inpTitle = document.getElementById('cfg_title').value;
-      if (inpTitle && inpTitle.trim() !== '') savedTitle = inpTitle.trim();
-
-      var inpTemp = document.getElementById('cfg_temp').value;
-      if (inpTemp && inpTemp.trim() !== '') {
-        savedTemp = inpTemp.trim();
-      }
-
-      tzOffset = parseInt(document.getElementById('cfg_tz').value, 10);
-      savedMarquee = document.getElementById('cfg_marquee').value;
-      var inputBg = document.getElementById('cfg_bg').value;
-      if (inputBg && inputBg.trim() !== '') {
-        savedBg = inputBg.trim();
-      }
-
-      try {
-        localStorage.setItem('sm_masjid_title', savedTitle);
-        localStorage.setItem('sm_adhan_offsets', JSON.stringify(adhanOffsets));
-        localStorage.setItem('sm_tz_offset', tzOffset);
-        localStorage.setItem('sm_temp', savedTemp);
-        localStorage.setItem('sm_marquee_text', savedMarquee);
-        localStorage.setItem('sm_bg_url', savedBg);
-        localStorage.setItem('sm_bg_transform', JSON.stringify(bgTransform));
-      } catch(e) {}
-
-      bgEl.src = savedBg;
-
-      computeSalatFirst(new Date());
-      renderUI();
-      document.getElementById('setupModal').style.display = 'none';
-    }
-
-    var adhkar = [
-      "«سُبْحَانَ اللهِ وَبِحَمْدِهِ، سُبْحَانَ اللهِ الْعَظِيمِ»",
-      "«لا إِلَهَ إِلا اللَّهُ وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ المُلْكُ وَلَهُ الحَمْدُ»",
-      "«أَسْتَغْفِرُ اللهَ الَّذِي لا إِلَهَ إِلا هُوَ الحَيَّ القَيُّومَ وَأَتُوبُ إِلَيْهِ»",
-      "«اللَّهُمَّ أَعِّنِي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ»",
-      "«لا حَوْلَ وَلا قُوَّةَ إِلا بِاللهِ الْعَلِيِّ الْعَظِيمِ»"
-    ];
-    var dhikrIdx = 0;
-
-    // التاريخ الهجري المحلي
-    function getSafeHijriDate(d) {
-      try {
-        var day = d.getDate(), month = d.getMonth() + 1, year = d.getFullYear();
-        if (month < 3) { year -= 1; month += 12; }
-        var a = Math.floor(year / 100);
-        var b = 2 - a + Math.floor(a / 4);
-        var jd = Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + b - 1524;
-        var l = jd - 1948440 + 10632;
-        var n = Math.floor((l - 1) / 10631);
-        l = l - 10631 * n + 354;
-        var j = (Math.floor((10985 - l) / 5316)) * (Math.floor((50 * l) / 17719)) + (Math.floor(l / 5670)) * (Math.floor((43 * l) / 15238));
-        l = l - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50)) - (Math.floor(j / 16)) * (Math.floor((15238 * j) / 43)) + 29;
-        var m = Math.floor((24 * l) / 709);
-        var dH = l - Math.floor((709 * m) / 24);
-        var yH = 30 * n + j - 30;
-        var hijriMonths = ["محرم", "صفر", "ربيع الأول", "ربيع الآخر", "جمادى الأولى", "جمادى الآخرة", "رجب", "شعبان", "رمضان", "شوال", "ذو القعدة", "ذو الحجة"];
-        return dH + " " + hijriMonths[m - 1] + " " + yH + " هـ";
-      } catch(e) {
-        return "1448 هـ";
-      }
-    }
-
-    function tick() {
-      var d = new Date();
-      var h = d.getHours();
-      var m = d.getMinutes();
-      var s = d.getSeconds();
-
-      document.getElementById('liveClock').innerText = 
-        (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-
-      var days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-      var months = ["يناير", "فبراير", "مارس", "أبريل", "ماي", "يونيو", "يوليوز", "غشت", "شتنبر", "أكتوبر", "نونبر", "دجنبر"];
-      document.getElementById('liveGregDate').innerText = days[d.getDay()] + " " + d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
-
-      document.getElementById('liveHijriDate').innerText = getSafeHijriDate(d);
-
-      var nowSec = h * 3600 + m * 60 + s;
-      var pList = [
-        { id: "Fajr", name: "الفجر", adhan: getAdjustedAdhan('Fajr'), iq: fixedIqamaDelays.Fajr * 60 },
-        { id: "Dhuhr", name: "الظهر", adhan: getAdjustedAdhan('Dhuhr'), iq: fixedIqamaDelays.Dhuhr * 60 },
-        { id: "Asr", name: "العصر", adhan: getAdjustedAdhan('Asr'), iq: fixedIqamaDelays.Asr * 60 },
-        { id: "Maghrib", name: "المغرب", adhan: getAdjustedAdhan('Maghrib'), iq: fixedIqamaDelays.Maghrib * 60 },
-        { id: "Isha", name: "العشاء", adhan: getAdjustedAdhan('Isha'), iq: fixedIqamaDelays.Isha * 60 }
-      ];
-
-      var modal = document.getElementById('fsModal');
-      var isIq = false, isPray = false, activeP = null, rem = 0;
-
-      for (var i = 0; i < pList.length; i++) {
-        var p = pList[i];
-        var iqEnd = p.adhan + p.iq;
-        if (nowSec >= p.adhan && nowSec < iqEnd) {
-          isIq = true; activeP = p; rem = iqEnd - nowSec; break;
-        }
-        if (nowSec >= iqEnd && nowSec < (iqEnd + 480)) {
-          isPray = true; activeP = p; break;
-        }
-      }
-
-      if (isIq) {
-        modal.style.display = 'flex';
-        document.getElementById('fsHead').innerText = 'إِقَامَةُ صَلَاةِ ' + activeP.name;
-        document.getElementById('fsTimer').style.display = 'block';
-        var mm = Math.floor(rem / 60);
-        var ss = rem % 60;
-        document.getElementById('fsTimer').innerText = (mm < 10 ? '0' : '') + mm + ':' + (ss < 10 ? '0' : '') + ss;
-      } else if (isPray) {
-        modal.style.display = 'flex';
-        document.getElementById('fsHead').innerText = 'أَقِيمُوا الصَّفَّ';
-        document.getElementById('fsTimer').style.display = 'none';
-      } else {
-        modal.style.display = 'none';
-      }
-
-      if (!isIq && !isPray) {
-        var nextP = null;
-        for (var j = 0; j < pList.length; j++) {
-          if (pList[j].adhan > nowSec) {
-            nextP = pList[j];
-            rem = nextP.adhan - nowSec;
-            break;
-          }
-        }
-        if (!nextP) {
-          nextP = pList[0];
-          rem = (86400 - nowSec) + pList[0].adhan;
-        }
-
-        for (var k = 0; k < pList.length; k++) {
-          var card = document.getElementById('card-' + pList[k].id);
-          if (card) card.className = 'p-card box-style';
-        }
-        var actCard = document.getElementById('card-' + nextP.id);
-        if (actCard) actCard.className = 'p-card box-style active-p';
-
-        document.getElementById('countdownLabel').innerText = nextP.name + ' بعد';
-        var rh = Math.floor(rem / 3600);
-        var rm = Math.floor((rem % 3600) / 60);
-        var rs = rem % 60;
-        document.getElementById('countdownVal').innerText = 
-          (rh < 10 ? '0' : '') + rh + ':' + (rm < 10 ? '0' : '') + rm + ':' + (rs < 10 ? '0' : '') + rs;
-      }
-    }
-
-    setInterval(function() {
-      dhikrIdx = (dhikrIdx + 1) % adhkar.length;
-      document.getElementById('dhikrText').innerText = adhkar[dhikrIdx];
-    }, 7000);
-
-    checkConnection();
-    setInterval(checkConnection, 5000);
-
-    computeSalatFirst(new Date());
-    renderUI();
-    tick();
-    setInterval(tick, 1000);
-  </script>
-</body>
-</html>
+        document.getElementById('adj_' + p).value = (adhanOffsets[p] >= 0 ? '+' : '') + (adhan
