@@ -17,6 +17,7 @@
       position: relative;
     }
 
+    /* خلفية صورة المسجد */
     #bgMasjid {
       position: absolute;
       top: 0;
@@ -27,6 +28,17 @@
       z-index: 1;
       filter: brightness(0.85) contrast(1.05);
       transform-origin: center center;
+      transition: opacity 0.4s ease;
+    }
+
+    /* خلفية النمط الإسلامي الاحتياطية */
+    #bgPattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
     }
 
     .app-content {
@@ -41,7 +53,7 @@
     }
 
     .box-style {
-      background: rgba(0, 0, 0, 0.70);
+      background: rgba(0, 0, 0, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.30);
       border-radius: 12px;
     }
@@ -138,18 +150,18 @@
     }
 
     .adhan-container {
-      display: flex; align-items: center; justify-content: center; gap: 35px; width: 100%;
+      display: flex; align-items: center; justify-content: center; gap: 40px; width: 100%;
     }
-    .mosque-icon {
-      font-size: 6.5rem; text-shadow: 0 0 35px #38bdf8;
+    .svg-mosque {
+      width: 130px; height: 130px; fill: #facc15; filter: drop-shadow(0 0 25px rgba(250, 204, 21, 0.8));
       animation: pulseMosque 1.8s infinite alternate;
     }
     @keyframes pulseMosque {
       0% { transform: scale(1); opacity: 0.85; }
-      100% { transform: scale(1.12); opacity: 1; }
+      100% { transform: scale(1.15); opacity: 1; }
     }
     .adhan-title {
-      font-size: 5rem; font-weight: 900; color: #facc15;
+      font-size: 4.8rem; font-weight: 900; color: #facc15;
       text-shadow: 0 0 35px rgba(250, 204, 21, 0.7);
       line-height: 1.2;
     }
@@ -192,23 +204,35 @@
     }
     .btn-ctrl { background: #1f2937; border: 1px solid #38bdf8; color: #fff; padding: 5px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
 
+    .btn-test { background: #d97706; color: #fff; width: 100%; padding: 8px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: bold; cursor: pointer; margin-top: 8px; }
     .btn-save { background: #16a34a; color: #fff; width: 100%; padding: 10px; border: none; border-radius: 10px; font-size: 1.05rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
     .btn-close { background: #4b5563; color: #fff; width: 100%; padding: 6px; border: none; border-radius: 10px; font-size: 0.9rem; cursor: pointer; margin-top: 5px; }
   </style>
 </head>
 <body>
 
-  <!-- صورة المسجد -->
+  <!-- طبقة الأنماط والخلفيات الإسلامية المتنوعة -->
+  <div id="bgPattern"></div>
+
+  <!-- صورة المسجد image2026 المحمية -->
   <img id="bgMasjid" src="image2026.jpg" alt="">
 
   <div class="app-content">
 
-    <!-- شاشة الأذان (دقيقة واحدة = 60 ثانية) -->
+    <!-- شاشة الأذان الكبرى: زوج مساجد SVG وخط كبير -->
     <div class="fullscreen-modal" id="modalAdhan">
       <div class="adhan-container">
-        <div class="mosque-icon">🕌</div>
-        <div class="adhan-title" id="adhanPrayerName">الآنَ أَذَانُ الصَّلَاةِ</div>
-        <div class="mosque-icon">🕌</div>
+        <!-- مسجد أيمن -->
+        <svg class="svg-mosque" viewBox="0 0 24 24">
+          <path d="M12 2L10.5 4H13.5L12 2ZM12 4.5C10 6 7 8 7 11V13H17V11C17 8 14 6 12 4.5ZM4 11V21H6V11H4ZM18 11V21H20V11H18ZM8 14H16V21H14V17C14 15.9 13.1 15 12 15C10.9 15 10 15.9 10 17V21H8V14Z"/>
+        </svg>
+
+        <div class="adhan-title" id="adhanPrayerName">الآنَ أَذَانُ صَلَاةِ الْفَجْرِ</div>
+
+        <!-- مسجد أيسر -->
+        <svg class="svg-mosque" viewBox="0 0 24 24">
+          <path d="M12 2L10.5 4H13.5L12 2ZM12 4.5C10 6 7 8 7 11V13H17V11C17 8 14 6 12 4.5ZM4 11V21H6V11H4ZM18 11V21H20V11H18ZM8 14H16V21H14V17C14 15.9 13.1 15 12 15C10.9 15 10 15.9 10 17V21H8V14Z"/>
+        </svg>
       </div>
       <div class="adhan-sub">حَيَّ عَلَى الصَّلَاةِ • حَيَّ عَلَى الْفَلَاحِ</div>
     </div>
@@ -232,6 +256,20 @@
     <div class="setup-overlay" id="setupModal">
       <div class="setup-box">
         <div class="setup-title">⚙️ لوحة تحكم وإعدادات المسجد</div>
+
+        <button type="button" class="btn-test" onclick="testAdhanScreen()">🔔 تجربة شاشة الأذان الآن (معاينة 60 ثانية)</button>
+
+        <!-- اختيار مظهر وخلفيات المواقيت -->
+        <div class="field-group">
+          <label class="field-label" style="color: #facc15;">🖼️ مظهر وخلفيات المواقيت:</label>
+          <select id="cfg_bg_theme" class="field-select" onchange="changeBgTheme(this.value)">
+            <option value="custom_image">صورة المسجد الأصلية (image2026)</option>
+            <option value="islamic_gold">محراب ذهبي دافئ (مظهر رخامي)</option>
+            <option value="islamic_night">زخرفة مغربية ليلية (أندلسي داكن)</option>
+            <option value="emerald_green">زمردي ملكي داكن (أخضر مسجدي هادئ)</option>
+            <option value="pure_black">سواد ليلي عميق (لأقصى درجات الوضوح)</option>
+          </select>
+        </div>
 
         <div class="field-group">
           <label class="field-label">اسم المسجد الظاهر في الأعلى:</label>
@@ -367,7 +405,7 @@
       <div class="countdown-bar box-style" id="countdownBox"><span>⏳</span><span id="countdownLabel">الصلاة القادمة</span><span class="count-val" id="countdownVal">00:00:00</span></div>
     </div>
 
-    <!-- الصلوات الخمس بمدد الإقامة الأصلية -->
+    <!-- الصلوات الخمس -->
     <div class="prayers-row">
       <div class="p-card box-style" id="card-Fajr"><div class="p-name">الفجر</div><div class="p-subname">Fajr</div><div class="p-time" id="time-Fajr">--:--</div><div class="p-iqama">+20</div></div>
       <div class="p-card box-style" id="card-Dhuhr"><div class="p-name">الظهر</div><div class="p-subname">Dhuhr</div><div class="p-time" id="time-Dhuhr">--:--</div><div class="p-iqama">+15</div></div>
@@ -385,7 +423,7 @@
 
   <script>
     var fixedIqamaDelays = { Fajr: 20, Dhuhr: 15, Asr: 15, Maghrib: 10, Isha: 15 };
-    var ADHAN_DURATION_SEC = 60; // دقيقة واحدة فقط للأذان
+    var ADHAN_DURATION_SEC = 60; // 60 ثانية للأذان
 
     var defaultOffsets = { Fajr: 0, Sunrise: 0, Dhuhr: 0, Asr: 0, Maghrib: 0, Isha: 0 };
     var adhanOffsets = defaultOffsets;
@@ -424,16 +462,16 @@
       if (stitle) savedTitle = stitle;
     } catch(e) {}
 
-    var savedBg = 'image2026.jpg';
-    try {
-      var sbg = localStorage.getItem('sm_bg_url');
-      if (sbg) savedBg = sbg;
-    } catch(e) {}
-
     var savedTemp = '21';
     try {
       var st = localStorage.getItem('sm_temp');
       if (st) savedTemp = st;
+    } catch(e) {}
+
+    var savedBgTheme = 'custom_image';
+    try {
+      var sbt = localStorage.getItem('sm_bg_theme');
+      if (sbt) savedBgTheme = sbt;
     } catch(e) {}
 
     var bgTransform = { x: 0, y: 0, scale: 1 };
@@ -443,6 +481,8 @@
     } catch(e) {}
 
     var bgEl = document.getElementById('bgMasjid');
+    var patternEl = document.getElementById('bgPattern');
+
     function applyBgTransform() {
       bgEl.style.transform = "translate(" + bgTransform.x + "%, " + bgTransform.y + "%) scale(" + bgTransform.scale + ")";
     }
@@ -462,11 +502,36 @@
       applyBgTransform();
     }
 
+    // تطبيق مظهر وخلفيات المواقيت
+    function changeBgTheme(theme) {
+      savedBgTheme = theme;
+      try { localStorage.setItem('sm_bg_theme', theme); } catch(e) {}
+
+      if (theme === 'custom_image') {
+        bgEl.style.display = 'block';
+        patternEl.style.background = '#000000';
+      } else if (theme === 'islamic_gold') {
+        bgEl.style.display = 'none';
+        patternEl.style.background = 'radial-gradient(circle at center, #2e1e07 0%, #150d03 70%, #000000 100%)';
+      } else if (theme === 'islamic_night') {
+        bgEl.style.display = 'none';
+        patternEl.style.background = 'radial-gradient(circle at center, #0f172a 0%, #050914 70%, #000000 100%)';
+      } else if (theme === 'emerald_green') {
+        bgEl.style.display = 'none';
+        patternEl.style.background = 'radial-gradient(circle at center, #063c2c 0%, #021a13 70%, #000000 100%)';
+      } else if (theme === 'pure_black') {
+        bgEl.style.display = 'none';
+        patternEl.style.background = '#000000';
+      }
+    }
+
     function loadLocalImage(input) {
       if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function(e) {
           bgEl.src = e.target.result;
+          changeBgTheme('custom_image');
+          document.getElementById('cfg_bg_theme').value = 'custom_image';
           try {
             localStorage.setItem('sm_bg_url', e.target.result);
           } catch(err) {}
@@ -475,14 +540,23 @@
       }
     }
 
+    // جميع المسارات الممكنة للصورة image2026
+    var savedBg = 'image2026.jpg';
+    try {
+      var sbg = localStorage.getItem('sm_bg_url');
+      if (sbg) savedBg = sbg;
+    } catch(e) {}
+
     var possibleImages = [
       savedBg,
       'image2026.jpg',
-      '1000208998.jpg',
       'image2026.png',
       'image2026.jpeg',
       './image2026.jpg',
-      './1000208998.jpg'
+      './image2026.png',
+      '1000208998.jpg',
+      'https://raw.githubusercontent.com/sanyoboxe-coder/masjid-tv/main/image2026.jpg',
+      'https://raw.githubusercontent.com/sanyoboxe-coder/masjid-tv/main/image2026.png'
     ];
     var imgIdx = 0;
     bgEl.onerror = function() {
@@ -611,6 +685,7 @@
         document.getElementById('disp_base_' + p).innerText = formatTime(getAdjustedAdhan(p));
         document.getElementById('adj_' + p).value = (adhanOffsets[p] >= 0 ? '+' : '') + (adhanOffsets[p] || 0);
       }
+      document.getElementById('cfg_bg_theme').value = savedBgTheme;
       document.getElementById('cfg_title').value = savedTitle;
       document.getElementById('cfg_jumua').value = savedJumua;
       document.getElementById('cfg_marquee_mode').value = savedMarqueeMode;
@@ -618,6 +693,16 @@
       document.getElementById('cfg_tz').value = tzOffset;
       document.getElementById('cfg_marquee').value = savedMarquee;
       document.getElementById('setupModal').style.display = 'flex';
+    }
+
+    function testAdhanScreen() {
+      document.getElementById('setupModal').style.display = 'none';
+      var mAdhan = document.getElementById('modalAdhan');
+      document.getElementById('adhanPrayerName').innerText = 'الآنَ أَذَانُ صَلَاةِ العَصْرِ';
+      mAdhan.style.display = 'flex';
+      setTimeout(function() {
+        mAdhan.style.display = 'none';
+      }, 7000);
     }
 
     function adjAdhan(p, delta) {
@@ -675,16 +760,13 @@
         var m = d.getMinutes();
         var s = d.getSeconds();
 
-        // 1. الساعة الكبرى
         document.getElementById('liveClock').innerText = 
           (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 
-        // 2. التاريخ الميلادي
         var days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
         var months = ["يناير", "فبراير", "مارس", "أبريل", "ماي", "يونيو", "يوليوز", "غشت", "شتنبر", "أكتوبر", "نونبر", "دجنبر"];
         document.getElementById('liveGregDate').innerText = days[d.getDay()] + " " + d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
 
-        // 3. التاريخ الهجري الثابت
         document.getElementById('liveHijriDate').innerText = "29 جمادى الأولى 1448 هـ";
 
         var nowSec = h * 3600 + m * 60 + s;
@@ -708,7 +790,7 @@
 
         for (var i = 0; i < pList.length; i++) {
           var p = pList[i];
-          var adhanEnd = p.adhan + ADHAN_DURATION_SEC; // 60 ثانية (دقيقة واحدة فقط)
+          var adhanEnd = p.adhan + ADHAN_DURATION_SEC; // 60 ثانية للأذان
           var iqamaEnd = adhanEnd + p.iqDuration;
           var prayerEnd = iqamaEnd + 480;
 
@@ -780,6 +862,8 @@
         }
       } catch(err) {}
     }
+
+    changeBgTheme(savedBgTheme);
 
     setInterval(function() {
       dhikrIdx = (dhikrIdx + 1) % adhkar.length;
